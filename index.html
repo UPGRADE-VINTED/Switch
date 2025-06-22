@@ -176,6 +176,19 @@
 
         <div class="joycon-row">
           <div>
+            <span class="joycon-color joycon-jaunen"></span>
+            <span class="joycon-color joycon-violet"></span>
+            Joy-Con jaune/violet (2 en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('joycon_violet', -1)">−</button>
+            <span id="joycon_violet_qty" class="qty-display">0</span>
+            <button onclick="updateQty('joycon_violet', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="joycon-row">
+          <div>
             <span class="joycon-color joycon-vert"></span>
             <span class="joycon-color joycon-rose"></span>
             Joy-Con Vert/Rose (2 en stock)
@@ -236,7 +249,9 @@
       joycon_rouge_bleu: 3,
       joycon_vert_rose: 2,
       joycon_gris: 1,
-      joycon_jaune: 2
+      joycon_jaune: 1,
+      joycon_violet: 1,
+
     };
 
     const images = {
