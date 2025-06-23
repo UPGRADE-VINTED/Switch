@@ -11,12 +11,14 @@
   .btn-group { margin-top: 10px; }
   button { padding: 8px 15px; margin-right: 10px; cursor: pointer; }
   .selected { border: 3px solid #4CAF50; }
-  img { cursor: pointer; max-width: 100px; margin: 5px; border: 3px solid transparent; border-radius: 8px; }
+  img { cursor: pointer; max-width: 120px; margin: 5px; border: 3px solid transparent; border-radius: 8px; vertical-align: middle; }
   img.selected { border-color: #4CAF50; }
   .qty-control { display: inline-flex; align-items: center; margin: 0 10px; }
   .qty-control button { padding: 2px 8px; font-size: 18px; }
   .qty-control span { margin: 0 6px; min-width: 20px; text-align: center; display: inline-block; }
   #resumeCommande { white-space: pre-wrap; background: #222; color: #0f0; padding: 15px; border-radius: 6px; font-size: 14px; }
+  label { cursor: pointer; display: flex; align-items: center; margin-bottom: 8px; }
+  label img { margin-left: 10px; max-width: 60px; border: none; }
 </style>
 </head>
 <body>
@@ -29,9 +31,11 @@
   <div class="step active" id="step1">
     <h2>Étape 1 : Choix de la console</h2>
     <div id="switches">
-      <img src="https://i.imgur.com/nH8wl2v.png" alt="Switch OLED Blanche" data-id="oled_blanc" />
-      <img src="https://i.imgur.com/3Z8RZp5.png" alt="Switch OLED Noir" data-id="oled_noir" />
-      <img src="https://i.imgur.com/hVoqN0C.png" alt="Switch V2 Grise" data-id="v2_gris" />
+      <img src="https://i.imgur.com/XNzqOsB.jpeg" alt="Switch V2 SD" data-id="switch_v2_sd" />
+      <img src="https://i.imgur.com/zKeTFqq.png" alt="Switch V2 OK" data-id="switch_v2_ok" />
+      <img src="https://i.imgur.com/p5yO1kM.png" alt="Switch V1 Rayure" data-id="switch_v1_rayure" />
+      <img src="https://i.imgur.com/p5yO1kM.png" alt="Switch V1 OK" data-id="switch_v1_ok" />
+      <img src="https://i.imgur.com/p5yO1kM.png" alt="Switch V1 Excellent" data-id="switch_v1_excellent" />
     </div>
   </div>
 
@@ -39,9 +43,9 @@
   <div class="step" id="step2">
     <h2>Étape 2 : Choix carte SD</h2>
     <div id="carteSDs">
-      <img src="https://i.imgur.com/lUtKu3I.png" alt="Carte SD 64Go" data-id="64go" />
-      <img src="https://i.imgur.com/k64Uoy8.png" alt="Carte SD 128Go" data-id="128go" />
-      <img src="https://i.imgur.com/9vd6pKZ.png" alt="Pas de carte SD" data-id="none" />
+      <img src="https://i.imgur.com/ZRiCDLr.jpeg" alt="Carte SD 128Go" data-id="sd128" />
+      <img src="https://i.imgur.com/ZRiCDLr.jpeg" alt="Carte SD 256Go" data-id="sd256" />
+      <img src="https://i.imgur.com/a3M2P8z.png" alt="Carte SD 512Go" data-id="sd512" />
     </div>
   </div>
 
@@ -50,21 +54,48 @@
     <h2>Étape 3 : Choix des Joycon</h2>
     <div id="joycons">
       <div>
-        <img src="https://i.imgur.com/OaTUrHp.png" alt="Joycon Bleu" data-id="jc_bleu" style="vertical-align: middle;" />
-        <span>Bleu</span>
+        <img src="https://i.imgur.com/h4i6NT2.jpeg" alt="Joycon Rouge/Bleu" data-id="joycon_rouge_bleu" style="vertical-align: middle;" />
+        <span>Rouge/Bleu</span>
         <div class="qty-control">
-          <button type="button" data-action="dec" data-id="jc_bleu">-</button>
-          <span id="qty_jc_bleu">0</span>
-          <button type="button" data-action="inc" data-id="jc_bleu">+</button>
+          <button type="button" data-action="dec" data-id="joycon_rouge_bleu">-</button>
+          <span id="qty_joycon_rouge_bleu">0</span>
+          <button type="button" data-action="inc" data-id="joycon_rouge_bleu">+</button>
         </div>
       </div>
       <div>
-        <img src="https://i.imgur.com/y3wr8Q0.png" alt="Joycon Rouge" data-id="jc_rouge" style="vertical-align: middle;" />
-        <span>Rouge</span>
+        <img src="https://i.imgur.com/HnrlZdX.png" alt="Joycon Vert/Rose" data-id="joycon_vert_rose" style="vertical-align: middle;" />
+        <span>Vert/Rose</span>
         <div class="qty-control">
-          <button type="button" data-action="dec" data-id="jc_rouge">-</button>
-          <span id="qty_jc_rouge">0</span>
-          <button type="button" data-action="inc" data-id="jc_rouge">+</button>
+          <button type="button" data-action="dec" data-id="joycon_vert_rose">-</button>
+          <span id="qty_joycon_vert_rose">0</span>
+          <button type="button" data-action="inc" data-id="joycon_vert_rose">+</button>
+        </div>
+      </div>
+      <div>
+        <img src="https://i.imgur.com/HnrlZdX.png" alt="Joycon Gris" data-id="joycon_gris" style="vertical-align: middle;" />
+        <span>Gris</span>
+        <div class="qty-control">
+          <button type="button" data-action="dec" data-id="joycon_gris">-</button>
+          <span id="qty_joycon_gris">0</span>
+          <button type="button" data-action="inc" data-id="joycon_gris">+</button>
+        </div>
+      </div>
+      <div>
+        <img src="https://i.imgur.com/1lwBpOt.jpeg" alt="Joycon Jaune" data-id="joycon_jaune" style="vertical-align: middle;" />
+        <span>Jaune</span>
+        <div class="qty-control">
+          <button type="button" data-action="dec" data-id="joycon_jaune">-</button>
+          <span id="qty_joycon_jaune">0</span>
+          <button type="button" data-action="inc" data-id="joycon_jaune">+</button>
+        </div>
+      </div>
+      <div>
+        <img src="https://i.imgur.com/edqgNwl.jpeg" alt="Joycon Violet" data-id="joycon_violet" style="vertical-align: middle;" />
+        <span>Violet</span>
+        <div class="qty-control">
+          <button type="button" data-action="dec" data-id="joycon_violet">-</button>
+          <span id="qty_joycon_violet">0</span>
+          <button type="button" data-action="inc" data-id="joycon_violet">+</button>
         </div>
       </div>
     </div>
@@ -73,9 +104,15 @@
   <!-- Étape 4 : Accessoires -->
   <div class="step" id="step4">
     <h2>Étape 4 : Choix des accessoires</h2>
-    <label><input type="checkbox" name="accessoire" value="station_recharge" /> Station de recharge</label><br/>
-    <label><input type="checkbox" name="accessoire" value="etui" /> Étui de protection</label><br/>
-    <label><input type="checkbox" name="accessoire" value="protege_ecran" /> Protection écran</label>
+    <label><input type="checkbox" name="accessoire" value="chargeur" /> Chargeur
+      <img src="https://i.imgur.com/QylodKV.jpeg" alt="Chargeur" />
+    </label>
+    <label><input type="checkbox" name="accessoire" value="cable_hdmi" /> Câble HDMI
+      <img src="https://i.imgur.com/CYJdCjc.jpeg" alt="Câble HDMI" />
+    </label>
+    <label><input type="checkbox" name="accessoire" value="chargeur_joycon" /> Station de recharge Joycon
+      <img src="https://i.imgur.com/2a17uZp.jpeg" alt="Chargeur Joycon" />
+    </label>
   </div>
 
   <!-- Navigation -->
@@ -96,164 +133,164 @@
   const choix = {
     switch: null,
     carteSD: null,
-    joycons: { jc_bleu: 0, jc_rouge: 0 },
+    joycons: {
+      joycon_rouge_bleu: 0,
+      joycon_vert_rose: 0,
+      joycon_gris: 0,
+      joycon_jaune: 0,
+      joycon_violet: 0,
+    },
     accessoires: new Set(),
   };
 
   const switches = {
-    oled_blanc: { name: 'Switch OLED Blanche', price: 350 },
-    oled_noir: { name: 'Switch OLED Noire', price: 350 },
-    v2_gris: { name: 'Switch V2 Grise', price: 300 },
-  };
-  const carteSDs = {
-    '64go': { name: 'Carte SD 64Go', price: 30 },
-    '128go': { name: 'Carte SD 128Go', price: 50 },
-    'none': { name: 'Sans carte SD', price: 0 },
-  };
-  const joyconsData = {
-    jc_bleu: { name: 'Joycon Bleu', priceFirst: 35, priceNext: 30 },
-    jc_rouge: { name: 'Joycon Rouge', priceFirst: 35, priceNext: 30 },
-  };
-  const accessoiresData = {
-    station_recharge: { name: 'Station de recharge', price: 40 },
-    etui: { name: 'Étui de protection', price: 25 },
-    protege_ecran: { name: 'Protection écran', price: 15 },
+    switch_v2_sd: { name: 'Switch V2 SD', price: 350 },
+    switch_v2_ok: { name: 'Switch V2 OK', price: 350 },
+    switch_v1_rayure: { name: 'Switch V1 Rayure', price: 300 },
+    switch_v1_ok: { name: 'Switch V1 OK', price: 300 },
+    switch_v1_excellent: { name: 'Switch V1 Excellent', price: 320 },
   };
 
-  // Gestion sélection Switch
+  const carteSDs = {
+    sd128: { name: 'Carte SD 128Go', price: 30 },
+    sd256: { name: 'Carte SD 256Go', price: 50 },
+    sd512: { name: 'Carte SD 512Go', price: 80 },
+  };
+
+  const joyconsData = {
+    joycon_rouge_bleu: { name: 'Joycon Rouge/Bleu', price: 60 },
+    joycon_vert_rose: { name: 'Joycon Vert/Rose', price: 60 },
+    joycon_gris: { name: 'Joycon Gris', price: 50 },
+    joycon_jaune: { name: 'Joycon Jaune', price: 60 },
+    joycon_violet: { name: 'Joycon Violet', price: 60 },
+  };
+
+  const accessoiresData = {
+    chargeur: { name: 'Chargeur', price: 20 },
+    cable_hdmi: { name: 'Câble HDMI', price: 15 },
+    chargeur_joycon: { name: 'Station de recharge Joycon', price: 25 },
+  };
+
+  function showStep(n) {
+    steps.forEach((step, i) => {
+      step.classList.toggle('active', i === n);
+    });
+    document.getElementById('prevBtn').disabled = (n === 0);
+    document.getElementById('nextBtn').textContent = (n === steps.length - 1) ? 'Terminer' : 'Suivant';
+  }
+
+  // Gestion choix switch étape 1
   document.querySelectorAll('#switches img').forEach(img => {
     img.addEventListener('click', () => {
       document.querySelectorAll('#switches img').forEach(i => i.classList.remove('selected'));
       img.classList.add('selected');
       choix.switch = img.dataset.id;
-      updateResume();
     });
   });
 
-  // Gestion sélection carte SD
+  // Gestion choix carte SD étape 2
   document.querySelectorAll('#carteSDs img').forEach(img => {
     img.addEventListener('click', () => {
       document.querySelectorAll('#carteSDs img').forEach(i => i.classList.remove('selected'));
       img.classList.add('selected');
       choix.carteSD = img.dataset.id;
-      updateResume();
     });
   });
 
-  // Gestion quantités Joycon
+  // Gestion quantités joycons étape 3
   document.querySelectorAll('#joycons button').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
-      const action = btn.dataset.action;
-      let qty = choix.joycons[id];
-      if(action === 'inc') qty = Math.min(qty + 1, 10);
-      else if(action === 'dec') qty = Math.max(qty -1, 0);
-      choix.joycons[id] = qty;
-      document.getElementById('qty_'+id).textContent = qty;
-      updateResume();
+      if (!id) return;
+      if (btn.dataset.action === 'inc') {
+        choix.joycons[id]++;
+      } else if (btn.dataset.action === 'dec' && choix.joycons[id] > 0) {
+        choix.joycons[id]--;
+      }
+      document.getElementById('qty_' + id).textContent = choix.joycons[id];
     });
   });
 
-  // Gestion accessoires checkbox
-  document.querySelectorAll('input[name="accessoire"]').forEach(chk => {
+  // Gestion accessoires étape 4
+  document.querySelectorAll('#step4 input[type=checkbox]').forEach(chk => {
     chk.addEventListener('change', () => {
-      if(chk.checked) choix.accessoires.add(chk.value);
-      else choix.accessoires.delete(chk.value);
-      updateResume();
+      if (chk.checked) {
+        choix.accessoires.add(chk.value);
+      } else {
+        choix.accessoires.delete(chk.value);
+      }
     });
   });
 
-  // Navigation étapes
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-
-  prevBtn.addEventListener('click', () => {
-    if(currentStep > 0){
-      steps[currentStep].classList.remove('active');
+  // Boutons navigation
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    if (currentStep > 0) {
       currentStep--;
-      steps[currentStep].classList.add('active');
-      updateButtons();
+      showStep(currentStep);
     }
   });
 
-  nextBtn.addEventListener('click', () => {
-    if(currentStep < steps.length -1){
-      // Validation simple : ex. on doit avoir choisi Switch à l'étape 1, etc.
-      if(currentStep === 0 && !choix.switch){
-        alert('Veuillez choisir une console avant de continuer');
-        return;
-      }
-      if(currentStep === 1 && !choix.carteSD){
-        alert('Veuillez choisir une carte SD avant de continuer');
-        return;
-      }
-      // on peut ajouter d'autres validations ici
-      steps[currentStep].classList.remove('active');
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    // Validation simple : for switch and SD, obligatoires
+    if (currentStep === 0 && !choix.switch) {
+      alert('Veuillez sélectionner une console.');
+      return;
+    }
+    if (currentStep === 1 && !choix.carteSD) {
+      alert('Veuillez sélectionner une carte SD.');
+      return;
+    }
+
+    if (currentStep < steps.length - 1) {
       currentStep++;
-      steps[currentStep].classList.add('active');
-      updateButtons();
+      showStep(currentStep);
     } else {
-      alert('Fin des étapes. Merci pour votre commande !');
+      // Fin du formulaire, afficher résumé
+      afficherResume();
     }
   });
 
-  function updateButtons(){
-    prevBtn.disabled = (currentStep === 0);
-    nextBtn.textContent = (currentStep === steps.length - 1) ? 'Terminer' : 'Suivant';
-  }
+  function afficherResume() {
+    let texte = '';
 
-  // Résumé
-  function updateResume(){
-    let lines = [];
-    if(choix.switch){
-      const s = switches[choix.switch];
-      lines.push(`Console : ${s.name} - ${s.price} €`);
-    } else {
-      lines.push('Console : (non choisie)');
+    if (choix.switch) {
+      texte += `Console : ${switches[choix.switch].name} - ${switches[choix.switch].price} €\n`;
     }
-    if(choix.carteSD){
-      const sd = carteSDs[choix.carteSD];
-      lines.push(`Carte SD : ${sd.name} - ${sd.price} €`);
-    } else {
-      lines.push('Carte SD : (non choisie)');
+    if (choix.carteSD) {
+      texte += `Carte SD : ${carteSDs[choix.carteSD].name} - ${carteSDs[choix.carteSD].price} €\n`;
     }
-    lines.push('');
-    lines.push('Joycon :');
-    let totalJoy = 0;
-    for(let jcId in choix.joycons){
-      const qty = choix.joycons[jcId];
-      if(qty > 0){
-        const jc = joyconsData[jcId];
-        let prixJC = qty === 1 ? jc.priceFirst : jc.priceFirst + (qty-1)*jc.priceNext;
-        totalJoy += prixJC;
-        lines.push(`  ${jc.name} x${qty} : ${prixJC} €`);
+
+    texte += '\nJoycons sélectionnés :\n';
+    let totalJoycons = 0;
+    for (const [key, qty] of Object.entries(choix.joycons)) {
+      if (qty > 0) {
+        texte += `- ${joyconsData[key].name} x${qty} : ${joyconsData[key].price * qty} €\n`;
+        totalJoycons += joyconsData[key].price * qty;
       }
     }
-    if(totalJoy === 0) lines.push('  (aucun)');
-    lines.push('');
-    lines.push('Accessoires :');
-    let totalAcc = 0;
-    if(choix.accessoires.size === 0){
-      lines.push('  (aucun)');
+    if (totalJoycons === 0) texte += '- Aucun\n';
+
+    texte += '\nAccessoires sélectionnés :\n';
+    let totalAccessoires = 0;
+    if (choix.accessoires.size === 0) {
+      texte += '- Aucun\n';
     } else {
-      choix.accessoires.forEach(id => {
-        const acc = accessoiresData[id];
-        lines.push(`  ${acc.name} - ${acc.price} €`);
-        totalAcc += acc.price;
+      choix.accessoires.forEach(acc => {
+        texte += `- ${accessoiresData[acc].name} : ${accessoiresData[acc].price} €\n`;
+        totalAccessoires += accessoiresData[acc].price;
       });
     }
-    lines.push('');
-    let total = 0;
-    if(choix.switch) total += switches[choix.switch].price;
-    if(choix.carteSD) total += carteSDs[choix.carteSD].price;
-    total += totalJoy + totalAcc;
-    lines.push('---------------------------');
-    lines.push(`Total : ${total} €`);
-    document.getElementById('resumeCommande').textContent = lines.join('\n');
+
+    const total = (choix.switch ? switches[choix.switch].price : 0)
+                + (choix.carteSD ? carteSDs[choix.carteSD].price : 0)
+                + totalJoycons + totalAccessoires;
+
+    texte += `\nPrix total : ${total} €`;
+
+    document.getElementById('resumeCommande').textContent = texte;
   }
 
-  updateResume();
-
+  showStep(currentStep);
 </script>
 
 </body>
