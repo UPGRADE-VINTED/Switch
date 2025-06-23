@@ -3,34 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Upgrade choix Pack</title>
+  <title>Pack Switch Modifiée</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 2rem;
-      background: #f0f0f0 url('https://i.imgur.com/LwUXtOF.png') no-repeat top center;
-      background-size: 150px;
+      background: #f0f0f0;
+    }
+    .logo-top {
+      display: block;
+      margin: 0 auto 1.5rem auto;
+      width: 130px;
     }
     .configurator {
       display: flex;
       gap: 2rem;
       flex-wrap: wrap;
     }
-    .options {
+    .options, .preview {
       background: white;
       padding: 1rem;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .options {
       min-width: 320px;
     }
     .preview {
-      padding: 1rem;
-      background: white;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       flex: 1;
+      text-align: center;
     }
     img {
       width: 200px;
@@ -41,94 +43,194 @@
       font-weight: bold;
       margin-top: 1rem;
     }
-    #summary {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 10px;
-    }
     select, button {
       margin-top: 5px;
       padding: 5px;
       width: 100%;
       font-size: 0.9rem;
-      line-height: 1.2;
-      height: 30px;
-    }
-    label.forced-checkbox {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      user-select: none;
-      cursor: default;
-    }
-    label.forced-checkbox input {
-      margin-right: 8px;
-      pointer-events: none;
-    }
-    .joycon-toggle {
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1.1rem;
-      margin-top: 20px;
-      user-select: none;
-      display: inline-block;
-      background: #ddd;
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: background-color 0.3s ease;
-    }
-    .joycon-toggle:hover {
-      background: #ccc;
-    }
-    #joyconOptions {
-      margin-top: 10px;
-      display: block;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
-      background: #fafafa;
     }
     .joycon-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 0.5rem;
+      margin: 0.5rem 0;
     }
     .joycon-color {
       width: 20px;
       height: 20px;
-      border-radius: 4px;
       display: inline-block;
       margin-right: 5px;
+      border-radius: 4px;
     }
     .qty-buttons button {
       width: 30px;
       height: 30px;
-      font-size: 1.2rem;
       font-weight: bold;
-      line-height: 1;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      background: #fff;
       border-radius: 5px;
       margin: 0 5px;
-      user-select: none;
     }
-    .qty-display {
-      min-width: 20px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1rem;
-    }
+    .total { margin-top: 1rem; }
   </style>
 </head>
 <body>
-  <img src="https://i.imgur.com/LwUXtOF.png" alt="Logo Boutique" style="width:120px; display:block; margin: 0 auto 1rem auto;">
+  <img src="https://i.imgur.com/LwUXtOF.png" alt="Logo Boutique" class="logo-top" />
+
+  <h1>🕹️ Préparer mon pack Switch modifiée</h1>
+  <div class="configurator">
+    <div class="options">
+      <h3>🎮 Console</h3>
+      <select id="console" onchange="updateConfig()">
+        <option value="V2 cache SD manquant|180|switch_v2_sd">V2 - cache SD manquant (180€)</option>
+        <option value="V2 impeccable|190|switch_v2_ok">V2 - impeccable (190€)</option>
+        <option value="V1 rayé|170|switch_v1_rayure">V1 - rayé (170€)</option>
+        <option value="V1 bon état|180|switch_v1_ok">V1 - bon état (180€)</option>
+        <option value="V1 excellent|185|switch_v1_excellent">V1 - excellent (185€)</option>
+      </select>
+
+      <label><input type="checkbox" checked disabled /> ✅ Puce HWFLY (0€)</label>
+
+      <h3>💾 Carte microSD</h3>
+      <select id="sdSelect" onchange="updateConfig()">
+        <option value="128|0|sd128">128 Go (Incluse)</option>
+        <option value="256|15|sd256">256 Go (+15€)</option>
+        <option value="512|35|sd512">512 Go (+35€)</option>
+      </select>
+
+      <h3>🎨 Joy-Con</h3>
+      <div id="joyconList"></div>
+
+      <h3>🔌 Accessoires</h3>
+      <label><input type="checkbox" value="10" data-img="chargeur" onchange="updateConfig()"> Chargeur secteur (10€)</label><br>
+      <label><input type="checkbox" value="5" data-img="hdmi" onchange="updateConfig()"> Câble HDMI (5€)</label><br>
+      <label><input type="checkbox" value="18" data-img="chargeur_joycon" onchange="updateConfig()"> Chargeur Joy-Con (18€)</label><br>
+
+      <br><button onclick="validerCommande()">✅ Valider</button>
+    </div>
+
+    <div class="preview" id="preview">
+      <h3>Prévisualisation</h3>
+      <div id="images"></div>
+      <div class="total" id="total">Total : 0€</div>
+    </div>
+  </div>
+
+  <div id="summary"></div>
+
   <script>
-    const allJoycons = [
+    const images = {
+      switch_v2_sd: 'https://i.imgur.com/XNzqOsB.jpeg',
+      switch_v2_ok: 'https://i.imgur.com/zKeTFqq.png',
+      switch_v1_rayure: 'https://i.imgur.com/p5yO1kM.png',
+      switch_v1_ok: 'https://i.imgur.com/p5yO1kM.png',
+      switch_v1_excellent: 'https://i.imgur.com/p5yO1kM.png',
+      sd128: 'https://i.imgur.com/ZRiCDLr.jpeg',
+      sd256: 'https://i.imgur.com/ZRiCDLr.jpeg',
+      sd512: 'https://i.imgur.com/a3M2P8z.png',
+      chargeur: 'https://i.imgur.com/QylodKV.jpeg',
+      hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
+      chargeur_joycon: 'https://i.imgur.com/1lwBpOt.jpeg',
+    };
+
+    const joycons = [
       { key: 'rouge_bleu', label: 'Rouge/Bleu', left: '#e74c3c', right: '#3498db', stock: 3, img: 'https://i.imgur.com/h4i6NT2.jpeg' },
       { key: 'vert_rose', label: 'Vert/Rose', left: '#2ecc71', right: '#e91e63', stock: 2, img: 'https://i.imgur.com/HnrlZdX.png' },
-      { key: 'gris', label: 'Gris', left: '#7f8c8d', right: '#7f8c8d', stock: 0, img: 'https://i.imgur.com/HnrlZdX.png' },
       { key: 'zelda', label: 'Zelda (édition)', left: '#ffbf3b', right: '#ffcc00', stock: 1, img: 'https://i.imgur.com/1lwBpOt.jpeg' },
-      { key: 'monster', label: 'Monster Hunter', left: '#1b1b1b', right: '#a97448', stock: 1, img: 'https://i.i
+      { key: 'monster', label: 'Monster Hunter', left: '#1b1b1b', right: '#a97448', stock: 1, img: 'https://i.imgur.com/xyz1234.jpeg' },
+      { key: 'animal', label: 'Animal Crossing', left: '#96d4d4', right: '#f7c5a0', stock: 1, img: 'https://i.imgur.com/abc5678.jpeg' },
+      { key: 'pokemon', label: 'Pokemon Scarlet/Violet', left: '#8e44ad', right: '#e74c3c', stock: 1, img: 'https://i.imgur.com/pok1234.jpeg' }
+    ];
+
+    const imagesJoycon = {};
+
+    joycons.forEach(j => { imagesJoycon[j.key] = j.img; });
+
+    function createJoyconUI() {
+      const container = document.getElementById('joyconList');
+      joycons.forEach(j => {
+        if (j.stock <= 0) return;
+        const row = document.createElement('div');
+        row.className = 'joycon-row';
+        row.innerHTML = `
+          <div>
+            <span class="joycon-color" style="background:${j.left}"></span>
+            <span class="joycon-color" style="background:${j.right}"></span>
+            ${j.label} (${j.stock} en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('${j.key}', -1)">−</button>
+            <span id="${j.key}_qty">0</span>
+            <button onclick="updateQty('${j.key}', 1)">+</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    const qtyJoycon = {};
+    function updateQty(key, delta) {
+      if (!qtyJoycon[key]) qtyJoycon[key] = 0;
+      const item = joycons.find(j => j.key === key);
+      qtyJoycon[key] = Math.max(0, Math.min(item.stock, qtyJoycon[key] + delta));
+      document.getElementById(`${key}_qty`).innerText = qtyJoycon[key];
+      updateConfig();
+    }
+
+    function updateConfig() {
+      const imageDiv = document.getElementById('images');
+      imageDiv.innerHTML = '';
+      let total = 0;
+
+      const consoleVal = document.getElementById('console').value.split('|');
+      total += parseInt(consoleVal[1]);
+      addImage(consoleVal[2]);
+
+      const sdVal = document.getElementById('sdSelect').value.split('|');
+      total += parseInt(sdVal[1]);
+      addImage(sdVal[2]);
+
+      let joyIndex = 0;
+      for (const key in qtyJoycon) {
+        for (let i = 0; i < qtyJoycon[key]; i++) {
+          total += (joyIndex === 0) ? 35 : 30;
+          addImage(key);
+          joyIndex++;
+        }
+      }
+
+      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
+        total += parseInt(el.value);
+        addImage(el.getAttribute('data-img'));
+      });
+
+      document.getElementById('total').innerText = `Total : ${total}€`;
+
+      function addImage(key) {
+        const src = images[key] || imagesJoycon[key];
+        if (src) {
+          const img = document.createElement('img');
+          img.src = src;
+          imageDiv.appendChild(img);
+        }
+      }
+    }
+
+    function validerCommande() {
+      const code = 'CMD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      html2canvas(document.getElementById('preview')).then(canvas => {
+        const imageURL = canvas.toDataURL();
+        document.getElementById('summary').innerHTML = `
+          <h2>✅ Résumé</h2>
+          <p>Code commande : <strong>${code}</strong></p>
+          <img src="${imageURL}" style="width:300px;border:1px solid #ccc" /><br>
+          <a href="${imageURL}" download="commande-${code}.png">📥 Télécharger l'image</a>
+        `;
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createJoyconUI();
+      updateConfig();
+    });
+  </script>
+</body>
+</html>
