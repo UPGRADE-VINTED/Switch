@@ -1,248 +1,86 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Configurateur Switch</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 10px;
-    background: #f7f7f7;
-  }
-  h2 {
-    margin-bottom: 5px;
-  }
-  .step {
-    margin-bottom: 20px;
-  }
-  .options {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .option {
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    padding: 5px;
-    cursor: pointer;
-    text-align: center;
-    width: 150px;
-    background: white;
-    transition: border-color 0.3s;
-    position: relative;
-  }
-  .option.selected {
-    border-color: #28a745;
-    box-shadow: 0 0 10px #28a745a0;
-  }
-  .option img {
-    max-width: 150px;
-    height: auto;
-    margin-bottom: 5px;
-    border-radius: 6px;
-  }
-  .option span {
-    display: block;
-    font-weight: bold;
-  }
-  .option small {
-    font-weight: normal;
-    font-size: 0.85em;
-    color: #555;
-  }
-  button {
-    background: #28a745;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  button:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-  }
-  #summary {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    font-family: 'Courier New', Courier, monospace;
-    white-space: pre-wrap;
-    box-shadow: 0 0 8px #ddd;
-    max-width: 400px;
-    margin-top: 20px;
-  }
-  .qty-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .qty-controls button {
-    width: 25px;
-    height: 25px;
-    font-weight: bold;
-    font-size: 1.2rem;
-    line-height: 1;
-    padding: 0;
-    background: #ddd;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .qty-controls span {
-    min-width: 20px;
-    text-align: center;
-    font-weight: bold;
-  }
-  @media(max-width: 480px) {
-    .options {
-      justify-content: center;
-    }
-    .option {
-      width: 90vw;
-    }
-    .option img {
-      max-width: 90vw;
-    }
-  }
-</style>
-</head>
-<body>
-
-<h1>Configure ta Switch</h1>
-
+<!-- Étape 1 Switch avec images plus grandes -->
 <div class="step" id="step1">
-  <h2>1. Choisis ta Switch</h2>
-  <div class="options" id="switch-options">
-    <div class="option" data-name="Switch modèle V2 avec SD" data-price="190">
-      <img src="https://i.imgur.com/XNzqOsB.jpeg" alt="Switch V2 avec SD"/>
-      <span>Switch V2 avec SD</span>
-      <small>(état impeccable)</small>
-      <br>190 €
+  <h2>1. Choisissez votre Switch</h2>
+  <div id="switch-options">
+    <div class="option" data-name="Switch OLED" data-price="350" style="cursor:pointer;">
+      <img src="switch_oled.png" alt="Switch OLED" style="width:200px; height:auto; display:block; margin-bottom:8px;">
+      Switch OLED - 350 €
     </div>
-    <div class="option" data-name="Switch modèle V2 OK" data-price="180">
-      <img src="https://i.imgur.com/zKeTFqq.png" alt="Switch V2 OK"/>
-      <span>Switch V2 OK</span>
-      <small>(bon état)</small>
-      <br>180 €
-    </div>
-    <div class="option" data-name="Switch modèle V1 rayure" data-price="140">
-      <img src="https://i.imgur.com/p5yO1kM.png" alt="Switch V1 rayure"/>
-      <span>Switch V1 rayure</span>
-      <small>(manque SD + puce)</small>
-      <br>140 €
-    </div>
-    <div class="option" data-name="Switch modèle V1 OK" data-price="150">
-      <img src="https://i.imgur.com/p5yO1kM.png" alt="Switch V1 OK"/>
-      <span>Switch V1 OK</span>
-      <small>(bon état)</small>
-      <br>150 €
-    </div>
-    <div class="option" data-name="Switch modèle V1 excellent" data-price="170">
-      <img src="https://i.imgur.com/p5yO1kM.png" alt="Switch V1 excellent"/>
-      <span>Switch V1 excellent</span>
-      <small>(comme neuf)</small>
-      <br>170 €
+    <div class="option" data-name="Switch Lite" data-price="200" style="cursor:pointer;">
+      <img src="switch_lite.png" alt="Switch Lite" style="width:200px; height:auto; display:block; margin-bottom:8px;">
+      Switch Lite - 200 €
     </div>
   </div>
 </div>
 
+<!-- Étape 2 Carte SD -->
 <div class="step" id="step2" style="display:none;">
-  <h2>2. Choisis ta carte SD</h2>
-  <div class="options" id="sd-options">
-    <div class="option" data-name="Carte SD 128 Go" data-price="0">
-      <img src="https://i.imgur.com/ZRiCDLr.jpeg" alt="SD 128 Go"/>
-      <span>128 Go</span>
-      <small>~10 jeux</small>
-      <br>0 €
+  <h2>2. Choisissez votre Carte SD</h2>
+  <div id="sd-options">
+    <div class="option" data-name="Carte SD 64Go" data-price="30" style="cursor:pointer;">
+      <img src="sd_64go.png" alt="SD 64Go" style="width:100px; height:auto; display:block; margin-bottom:8px;">
+      Carte SD 64Go - 30 €
     </div>
-    <div class="option" data-name="Carte SD 256 Go" data-price="30">
-      <img src="https://i.imgur.com/ZRiCDLr.jpeg" alt="SD 256 Go"/>
-      <span>256 Go</span>
-      <small>~18 jeux</small>
-      <br>30 €
-    </div>
-    <div class="option" data-name="Carte SD 512 Go" data-price="60">
-      <img src="https://i.imgur.com/a3M2P8z.png" alt="SD 512 Go"/>
-      <span>512 Go</span>
-      <small>~35 jeux</small>
-      <br>60 €
+    <div class="option" data-name="Carte SD 128Go" data-price="50" style="cursor:pointer;">
+      <img src="sd_128go.png" alt="SD 128Go" style="width:100px; height:auto; display:block; margin-bottom:8px;">
+      Carte SD 128Go - 50 €
     </div>
   </div>
 </div>
 
+<!-- Étape 3 Joy-Con -->
 <div class="step" id="step3" style="display:none;">
-  <h2>3. Choisis tes Joy-Con</h2>
-  <div class="options" id="joycon-options">
-    <!-- Chaque Joy-Con avec stock initial, prix à 35€ la 1ère unité, 30€ les suivantes -->
-    <div class="option" data-name="Joy-Con rouge/bleu" data-baseprice="35" data-addprice="30" data-stock="5" data-qty="0">
-      <img src="https://i.imgur.com/h4i6NT2.jpeg" alt="Joy-Con rouge/bleu"/>
-      <span>Joy-Con rouge/bleu</span><br>
-      <small>Stock: <span class="stock-count">5</span></small><br>
-      <div class="qty-controls">
-        <button class="qty-minus" disabled>-</button>
-        <span class="qty">0</span>
-        <button class="qty-plus">+</button>
-      </div>
-      <small>Prix: <span class="price">0</span> €</small>
+  <h2>3. Choisissez vos Joy-Con</h2>
+  <div id="joycon-options">
+    <div class="option" data-name="Joy-Con Bleu" data-baseprice="35" data-addprice="30" data-stock="5" data-qty="0" style="margin-bottom:10px;">
+      Joy-Con Bleu<br>
+      <button class="qty-minus" disabled>-</button>
+      <span class="qty">0</span>
+      <button class="qty-plus">+</button>
+      <span>Stock: <span class="stock-count">5</span></span>
+      <span>Prix total: <span class="price">0.00</span> €</span>
     </div>
-    <div class="option" data-name="Joy-Con vert/rose" data-baseprice="35" data-addprice="30" data-stock="3" data-qty="0">
-      <img src="https://i.imgur.com/HnrlZdX.png" alt="Joy-Con vert/rose"/>
-      <span>Joy-Con vert/rose</span><br>
-      <small>Stock: <span class="stock-count">3</span></small><br>
-      <div class="qty-controls">
-        <button class="qty-minus" disabled>-</button>
-        <span class="qty">0</span>
-        <button class="qty-plus">+</button>
-      </div>
-      <small>Prix: <span class="price">0</span> €</small>
-    </div>
-    <div class="option" data-name="Joy-Con gris" data-baseprice="35" data-addprice="30" data-stock="4" data-qty="0">
-      <img src="https://i.imgur.com/HnrlZdX.png" alt="Joy-Con gris"/>
-      <span>Joy-Con gris</span><br>
-      <small>Stock: <span class="stock-count">4</span></small><br>
-      <div class="qty-controls">
-        <button class="qty-minus" disabled>-</button>
-        <span class="qty">0</span>
-        <button class="qty-plus">+</button>
-      </div>
-      <small>Prix: <span class="price">0</span> €</small>
-    </div>
-    <div class="option" data-name="Joy-Con jaune" data-baseprice="35" data-addprice="30" data-stock="2" data-qty="0">
-      <img src="https://i.imgur.com/1lwBpOt.jpeg" alt="Joy-Con jaune"/>
-      <span>Joy-Con jaune</span><br>
-      <small>Stock: <span class="stock-count">2</span></small><br>
-      <div class="qty-controls">
-        <button class="qty-minus" disabled>-</button>
-        <span class="qty">0</span>
-        <button class="qty-plus">+</button>
-      </div>
-      <small>Prix: <span class="price">0</span> €</small>
-    </div>
-    <div class="option" data-name="Joy-Con violet" data-baseprice="35" data-addprice="30" data-stock="1" data-qty="0">
-      <img src="https://i.imgur.com/edqgNwl.jpeg" alt="Joy-Con violet"/>
-      <span>Joy-Con violet</span><br>
-      <small>Stock: <span class="stock-count">1</span></small><br>
-      <div class="qty-controls">
-        <button class="qty-minus" disabled>-</button>
-        <span class="qty">0</span>
-        <button class="qty-plus">+</button>
-      </div>
-      <small>Prix: <span class="price">0</span> €</small>
+    <div class="option" data-name="Joy-Con Rouge" data-baseprice="35" data-addprice="30" data-stock="3" data-qty="0" style="margin-bottom:10px;">
+      Joy-Con Rouge<br>
+      <button class="qty-minus" disabled>-</button>
+      <span class="qty">0</span>
+      <button class="qty-plus">+</button>
+      <span>Stock: <span class="stock-count">3</span></span>
+      <span>Prix total: <span class="price">0.00</span> €</span>
     </div>
   </div>
 </div>
 
+<!-- Étape 3bis Accessoires -->
+<div class="step" id="step3bis" style="display:none;">
+  <h2>3bis. Choisissez vos Accessoires</h2>
+  <div id="accessory-options">
+    <div class="option" data-name="Étui de protection" data-price="20" style="cursor:pointer; margin-bottom:8px;">
+      <input type="checkbox" id="acc1" />
+      <label for="acc1">Étui de protection - 20 €</label>
+    </div>
+    <div class="option" data-name="Station de recharge" data-price="40" style="cursor:pointer; margin-bottom:8px;">
+      <input type="checkbox" id="acc2" />
+      <label for="acc2">Station de recharge - 40 €</label>
+    </div>
+    <div class="option" data-name="Carte cadeau 10€" data-price="10" style="cursor:pointer; margin-bottom:8px;">
+      <input type="checkbox" id="acc3" />
+      <label for="acc3">Carte cadeau 10€ - 10 €</label>
+    </div>
+  </div>
+</div>
+
+<!-- Étape 4 Récapitulatif -->
 <div class="step" id="step4" style="display:none;">
   <h2>4. Récapitulatif</h2>
-  <div id="summary">Aucune sélection pour l'instant.</div>
+  <pre id="summary" style="white-space: pre-wrap; background:#f0f0f0; padding:10px; border-radius:5px; max-height:300px; overflow:auto;">Aucune sélection pour l'instant.</pre>
+  <div style="margin-top:20px;">
+    <button id="restartBtn" style="margin-right:15px;">Recommencer</button>
+    <button id="validateBtn">Valider pack & générer image</button>
+  </div>
+  <canvas id="summaryCanvas" width="400" height="300" style="border:1px solid #ccc; margin-top:20px; display:none;"></canvas>
+  <a id="downloadLink" style="display:none; margin-top:10px; display:block;">Télécharger l'image</a>
 </div>
-
-<button id="nextBtn">Suivant</button>
 
 <script>
   const nextBtn = document.getElementById('nextBtn');
@@ -252,29 +90,23 @@
     1: document.getElementById('step1'),
     2: document.getElementById('step2'),
     3: document.getElementById('step3'),
+    3.5: document.getElementById('step3bis'), // étape Accessoires
     4: document.getElementById('step4'),
   };
 
   // Variables pour stocker les choix
   let chosenSwitch = null;
   let chosenSD = null;
-  let joyConSelections = []; // {name, qty, price} avec qty > 0
+  let joyConSelections = []; // {name, qty, price}
+  let accessorySelections = []; // {name, price}
 
-  // Fonctions utilitaires
-  function deselectAll(container) {
-    container.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-  }
-
-  function selectOption(container, option) {
-    deselectAll(container);
-    option.classList.add('selected');
-  }
-
-  // Étape 1 - Switch
+  // Étape 1 Switch
   const switchOptions = document.getElementById('switch-options');
   switchOptions.querySelectorAll('.option').forEach(opt => {
     opt.addEventListener('click', () => {
-      selectOption(switchOptions, opt);
+      // Sélection exclusive
+      switchOptions.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
       chosenSwitch = {
         name: opt.dataset.name,
         price: parseFloat(opt.dataset.price)
@@ -282,11 +114,12 @@
     });
   });
 
-  // Étape 2 - SD
+  // Étape 2 SD
   const sdOptions = document.getElementById('sd-options');
   sdOptions.querySelectorAll('.option').forEach(opt => {
     opt.addEventListener('click', () => {
-      selectOption(sdOptions, opt);
+      sdOptions.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
       chosenSD = {
         name: opt.dataset.name,
         price: parseFloat(opt.dataset.price)
@@ -294,65 +127,51 @@
     });
   });
 
-  // Étape 3 - JoyCon
+  // Étape 3 Joy-Con
   const joyConOptions = document.getElementById('joycon-options');
-  // Ici, on gère le + / - avec contrôle du stock, et prix spécial
   joyConOptions.querySelectorAll('.option').forEach(opt => {
     const plusBtn = opt.querySelector('.qty-plus');
     const minusBtn = opt.querySelector('.qty-minus');
     const qtySpan = opt.querySelector('.qty');
-    const stockSpan = opt.querySelector('.stock-count');
-    const priceSpan = opt.querySelector('.price');
-
-    let stock = parseInt(opt.dataset.stock);
+    const stock = parseInt(opt.dataset.stock);
+    const basePrice = parseFloat(opt.dataset.baseprice);
+    const addPrice = parseFloat(opt.dataset.addprice);
     let qty = 0;
 
     function updatePriceAndQtyDisplay() {
       qtySpan.textContent = qty;
       minusBtn.disabled = qty <= 0;
       plusBtn.disabled = qty >= stock;
-
-      // On calcule le prix total de cette option selon règles
-      // Première unité = baseprice, unités suivantes = addprice
-      const basePrice = parseFloat(opt.dataset.baseprice);
-      const addPrice = parseFloat(opt.dataset.addprice);
-      let totalPrice = 0;
-      if(qty > 0){
-        totalPrice = basePrice + (qty -1) * addPrice;
-      }
-      priceSpan.textContent = totalPrice.toFixed(2);
+      let totalPrice = qty > 0 ? basePrice + (qty - 1) * addPrice : 0;
+      opt.querySelector('.price').textContent = totalPrice.toFixed(2);
+      opt.dataset.qty = qty;
+      updateJoyConSelections();
     }
 
     plusBtn.addEventListener('click', () => {
       if(qty < stock){
         qty++;
-        opt.dataset.qty = qty;
         updatePriceAndQtyDisplay();
-        updateJoyConSelections();
       }
     });
     minusBtn.addEventListener('click', () => {
       if(qty > 0){
         qty--;
-        opt.dataset.qty = qty;
         updatePriceAndQtyDisplay();
-        updateJoyConSelections();
       }
     });
 
     updatePriceAndQtyDisplay();
   });
 
-  // Met à jour le tableau joyConSelections en fonction des qty sélectionnées
-  function updateJoyConSelections() {
+  function updateJoyConSelections(){
     joyConSelections = [];
     joyConOptions.querySelectorAll('.option').forEach(opt => {
       const qty = parseInt(opt.dataset.qty);
       if(qty > 0){
-        // Calcule prix total ici aussi
         const basePrice = parseFloat(opt.dataset.baseprice);
         const addPrice = parseFloat(opt.dataset.addprice);
-        let totalPrice = basePrice + (qty - 1) * addPrice;
+        const totalPrice = basePrice + (qty -1)*addPrice;
         joyConSelections.push({
           name: opt.dataset.name,
           qty: qty,
@@ -362,7 +181,28 @@
     });
   }
 
-  // Fonction pour afficher le résumé
+  // Étape 3bis Accessoires
+  const accessoryOptions = document.getElementById('accessory-options');
+  accessoryOptions.querySelectorAll('input[type=checkbox]').forEach(chk => {
+    chk.addEventListener('change', () => {
+      updateAccessorySelections();
+    });
+  });
+
+  function updateAccessorySelections(){
+    accessorySelections = [];
+    accessoryOptions.querySelectorAll('input[type=checkbox]').forEach(chk => {
+      if(chk.checked){
+        const parent = chk.parentNode;
+        accessorySelections.push({
+          name: parent.dataset.name || parent.textContent.trim(),
+          price: parseFloat(parent.dataset.price) || parseFloat(chk.nextElementSibling.textContent.match(/\d+/)[0])
+        });
+      }
+    });
+  }
+
+  // Résumé
   function updateSummary() {
     let text = '';
     let total = 0;
@@ -373,6 +213,7 @@
     } else {
       text += "Switch sélectionnée : Aucune\n";
     }
+
     if(chosenSD){
       text += `Carte SD : ${chosenSD.name} - ${chosenSD.price.toFixed(2)} €\n`;
       total += chosenSD.price;
@@ -390,11 +231,21 @@
       text += "Joy-Con sélectionnés : Aucun\n";
     }
 
-    text += "\nTotal à payer : " + total.toFixed(2) + " €";
+    if(accessorySelections.length > 0){
+      text += `Accessoires sélectionnés :\n`;
+      accessorySelections.forEach(acc => {
+        text += `  - ${acc.name} : ${acc.price.toFixed(2)} €\n`;
+        total += acc.price;
+      });
+    } else {
+      text += "Accessoires sélectionnés : Aucun\n";
+    }
+
+    text += `\nTotal à payer : ${total.toFixed(2)} €`;
     document.getElementById('summary').textContent = text;
   }
 
-  // Navigation entre étapes
+  // Navigation
   nextBtn.addEventListener('click', () => {
     if(currentStep === 1){
       if(!chosenSwitch){
@@ -413,23 +264,64 @@
       steps[3].style.display = "block";
       currentStep = 3;
     } else if(currentStep === 3){
-      // Pas obligé d'avoir de Joy-Con, mais on met à jour le résumé
-      updateSummary();
+      // Joy-Con facultatif
       steps[3].style.display = "none";
+      steps[3.5].style.display = "block";
+      currentStep = 3.5;
+    } else if(currentStep === 3.5){
+      updateAccessorySelections();
+      steps[3.5].style.display = "none";
+      updateSummary();
       steps[4].style.display = "block";
-      nextBtn.textContent = "Recommencer";
+      nextBtn.style.display = "none";
       currentStep = 4;
-    } else {
-      // Recommencer
-      location.reload();
     }
   });
 
-  // Mise à jour du résumé quand on modifie les Joy-Con
-  joyConOptions.addEventListener('click', () => {
-    updateSummary();
+  // Bouton Recommencer
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    location.reload();
   });
-</script>
 
-</body>
-</html>
+  // Bouton Valider + génération image
+  document.getElementById('validateBtn').addEventListener('click', () => {
+    updateSummary();
+    generateSummaryImage();
+  });
+
+  function generateSummaryImage(){
+    const canvas = document.getElementById('summaryCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.style.display = 'block';
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Fond clair
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Texte résumé
+    const text = document.getElementById('summary').textContent;
+    ctx.fillStyle = '#000';
+    ctx.font = '16px Arial';
+    const lineHeight = 20;
+    const lines = text.split('\n');
+
+    let y = 30;
+    ctx.fillText('Résumé de votre pack :', 10, y);
+    y += lineHeight + 5;
+
+    lines.forEach(line => {
+      ctx.fillText(line, 10, y);
+      y += lineHeight;
+    });
+
+    // Préparer lien de téléchargement
+    const dataURL = canvas.toDataURL('image/png');
+    const downloadLink = document.getElementById('downloadLink');
+    downloadLink.href = dataURL;
+    downloadLink.download = 'pack-switch.png';
+    downloadLink.textContent = 'Télécharger l\'image du pack';
+    downloadLink.style.display = 'block';
+  }
+
+</script>
