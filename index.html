@@ -9,7 +9,8 @@
     body {
       font-family: Arial, sans-serif;
       padding: 2rem;
-      background: #f0f0f0;
+      background: #f0f0f0 url('https://i.imgur.com/LwUXtOF.png') no-repeat top center;
+      background-size: 150px;
     }
     .configurator {
       display: flex;
@@ -123,17 +124,11 @@
   </style>
 </head>
 <body>
-<script>
-  const allJoycons = [
-    { key: 'rouge_bleu', label: 'Rouge/Bleu', left: '#e74c3c', right: '#3498db', stock: 3, img: 'https://i.imgur.com/h4i6NT2.jpeg' },
-    { key: 'vert_rose', label: 'Vert/Rose', left: '#2ecc71', right: '#e91e63', stock: 2, img: 'https://i.imgur.com/HnrlZdX.png' },
-    { key: 'gris', label: 'Gris', left: '#7f8c8d', right: '#7f8c8d', stock: 0, img: 'https://i.imgur.com/HnrlZdX.png' },
-    { key: 'zelda', label: 'Zelda (édition)', left: '#ffbf3b', right: '#ffcc00', stock: 1, img: 'https://i.imgur.com/1lwBpOt.jpeg' },
-    { key: 'monster', label: 'Monster Hunter', left: '#1b1b1b', right: '#a97448', stock: 1, img: 'https://i.imgur.com/xyz1234.jpeg' },
-    { key: 'animal_crossing', label: 'Animal Crossing', left: '#96d4d4', right: '#f7c5a0', stock: 1, img: 'https://i.imgur.com/abc5678.jpeg' },
-    { key: 'pokemon', label: 'Pokemon Scarlet/Violet', left: '#8e44ad', right: '#e74c3c', stock: 1, img: 'https://i.imgur.com/pok1234.jpeg' }
-  ];
-</script>
-<!-- Le reste du HTML (identique à ce que tu as, mais générera dynamiquement les joy-cons visibles) viendra ici. -->
-</body>
-</html>
+  <img src="https://i.imgur.com/LwUXtOF.png" alt="Logo Boutique" style="width:120px; display:block; margin: 0 auto 1rem auto;">
+  <script>
+    const allJoycons = [
+      { key: 'rouge_bleu', label: 'Rouge/Bleu', left: '#e74c3c', right: '#3498db', stock: 3, img: 'https://i.imgur.com/h4i6NT2.jpeg' },
+      { key: 'vert_rose', label: 'Vert/Rose', left: '#2ecc71', right: '#e91e63', stock: 2, img: 'https://i.imgur.com/HnrlZdX.png' },
+      { key: 'gris', label: 'Gris', left: '#7f8c8d', right: '#7f8c8d', stock: 0, img: 'https://i.imgur.com/HnrlZdX.png' },
+      { key: 'zelda', label: 'Zelda (édition)', left: '#ffbf3b', right: '#ffcc00', stock: 1, img: 'https://i.imgur.com/1lwBpOt.jpeg' },
+      { key: 'monster', label: 'Monster Hunter', left: '#1b1b1b', right: '#a97448', stock: 1, img: 'https://i.i
