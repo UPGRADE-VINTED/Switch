@@ -3,405 +3,343 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Configurateur Switch + JoyCon + SD</title>
+  <title>Commande Joy-Con et Accessoires</title>
   <style>
     body {
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Courier New', monospace;
+      margin: 1rem;
       background: #f5f5f5;
-      margin: 10px;
       color: #222;
     }
-    h2, h3 {
-      color: #2c3e50;
+    h1 {
+      text-align: center;
     }
-    .container {
-      max-width: 700px;
+    .config {
+      max-width: 600px;
       margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 0 8px #ccc;
     }
-    select, label, button {
-      font-size: 16px;
-    }
-    select {
-      padding: 6px 8px;
-      margin-bottom: 10px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .joycon-row {
+    label {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 0.4rem;
     }
-    .joycon-row.disabled {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-    .joycon-color {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      margin-right: 6px;
-      border: 1px solid #aaa;
-      vertical-align: middle;
-    }
-    .joycon-rouge_bleu { background: linear-gradient(45deg, #d32f2f, #1976d2); }
-    .joycon-vert_rose { background: linear-gradient(45deg, #388e3c, #e91e63); }
-    .joycon-gris { background: #999; }
-    .joycon-jaune { background: #fbc02d; }
-    .joycon-violet { background: #8e24aa; }
-
-    .qty-buttons {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .qty-buttons button {
-      background: #3498db;
-      border: none;
-      color: white;
-      font-weight: bold;
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-      cursor: pointer;
-      user-select: none;
-      transition: background-color 0.2s ease;
-    }
-    .qty-buttons button:hover:not(:disabled) {
-      background: #2980b9;
-    }
-    .qty-buttons button:disabled {
-      background: #bbb;
-      cursor: not-allowed;
-    }
-    .qty-display {
-      min-width: 20px;
+    input[type=number] {
+      width: 3rem;
+      font-size: 1rem;
+      padding: 0.2rem;
+      margin: 0 0.5rem;
       text-align: center;
-      font-weight: bold;
-      font-size: 18px;
     }
-
-    .accessoires label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: normal;
+    button {
+      font-weight: bold;
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.25rem 0.6rem;
+      margin: 0 0.2rem;
+      font-size: 1.1rem;
       cursor: pointer;
+      border-radius: 4px;
+      user-select: none;
+      transition: background-color 0.3s ease;
     }
-
-    .preview {
-      margin-top: 20px;
-      border-top: 2px solid #ddd;
-      padding-top: 15px;
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      color: #666;
     }
-
-    #images img {
-      width: 60px;
-      height: auto;
-      margin-right: 8px;
-      border-radius: 6px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.15);
-      vertical-align: middle;
+    button:hover:not(:disabled) {
+      background: #0056b3;
     }
-
-    .total {
-      font-weight: bold;
-      font-size: 20px;
-      margin-top: 12px;
-      text-align: right;
-      color: #e74c3c;
-    }
-
     #summary {
-      white-space: pre;
+      white-space: pre-wrap;
       background: #222;
-      color: #eee;
-      padding: 15px;
-      font-family: 'Courier New', Courier, monospace;
-      border-radius: 6px;
-      margin-top: 20px;
-      line-height: 1.4em;
-      font-size: 16px;
+      color: #d1d1d1;
+      font-size: 14px;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      max-height: 300px;
+      overflow-y: auto;
+      user-select: text;
+    }
+    #images {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+    #images img {
+      width: 100px;
+      height: auto;
+      cursor: pointer;
+      border-radius: 4px;
+      box-shadow: 0 0 6px #aaa;
+      transition: transform 0.2s ease;
+      object-fit: contain;
+    }
+    #images img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px #007bff;
     }
 
-    /* Responsive */
-    @media(max-width: 600px) {
-      .joycon-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+    /* Lightbox overlay */
+    #lightboxOverlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      cursor: zoom-out;
+    }
+    #lightboxOverlay img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 6px;
+      box-shadow: 0 0 20px #000;
+    }
+
+    /* Responsive mobile */
+    @media (max-width: 480px) {
+      .config {
+        padding: 0.5rem;
+        max-width: 100%;
       }
-      .qty-buttons {
-        gap: 10px;
+      label {
+        flex-wrap: wrap;
+        font-size: 14px;
+      }
+      input[type=number] {
+        width: 2.5rem;
+        margin: 0.2rem 0.4rem 0.2rem 0;
+      }
+      button {
+        font-size: 1rem;
+        padding: 0.2rem 0.5rem;
+        margin: 0 0.15rem 0.15rem 0;
+      }
+      #summary {
+        font-size: 12px;
+        max-height: 250px;
       }
       #images img {
-        width: 48px;
+        width: 80px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>🎮 Configurateur Switch + JoyCon + Carte SD</h2>
-
-    <label for="switchSelect">Choisir la console Switch :</label>
-    <select id="switchSelect" onchange="updateConfig()">
-      <option value="Switch V2|140|switch_v2_sd">Switch V2 (manque SD) + puce - 140€</option>
-      <option value="Switch V2 + SD 128Go|170|switch_v2_ok">Switch V2 + SD 128Go - 170€</option>
-      <option value="Switch V1 rayée|90|switch_v1_rayure">Switch V1 rayée - 90€</option>
-      <option value="Switch V1 OK|110|switch_v1_ok">Switch V1 OK - 110€</option>
-    </select>
-
-    <h3>🎮 Choisir les JoyCon (prix par paire)</h3>
-    <div id="joyconOptions">
-      <div class="joycon-row" id="row_joycon_rouge_bleu">
-        <div>
-          <span class="joycon-color joycon-rouge_bleu"></span><span class="joycon-color joycon-rouge_bleu"></span>
-          Joy-Con Rouge/Bleu (3 en stock)
-        </div>
-        <div class="qty-buttons">
-          <button aria-label="Enlever Joy-Con Rouge/Bleu" onclick="updateQty('joycon_rouge_bleu', -1)">−</button>
-          <span id="joycon_rouge_bleu_qty" class="qty-display">0</span>
-          <button aria-label="Ajouter Joy-Con Rouge/Bleu" onclick="updateQty('joycon_rouge_bleu', 1)">+</button>
-        </div>
-      </div>
-
-      <div class="joycon-row" id="row_joycon_vert_rose">
-        <div>
-          <span class="joycon-color joycon-vert_rose"></span><span class="joycon-color joycon-vert_rose"></span>
-          Joy-Con Vert/Rose (2 en stock)
-        </div>
-        <div class="qty-buttons">
-          <button aria-label="Enlever Joy-Con Vert/Rose" onclick="updateQty('joycon_vert_rose', -1)">−</button>
-          <span id="joycon_vert_rose_qty" class="qty-display">0</span>
-          <button aria-label="Ajouter Joy-Con Vert/Rose" onclick="updateQty('joycon_vert_rose', 1)">+</button>
-        </div>
-      </div>
-
-      <div class="joycon-row disabled" id="row_joycon_gris">
-        <div>
-          <span class="joycon-color joycon-gris"></span><span class="joycon-color joycon-gris"></span>
-          Joy-Con Gris (0 en stock)
-        </div>
-        <div class="qty-buttons">
-          <button disabled>−</button>
-          <span id="joycon_gris_qty" class="qty-display">0</span>
-          <button disabled>+</button>
-        </div>
-      </div>
-
-      <div class="joycon-row" id="row_joycon_jaune">
-        <div>
-          <span class="joycon-color joycon-jaune"></span><span class="joycon-color joycon-jaune"></span>
-          Joy-Con Édition Zelda (1 en stock)
-        </div>
-        <div class="qty-buttons">
-          <button aria-label="Enlever Joy-Con Édition Zelda" onclick="updateQty('joycon_jaune', -1)">−</button>
-          <span id="joycon_jaune_qty" class="qty-display">0</span>
-          <button aria-label="Ajouter Joy-Con Édition Zelda" onclick="updateQty('joycon_jaune', 1)">+</button>
-        </div>
-      </div>
-
-      <div class="joycon-row" id="row_joycon_violet">
-        <div>
-          <span class="joycon-color joycon-violet"></span><span class="joycon-color joycon-violet"></span>
-          Joy-Con Violet (1 en stock)
-        </div>
-        <div class="qty-buttons">
-          <button aria-label="Enlever Joy-Con Violet" onclick="updateQty('joycon_violet', -1)">−</button>
-          <span id="joycon_violet_qty" class="qty-display">0</span>
-          <button aria-label="Ajouter Joy-Con Violet" onclick="updateQty('joycon_violet', 1)">+</button>
-        </div>
-      </div>
+  <h1>Commande Joy-Con et Accessoires</h1>
+  <div class="config" role="form" aria-label="Configuration commande">
+    <div>
+      <label for="joycon_left">
+        Joy-Con gauche (1ère paire 40€ / suivantes 30€)
+        <span>
+          <button aria-label="Retirer un Joy-Con gauche" onclick="changeQty('joycon_left', -1)" id="joycon_left_minus">-</button>
+          <input type="number" id="joycon_left" min="0" max="10" value="0" readonly aria-live="polite" />
+          <button aria-label="Ajouter un Joy-Con gauche" onclick="changeQty('joycon_left', +1)" id="joycon_left_plus">+</button>
+        </span>
+      </label>
+    </div>
+    <div>
+      <label for="joycon_right">
+        Joy-Con droit (1ère paire 40€ / suivantes 30€)
+        <span>
+          <button aria-label="Retirer un Joy-Con droit" onclick="changeQty('joycon_right', -1)" id="joycon_right_minus">-</button>
+          <input type="number" id="joycon_right" min="0" max="10" value="0" readonly aria-live="polite" />
+          <button aria-label="Ajouter un Joy-Con droit" onclick="changeQty('joycon_right', +1)" id="joycon_right_plus">+</button>
+        </span>
+      </label>
     </div>
 
-    <h3>💾 Choisir la carte SD :</h3>
-    <select id="sdSelect" onchange="updateConfig()">
-      <option value="SD 128 Go|0|sd128">SD 128 Go (offerte)</option>
-      <option value="SD 256 Go|20|sd256">SD 256 Go (20€)</option>
-      <option value="SD 512 Go|40|sd512">SD 512 Go (40€)</option>
-    </select>
+    <hr />
 
-    <h3>🔌 Accessoires</h3>
-    <div class="accessoires">
-      <label><input type="checkbox" value="10" data-img="chargeur" onchange="updateConfig()"> Chargeur secteur Switch (10€)</label>
-      <label><input type="checkbox" value="5" data-img="cable_hdmi" onchange="updateConfig()"> Câble HDMI (5€)</label>
-      <label><input type="checkbox" value="18" data-img="chargeur_joycon" onchange="updateConfig()"> Chargeur Joy-Con (18€)</label>
+    <div>
+      <label for="sdcard">
+        Carte SD - 15€
+      </label>
+      <input type="checkbox" id="sdcard" value="15" onchange="updateConfig()" />
     </div>
 
-    <br />
-    <button onclick="validerCommande()" style="font-size:18px; padding:10px 20px; cursor:pointer;">✅ Valider ma liste</button>
+    <div>
+      <label>
+        <input type="checkbox" value="10" onchange="updateConfig()" />
+        Chargeur USB - 10€
+      </label>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox" value="20" onchange="updateConfig()" />
+        Étui de protection - 20€
+      </label>
+    </div>
 
-    <div class="preview" id="preview">
-      <h3>Prévisualisation</h3>
-      <div id="images"></div>
-      <pre class="total" id="total">Total : 0€</pre>
+    <button onclick="validerCommande()" aria-label="Valider la commande">Valider</button>
+
+    <pre id="summary" aria-live="polite" tabindex="0"></pre>
+    <div id="images" aria-label="Images des produits">
+      <!-- Images insérées par JS -->
     </div>
   </div>
 
-  <div id="summary"></div>
+  <!-- Lightbox overlay -->
+  <div id="lightboxOverlay" role="dialog" aria-modal="true" tabindex="-1">
+    <img src="" alt="Aperçu agrandi du produit" />
+  </div>
 
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script>
-    const stockJoycon = {
-      joycon_rouge_bleu: 3,
-      joycon_vert_rose: 2,
-      joycon_gris: 0,
-      joycon_jaune: 1,
-      joycon_violet: 1,
-    };
-
     const images = {
-      switch_v2_sd: 'https://i.imgur.com/XNzqOsB.jpeg',
-      switch_v2_ok: 'https://i.imgur.com/zKeTFqq.png',
-      switch_v1_rayure: 'https://i.imgur.com/p5yO1kM.png',
-      switch_v1_ok: 'https://i.imgur.com/p5yO1kM.png',
-      sd128: 'https://i.imgur.com/ZRiCDLr.jpeg',
-      sd256: 'https://i.imgur.com/ZRiCDLr.jpeg',
-      sd512: 'https://i.imgur.com/a3M2P8z.png',
-      chargeur: 'https://i.imgur.com/QylodKV.jpeg',
-      cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
-      chargeur_joycon: 'https://i.imgur.com/5SzFkpJ.jpeg',
-      joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
-      joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
-      joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
-      joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
-      joycon_violet: 'https://i.imgur.com/edqgNwl.jpeg'
+      joycon_left: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Nintendo_Switch_Joy-Con_Left.png/200px-Nintendo_Switch_Joy-Con_Left.png',
+      joycon_right: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Nintendo_Switch_Joy-Con_Right.png/200px-Nintendo_Switch_Joy-Con_Right.png',
+      sdcard: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Secure_Digital_Card_-_SD_Card.png/200px-Secure_Digital_Card_-_SD_Card.png',
+      charger: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/USB_charger_icon.svg/200px-USB_charger_icon.svg.png',
+      case: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Protection_case_icon.svg/200px-Protection_case_icon.svg.png',
     };
 
-    let currentCode = null;
-
-    function updateQty(key, delta) {
-      const span = document.getElementById(`${key}_qty`);
-      let qty = parseInt(span.innerText);
-      qty = Math.max(0, Math.min(qty + delta, stockJoycon[key]));
-      span.innerText = qty;
+    function changeQty(key, delta) {
+      const input = document.getElementById(key);
+      if (!input) return;
+      let val = parseInt(input.value);
+      val = isNaN(val) ? 0 : val;
+      val += delta;
+      if (val < 0) val = 0;
+      if (val > 10) val = 10;
+      input.value = val;
       updateConfig();
     }
 
     function updateConfig() {
-      const imageDiv = document.getElementById('images');
-      imageDiv.innerHTML = '';
       let total = 0;
+      let summaryText = "Résumé de votre commande :\n\n";
 
-      // Switch
-      const switchOption = document.getElementById('switchSelect').value.split('|');
-      const switchName = switchOption[0];
-      const switchPrice = parseInt(switchOption[1]);
-      if (!isNaN(switchPrice)) total += switchPrice;
-      addImage(switchOption[2]);
+      // Joy-Con gauche
+      const leftQty = parseInt(document.getElementById('joycon_left').value) || 0;
+      let leftPrice = 0;
+      if (leftQty > 0) {
+        leftPrice = 40 + (leftQty - 1) * 30;
+        total += leftPrice;
+        summaryText += `- Joy-Con gauche      x${leftQty}  ${leftPrice.toString().padStart(4)} €\n`;
+      }
 
-      // JoyCons : 1ère paire 40€, suivantes 30€
-      let joyconIndex = 0;
-      let joyconSummary = '';
-      for (const key in stockJoycon) {
-        if(stockJoycon[key] === 0) continue;
-        const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
-        if (qty > 0) {
-          // 1ère paire 40€, suivantes 30€ chacune
-          for (let i = 0; i < qty; i++) {
-            total += (joyconIndex === 0) ? 40 : 30;
-            joyconIndex++;
-          }
-          joyconSummary += `  Joy-Con x${qty}`.padEnd(25) + ` ${key.replace('joycon_', '').replace('_','/')}  \n`;
-        }
+      // Joy-Con droit
+      const rightQty = parseInt(document.getElementById('joycon_right').value) || 0;
+      let rightPrice = 0;
+      if (rightQty > 0) {
+        rightPrice = 40 + (rightQty - 1) * 30;
+        total += rightPrice;
+        summaryText += `- Joy-Con droit       x${rightQty}  ${rightPrice.toString().padStart(4)} €\n`;
       }
 
       // Carte SD
-      const sdOption = document.getElementById('sdSelect').value.split('|');
-      const sdName = sdOption[0];
-      const sdPrice = parseInt(sdOption[1]);
-      if (!isNaN(sdPrice)) total += sdPrice;
-      addImage(sdOption[2]);
-
-      // Accessoires cochés
-      let accessoiresSummary = '';
-      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
-        const val = parseInt(el.value);
-        if (!isNaN(val)) total += val;
-        accessoiresSummary += `  - ${el.parentNode.textContent.trim()}\n`;
-        addImage(el.getAttribute('data-img'));
-      });
-
-      document.getElementById('total').innerText = 'Total : ' + total + '€';
-
-      // Format résumé clair aligné
-      // On va afficher comme demandé :  
-      // - switch  x1               140 €
-      //      ( modèle etc) + puce
-      // - joycon x1               40 €
-      //      (rouge/bleu)
-      // - SD 128 Go               0€
-      //                   TOTAL   x €
-
-      let summaryText = 
-`===================================
-         🕹️ RÉSUMÉ DE COMMANDE
-===================================
-
-- ${switchName.padEnd(20)} x1   ${switchPrice.toString().padStart(4)} €
-  (modèle ${switchName.toLowerCase().includes('v2') ? 'v2, manque SD' : 'v1'} + puce)
-`;
-
-      // JoyCon résumé détaillé
-      let totalJoycon = 0;
-      joyconIndex = 0;
-      for (const key in stockJoycon) {
-        if(stockJoycon[key] === 0) continue;
-        const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
-        if (qty > 0) {
-          for (let i = 0; i < qty; i++) {
-            totalJoycon += (joyconIndex === 0) ? 40 : 30;
-            joyconIndex++;
-          }
-          // Nom JoyCon format propre
-          let nameJC = key.replace('joycon_', '').replace('_','/');
-          nameJC = nameJC.charAt(0).toUpperCase() + nameJC.slice(1);
-          summaryText += `- Joy-Con ${nameJC.padEnd(15)} x${qty}  ${totalJoycon.toString().padStart(4)} €\n`;
-        }
+      const sdChecked = document.getElementById('sdcard').checked;
+      if (sdChecked) {
+        total += 15;
+        summaryText += `- Carte SD              15 €\n`;
       }
 
-      summaryText += `- ${sdName.padEnd(20)}     ${sdPrice.toString().padStart(4)} €\n`;
-
-      // Accessoires résumé
-      let totalAcc = 0;
-      let accList = [];
-      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
-        const val = parseInt(el.value);
-        if (!isNaN(val)) totalAcc += val;
-        accList.push(el.parentNode.textContent.trim());
+      // Accessoires divers
+      const accCheckboxes = document.querySelectorAll('.config input[type=checkbox]:not(#sdcard)');
+      let accTotal = 0;
+      let accNames = [];
+      accCheckboxes.forEach(cb => {
+        if (cb.checked) {
+          accTotal += parseInt(cb.value);
+          accNames.push(cb.parentNode.textContent.trim());
+        }
       });
-      if (accList.length) {
+      if (accNames.length > 0) {
         summaryText += '\nAccessoires :\n';
-        accList.forEach(acc => {
-          summaryText += `  - ${acc}\n`;
+        accNames.forEach(name => {
+          summaryText += `  - ${name}\n`;
         });
-        summaryText += `  Total accessoires : ${totalAcc} €\n`;
+        summaryText += `  Total accessoires : ${accTotal} €\n`;
+        total += accTotal;
       }
 
       summaryText += `\n==============================\nTotal général : ${total} €\n==============================`;
 
       document.getElementById('summary').textContent = summaryText;
+      updateImages(leftQty, rightQty, sdChecked, accCheckboxes);
+    }
+
+    function updateImages(leftQty, rightQty, sdChecked, accCheckboxes) {
+      const container = document.getElementById('images');
+      container.innerHTML = '';
+
+      if (leftQty > 0) addImage('joycon_left');
+      if (rightQty > 0) addImage('joycon_right');
+      if (sdChecked) addImage('sdcard');
+
+      accCheckboxes.forEach(cb => {
+        if (cb.checked) {
+          // Trouver clé image par texte, simple approximation:
+          const txt = cb.parentNode.textContent.toLowerCase();
+          if (txt.includes('chargeur')) addImage('charger');
+          else if (txt.includes('étui')) addImage('case');
+        }
+      });
     }
 
     function addImage(key) {
-      if (!key || !images[key]) return;
+      if (!images[key]) return;
       const img = document.createElement('img');
       img.src = images[key];
-      img.alt = key;
+      img.alt = `Image du produit : ${key}`;
       img.loading = 'lazy';
+      img.tabIndex = 0; // focusable au clavier
+      img.style.border = '1px solid #ccc';
+      img.addEventListener('click', () => openLightbox(images[key]));
+      img.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(images[key]);
+        }
+      });
       document.getElementById('images').appendChild(img);
     }
 
-    function validerCommande() {
-      alert("Votre liste a été validée !");
+    function openLightbox(src) {
+      const overlay = document.getElementById('lightboxOverlay');
+      const img = overlay.querySelector('img');
+      img.src = src;
+      overlay.style.display = 'flex';
+      overlay.focus();
     }
 
+    function closeLightbox() {
+      const overlay = document.getElementById('lightboxOverlay');
+      overlay.style.display = 'none';
+      const img = overlay.querySelector('img');
+      img.src = '';
+    }
+
+    document.getElementById('lightboxOverlay').addEventListener('click', closeLightbox);
+    document.getElementById('lightboxOverlay').addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+
+    function validerCommande() {
+      const summary = document.getElementById('summary').textContent;
+      const blob = new Blob([summary], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'commande_joycon.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+      alert("Votre commande a été exportée en fichier texte.");
+    }
+
+    // Initialisation
     updateConfig();
   </script>
 </body>
