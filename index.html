@@ -42,13 +42,15 @@
     }
     #summary {
       margin-top: 2rem;
-      padding: 1rem;
+      padding: 1rem 2rem;
       background: #fff;
       border-radius: 10px;
       white-space: pre-wrap;
       font-family: monospace;
       font-size: 1rem;
       line-height: 1.3;
+      max-width: 400px;
+      border: 2px dashed #555;
     }
     select, button {
       margin-top: 5px;
@@ -204,7 +206,7 @@
           </div>
         </div>
 
-        <div class="joycon-row">
+        <div class="joycon-row" style="display:none;">
           <div>
             <span class="joycon-color joycon-gris"></span>
             <span class="joycon-color joycon-gris"></span>
@@ -247,7 +249,7 @@
   </div>
 
   <div id="summary">
-    <!-- Le résumé texte sera affiché ici -->
+    <!-- Résumé ticket ici -->
   </div>
 
   <script>
@@ -275,16 +277,14 @@
       joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
       joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
       joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
-      joycon_violet: 'https://i.imgur.com/1lwBpOt.jpeg',
+      joycon_violet: 'https://i.imgur.com/edqgNwl.jpeg'
     };
+
+    let currentCode = null;
 
     function toggleJoyconOptions() {
       const container = document.getElementById('joyconOptions');
-      if(container.style.display === 'none' || container.style.display === '') {
-        container.style.display = 'block';
-      } else {
-        container.style.display = 'none';
-      }
+      container.style.display = (container.style.display === 'none' || container.style.display === '') ? 'block' : 'none';
     }
 
     function updateQty(key, delta) {
@@ -295,20 +295,6 @@
       updateConfig();
     }
 
-    // Pour formater proprement le nom Joy-Con dans le résumé
-    function formatJoyconName(key){
-      switch(key){
-        case 'joycon_rouge_bleu': return 'rouge/bleu';
-        case 'joycon_vert_rose': return 'vert/rose';
-        case 'joycon_gris': return 'gris';
-        case 'joycon_jaune': return 'édition Zelda';
-        case 'joycon_violet': return 'jaune/violet';
-        default: return key;
-      }
-    }
-
-    let currentCode = null;
-
     function updateConfig() {
       const imageDiv = document.getElementById('images');
       imageDiv.innerHTML = '';
@@ -318,9 +304,8 @@
       const switchOption = document.getElementById('switchSelect').value.split('|');
       const switchName = switchOption[0];
       const switchPrice = parseInt(switchOption[1]);
-      const switchImgKey = switchOption[2];
       if (!isNaN(switchPrice)) total += switchPrice;
-      addImage(switchImgKey);
+      addImage(switchOption[2]);
 
       // Joycons : 1ère paire 35€, suivantes 30€
       let index = 0;
@@ -328,12 +313,12 @@
       for(const key in stockJoycon) {
         const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
         if(qty > 0){
-          for(let i=0; i<qty; i++) {
-            total += (index === 0) ? 35 : 30;
-            addImage(key);
-            index++;
-          }
-          joyconSummary += `- Joy-Con ${formatJoyconName(key)} x${qty} : ${qty === 1 ? (index === 1 ? '35€' : '30€') : (35 + (qty-1)*30)}€\n`;
+          joyconSummary += `- Joy-Con ${key.replace(/joycon_/,'').replace('_',' ')} x${qty} : ${qty > 0 ? ((index === 0 ? 35 : 30) * qty) : 0}€\n`;
+        }
+        for(let i=0; i<qty; i++) {
+          total += (index === 0) ? 35 : 30;
+          addImage(key);
+          index++;
         }
       }
 
@@ -341,33 +326,36 @@
       const sd = document.getElementById('sdSelect').value.split('|');
       const sdName = sd[0];
       const sdPrice = parseInt(sd[1]);
-      const sdImgKey = sd[2];
       if (!isNaN(sdPrice)) total += sdPrice;
-      addImage(sdImgKey);
+      addImage(sd[2]);
 
       // Accessoires cochés
       let accessoiresSummary = '';
       document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
         const val = parseInt(el.value);
-        if (!isNaN(val)) {
-          total += val;
-          addImage(el.getAttribute('data-img'));
-          accessoiresSummary += `- ${el.parentElement.textContent.trim()} : ${val}€\n`;
-        }
+        if (!isNaN(val)) total += val;
+        accessoiresSummary += `- ${el.parentNode.textContent.trim()} : ${val}€\n`;
+        addImage(el.getAttribute('data-img'));
       });
 
       document.getElementById('total').innerText = 'Total : ' + total + '€';
 
-      // Mise à jour du résumé de commande texte
-      const summaryText = `
-✅ Résumé de commande
+      // Mise à jour résumé ticket
+      const summaryText = 
+`===================================
+         🕹️ RÉSUMÉ DE COMMANDE
+===================================
+
 Code : ${currentCode || '---'}
 
 Console : ${switchName} — ${switchPrice}€
 Carte SD : ${sdName} — ${sdPrice}€
 ${joyconSummary}${accessoiresSummary}
+-----------------------------------
 Total à payer : ${total}€
-      `.trim();
+===================================
+Merci pour votre commande !
+`;
 
       document.getElementById('summary').innerText = summaryText;
 
@@ -380,6 +368,8 @@ Total à payer : ${total}€
 
     function validerCommande() {
       currentCode = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
+      updateConfig(); // Met à jour résumé avec le nouveau code
+
       const summaryDiv = document.getElementById('summary');
 
       // Génère l'image du résumé puis télécharge automatiquement
