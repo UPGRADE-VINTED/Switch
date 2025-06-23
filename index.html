@@ -3,454 +3,354 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Commande Switch personnalisée</title>
+<title>Commande Switch - Étapes</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
-    padding: 1rem;
-    background: #f9f9f9;
-    max-width: 600px;
-    margin: auto;
-  }
-  h2 {
-    margin-bottom: 0.5rem;
-  }
-  .container {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .option {
-    border: 2px solid #ccc;
-    border-radius: 6px;
-    padding: 10px;
-    width: 140px;
-    text-align: center;
-    cursor: pointer;
-    background: white;
-    transition: border-color 0.3s ease;
-    position: relative;
-  }
-  .option.selected {
-    border-color: #007bff;
-  }
-  .option img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    user-select: none;
-    transition: transform 0.3s ease;
-  }
-  .option img.zoomed {
-    transform: scale(1.6);
-    z-index: 10;
-    position: relative;
-  }
-  .option div {
-    margin-top: 8px;
-    font-weight: bold;
-  }
-
-  /* Pour le choix Joycon + et - */
-  .qty-control {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 6px;
-  }
-  .qty-control button {
-    width: 28px;
-    height: 28px;
-    border: none;
-    border-radius: 4px;
-    background: #007bff;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  .qty-control button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-  .qty-display {
-    min-width: 25px;
-    text-align: center;
-  }
-
-  /* Résumé ticket style */
-  #resumeCommande {
-    background: white;
-    border: 2px solid #007bff;
+    font-family: monospace, monospace;
+    max-width: 480px;
+    margin: 20px auto;
+    background: #f8f8f8;
+    padding: 20px;
     border-radius: 8px;
-    padding: 1rem;
-    margin-top: 20px;
-    font-family: "Courier New", Courier, monospace;
-    white-space: pre-line;
-    box-shadow: 0 0 10px #007bff44;
   }
-
-  /* Bouton valider */
-  #btnValider {
-    margin-top: 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    font-size: 1rem;
-    padding: 10px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-  }
-  #btnValider:hover {
-    background-color: #218838;
-  }
-
-  /* Checkbox validée verte devant HWFLY */
-  .hwfly-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-  }
-  .hwfly-label input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 22px;
-    height: 22px;
-    border: 2px solid #28a745;
-    border-radius: 4px;
-    background-color: #28a745;
-    cursor: default;
-    position: relative;
-  }
-  .hwfly-label input[type="checkbox"]::after {
-    content: "✔";
-    color: white;
-    font-weight: bold;
-    position: absolute;
-    left: 4px;
-    top: 0px;
-    font-size: 16px;
-  }
-
-  /* Hide the grey checkbox */
-  .hwfly-label input[type="checkbox"].inactive {
+  h2 { margin-top: 0; }
+  .step {
     display: none;
   }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .option {
-      width: 120px;
-    }
-    .option img.zoomed {
-      transform: scale(1.3);
-    }
+  .step.active {
+    display: block;
+  }
+  .images-choix img {
+    width: 120px;
+    margin: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+  }
+  .images-choix img.selected {
+    border-color: #007bff;
+  }
+  .btns {
+    margin-top: 20px;
+  }
+  button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+  }
+  button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  /* Styles résumé */
+  #resumeCommande {
+    white-space: pre-wrap;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 30px;
+    border-radius: 5px;
+  }
+  .qty-control {
+    display: inline-flex;
+    align-items: center;
+    margin: 5px 0;
+  }
+  .qty-control button {
+    width: 25px; height: 25px;
+    font-weight: bold;
+    padding: 0;
+    background: #007bff;
+    color: white;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+  }
+  .qty-control span {
+    width: 25px;
+    display: inline-block;
+    text-align: center;
+    margin: 0 8px;
+  }
+  label {
+    cursor: pointer;
+    user-select: none;
+  }
+  .checkbox-list {
+    margin-top: 10px;
+  }
+  .checkbox-list label {
+    display: block;
+    margin-bottom: 6px;
   }
 </style>
 </head>
 <body>
 
-<h2>1. Choix de la Switch</h2>
-<div id="switchContainer" class="container"></div>
+<h1>Commande Nintendo Switch - Étapes</h1>
 
-<h2>2. Choix de la Carte SD</h2>
-<div id="sdContainer" class="container"></div>
+<!-- Étape 1 : Choix Switch -->
+<div class="step active" id="step1">
+  <h2>1. Choisissez votre Switch</h2>
+  <div class="images-choix" id="choixSwitchContainer">
+    <img src="https://i.imgur.com/ZQXxS4L.png" alt="Switch OLED" data-id="oled" data-price="399" />
+    <img src="https://i.imgur.com/2CqJXjW.png" alt="Switch Lite" data-id="lite" data-price="199" />
+    <img src="https://i.imgur.com/wQWmPdw.png" alt="Switch Classique" data-id="classic" data-price="299" />
+  </div>
+  <div class="btns">
+    <button id="step1Next" disabled>Suivant →</button>
+  </div>
+</div>
 
-<h2>3. Choix des Joycon</h2>
-<div id="joyconContainer" class="container"></div>
+<!-- Étape 2 : Choix Carte SD -->
+<div class="step" id="step2">
+  <h2>2. Choisissez une carte SD (optionnel)</h2>
+  <div class="images-choix" id="choixSDContainer">
+    <img src="https://i.imgur.com/fFZQkuT.png" alt="Carte SD 64 Go" data-id="64go" data-price="40" />
+    <img src="https://i.imgur.com/A1MvLY3.png" alt="Carte SD 128 Go" data-id="128go" data-price="70" />
+    <img src="https://i.imgur.com/6bRnsG9.png" alt="Carte SD 256 Go" data-id="256go" data-price="120" />
+  </div>
+  <div class="btns">
+    <button id="step2Prev">← Retour</button>
+    <button id="step2Next">Suivant →</button>
+  </div>
+  <p><small>Vous pouvez ne rien sélectionner si vous ne voulez pas de carte SD.</small></p>
+</div>
 
-<h2>4. Accessoires</h2>
-<div id="accessoireContainer" class="container"></div>
+<!-- Étape 3 : Choix Joycon -->
+<div class="step" id="step3">
+  <h2>3. Choisissez vos Joycons</h2>
+  <div id="joyconList">
+    <div>
+      <label>Standard Gris (35€ la 1ère, 30€ les suivantes): </label>
+      <div class="qty-control">
+        <button class="qty-minus" data-id="joycon-gris">−</button>
+        <span id="qty-joycon-gris">0</span>
+        <button class="qty-plus" data-id="joycon-gris">+</button>
+      </div>
+    </div>
+    <div>
+      <label>Couleur Rouge/Bleu (35€ la 1ère, 30€ les suivantes): </label>
+      <div class="qty-control">
+        <button class="qty-minus" data-id="joycon-rb">−</button>
+        <span id="qty-joycon-rb">0</span>
+        <button class="qty-plus" data-id="joycon-rb">+</button>
+      </div>
+    </div>
+    <div>
+      <label>Pro Controller (70€ la 1ère): </label>
+      <div class="qty-control">
+        <button class="qty-minus" data-id="pro-controller">−</button>
+        <span id="qty-pro-controller">0</span>
+        <button class="qty-plus" data-id="pro-controller">+</button>
+      </div>
+    </div>
+  </div>
+  <div class="btns">
+    <button id="step3Prev">← Retour</button>
+    <button id="step3Next">Suivant →</button>
+  </div>
+</div>
 
-<label class="hwfly-label">
-  <input type="checkbox" checked disabled />
-  HWFLY (choix par défaut, validé)
-  <input type="checkbox" class="inactive" />
-</label>
+<!-- Étape 4 : Accessoires -->
+<div class="step" id="step4">
+  <h2>4. Choisissez vos accessoires</h2>
+  <div class="checkbox-list" id="accessoiresList">
+    <label><input type="checkbox" value="housse" data-price="20" /> Housse de protection (20 €)</label>
+    <label><input type="checkbox" value="chargeur" data-price="15" /> Chargeur USB-C (15 €)</label>
+    <label><input type="checkbox" value="station" data-price="40" /> Station de recharge (40 €)</label>
+    <label><input type="checkbox" value="casque" data-price="50" /> Casque Bluetooth (50 €)</label>
+  </div>
+  <div class="btns">
+    <button id="step4Prev">← Retour</button>
+    <button id="step4Finish">Valider la commande</button>
+  </div>
+</div>
 
-<button id="btnValider">Valider ma liste</button>
+<!-- Résumé -->
+<h2>Résumé de votre commande</h2>
+<pre id="resumeCommande">(Votre sélection apparaîtra ici)</pre>
 
-<pre id="resumeCommande">Prévisualisation du résumé...</pre>
-
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
-  // Données
-  const switches = [
-    {id: 'switch_v2_sd', name: 'Switch V2 (manque SD) + puce', price: 190, stock: 5, img: 'https://i.imgur.com/XNzqOsB.jpeg'},
-    {id: 'switch_v2_ok', name: 'Switch V2 OK', price: 230, stock: 3, img: 'https://i.imgur.com/zKeTFqq.png'},
-    {id: 'switch_v1_rayure', name: 'Switch V1 rayure', price: 140, stock: 2, img: 'https://i.imgur.com/p5yO1kM.png'},
-    {id: 'switch_v1_ok', name: 'Switch V1 OK', price: 150, stock: 4, img: 'https://i.imgur.com/p5yO1kM.png'},
-    {id: 'switch_v1_excellent', name: 'Switch V1 excellent', price: 160, stock: 2, img: 'https://i.imgur.com/p5yO1kM.png'},
-  ];
-  const sds = [
-    {id: 'sd128', name: 'Carte SD 128 Go (environ 10 jeux)', price: 0, stock: 20, img: 'https://i.imgur.com/ZRiCDLr.jpeg'},
-    {id: 'sd256', name: 'Carte SD 256 Go (environ 18 jeux)', price: 20, stock: 15, img: 'https://i.imgur.com/ZRiCDLr.jpeg'},
-    {id: 'sd512', name: 'Carte SD 512 Go (environ 40 jeux)', price: 50, stock: 10, img: 'https://i.imgur.com/a3M2P8z.png'}
-  ];
-  const joycons = [
-    {id: 'joycon_rouge_bleu', name: 'Joy-Con Rouge/Bleu', priceFirst: 35, priceNext: 30, stock: 20, img: 'https://i.imgur.com/h4i6NT2.jpeg'},
-    {id: 'joycon_vert_rose', name: 'Joy-Con Vert/Rose', priceFirst: 35, priceNext: 30, stock: 10, img: 'https://i.imgur.com/HnrlZdX.png'},
-    {id: 'joycon_gris', name: 'Joy-Con Gris', priceFirst: 35, priceNext: 30, stock: 15, img: 'https://i.imgur.com/HnrlZdX.png'},
-    {id: 'joycon_jaune', name: 'Joy-Con Jaune', priceFirst: 35, priceNext: 30, stock: 8, img: 'https://i.imgur.com/1lwBpOt.jpeg'},
-    {id: 'joycon_violet', name: 'Joy-Con Violet', priceFirst: 35, priceNext: 30, stock: 5, img: 'https://i.imgur.com/edqgNwl.jpeg'},
-  ];
-  const accessoires = [
-    {id: 'chargeur', name: 'Chargeur', price: 15, stock: 10, img: 'https://i.imgur.com/QylodKV.jpeg'},
-    {id: 'cable_hdmi', name: 'Câble HDMI', price: 5, stock: 25, img: 'https://i.imgur.com/CYJdCjc.jpeg'},
-    {id: 'chargeur_joycon', name: 'Chargeur Joy-Con', price: 10, stock: 12, img: 'https://i.imgur.com/2a17uZp.jpeg'},
-  ];
+  // Variables stockage choix
+  let choixSwitch = null; // {id, price, alt}
+  let choixSD = null; // idem ou null
+  let choixJoycon = { 'joycon-gris':0, 'joycon-rb':0, 'pro-controller':0 };
+  let choixAccessoire = new Set();
 
-  // Variables pour stocker choix
-  let choixSwitch = null;
-  let choixSD = null;
-  const choixJoycon = {}; // id => qty
-  const choixAccessoire = new Set();
+  // --- Étape 1 : Choix Switch ---
+  const step1Imgs = document.querySelectorAll('#choixSwitchContainer img');
+  const step1NextBtn = document.getElementById('step1Next');
 
-  // --- Fonction création carte ---
-  function createOptionCard(item, container, singleSelect = true, onSelect = null) {
-    const div = document.createElement('div');
-    div.classList.add('option');
-    div.dataset.id = item.id;
-
-    const img = document.createElement('img');
-    img.src = item.img;
-    img.alt = item.name;
-    div.appendChild(img);
-
-    const nameDiv = document.createElement('div');
-    nameDiv.textContent = item.name;
-    div.appendChild(nameDiv);
-
-    if (item.price !== undefined) {
-      const priceDiv = document.createElement('div');
-      priceDiv.style.fontWeight = 'normal';
-      priceDiv.style.fontSize = '0.9rem';
-      priceDiv.textContent = item.price === 0 ? '0€' : item.price + ' €';
-      div.appendChild(priceDiv);
-    }
-
-    div.title = item.stock > 0 ? `Stock disponible: ${item.stock}` : 'Rupture de stock';
-
-    if (item.stock <= 0) {
-      div.style.opacity = 0.5;
-      div.style.pointerEvents = 'none';
-    }
-
-    div.addEventListener('click', () => {
-      if(singleSelect) {
-        // Déco sélection précédente
-        container.querySelectorAll('.option.selected').forEach(e => e.classList.remove('selected'));
-        div.classList.add('selected');
-        if(onSelect) onSelect(item.id);
-      } else {
-        // Pour accessoires: toggle sélection
-        if(div.classList.contains('selected')) {
-          div.classList.remove('selected');
-          if(onSelect) onSelect(item.id, false);
-        } else {
-          div.classList.add('selected');
-          if(onSelect) onSelect(item.id, true);
-        }
-      }
+  step1Imgs.forEach(img => {
+    img.addEventListener('click', () => {
+      step1Imgs.forEach(i => i.classList.remove('selected'));
+      img.classList.add('selected');
+      choixSwitch = {
+        id: img.dataset.id,
+        price: Number(img.dataset.price),
+        alt: img.alt
+      };
+      step1NextBtn.disabled = false;
+      updateResume();
     });
-    return div;
+  });
+
+  step1NextBtn.addEventListener('click', () => {
+    goToStep(2);
+  });
+
+  // --- Étape 2 : Choix SD ---
+  const step2Imgs = document.querySelectorAll('#choixSDContainer img');
+  const step2PrevBtn = document.getElementById('step2Prev');
+  const step2NextBtn = document.getElementById('step2Next');
+
+  step2Imgs.forEach(img => {
+    img.addEventListener('click', () => {
+      // toggle sélection
+      if(img.classList.contains('selected')){
+        img.classList.remove('selected');
+        choixSD = null;
+      } else {
+        step2Imgs.forEach(i => i.classList.remove('selected'));
+        img.classList.add('selected');
+        choixSD = {
+          id: img.dataset.id,
+          price: Number(img.dataset.price),
+          alt: img.alt
+        };
+      }
+      updateResume();
+    });
+  });
+
+  step2PrevBtn.addEventListener('click', () => goToStep(1));
+  step2NextBtn.addEventListener('click', () => goToStep(3));
+
+  // --- Étape 3 : Joycon quantités ---
+  const joyconIds = Object.keys(choixJoycon);
+  joyconIds.forEach(id => {
+    document.querySelector(`#qty-${id}`).textContent = choixJoycon[id];
+  });
+  function updateQty(id, delta){
+    let val = choixJoycon[id] + delta;
+    if(val < 0) val = 0;
+    if(val > 10) val = 10; // max 10 pour éviter débordement
+    choixJoycon[id] = val;
+    document.querySelector(`#qty-${id}`).textContent = val;
+    updateResume();
+  }
+  document.querySelectorAll('.qty-plus').forEach(btn => {
+    btn.addEventListener('click', () => {
+      updateQty(btn.dataset.id, +1);
+    });
+  });
+  document.querySelectorAll('.qty-minus').forEach(btn => {
+    btn.addEventListener('click', () => {
+      updateQty(btn.dataset.id, -1);
+    });
+  });
+
+  document.getElementById('step3Prev').addEventListener('click', () => goToStep(2));
+  document.getElementById('step3Next').addEventListener('click', () => goToStep(4));
+
+  // --- Étape 4 : Accessoires checkbox ---
+  const accCheckboxes = document.querySelectorAll('#accessoiresList input[type=checkbox]');
+  accCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      if(cb.checked) choixAccessoire.add(cb.value);
+      else choixAccessoire.delete(cb.value);
+      updateResume();
+    });
+  });
+
+  document.getElementById('step4Prev').addEventListener('click', () => goToStep(3));
+  document.getElementById('step4Finish').addEventListener('click', () => {
+    alert("Commande validée ! Voir le résumé ci-dessous.");
+  });
+
+  // --- Navigation entre étapes ---
+  function goToStep(n){
+    document.querySelectorAll('.step').forEach(div => div.classList.remove('active'));
+    const stepDiv = document.getElementById('step' + n);
+    if(stepDiv) stepDiv.classList.add('active');
   }
 
-  // --- Remplissage containers ---
-  const switchContainer = document.getElementById('switchContainer');
-  const sdContainer = document.getElementById('sdContainer');
-  const joyconContainer = document.getElementById('joyconContainer');
-  const accessoireContainer = document.getElementById('accessoireContainer');
-
-  // Switch (single select + zoom)
-  switches.forEach(sw => {
-    const card = createOptionCard(sw, switchContainer, true, (id) => {
-      choixSwitch = switches.find(s => s.id === id);
-      updateResume();
-    });
-    const img = card.querySelector('img');
-    card.addEventListener('click', () => {
-      // toggle zoom on selected only
-      if(card.classList.contains('selected')) {
-        if(img.classList.contains('zoomed')) img.classList.remove('zoomed');
-        else {
-          // remove zoom on others
-          switchContainer.querySelectorAll('img.zoomed').forEach(i => i.classList.remove('zoomed'));
-          img.classList.add('zoomed');
-        }
-      }
-    });
-    switchContainer.appendChild(card);
-  });
-
-  // SD (single select)
-  sds.forEach(sd => {
-    const card = createOptionCard(sd, sdContainer, true, (id) => {
-      choixSD = sds.find(s => s.id === id);
-      updateResume();
-    });
-    sdContainer.appendChild(card);
-  });
-
-  // Joycon (multiple select avec qty)
-  joycons.forEach(jc => {
-    const div = document.createElement('div');
-    div.classList.add('option');
-    div.dataset.id = jc.id;
-
-    const img = document.createElement('img');
-    img.src = jc.img;
-    img.alt = jc.name;
-    div.appendChild(img);
-
-    const nameDiv = document.createElement('div');
-    nameDiv.textContent = jc.name;
-    div.appendChild(nameDiv);
-
-    const qtyControl = document.createElement('div');
-    qtyControl.className = 'qty-control';
-
-    const btnMinus = document.createElement('button');
-    btnMinus.textContent = '-';
-    btnMinus.disabled = true;
-
-    const qtyDisplay = document.createElement('div');
-    qtyDisplay.className = 'qty-display';
-    qtyDisplay.textContent = '0';
-
-    const btnPlus = document.createElement('button');
-    btnPlus.textContent = '+';
-
-    qtyControl.appendChild(btnMinus);
-    qtyControl.appendChild(qtyDisplay);
-    qtyControl.appendChild(btnPlus);
-    div.appendChild(qtyControl);
-
-    let qty = 0;
-
-    function updateButtons() {
-      btnMinus.disabled = qty === 0;
-      btnPlus.disabled = qty >= jc.stock;
-    }
-
-    btnPlus.addEventListener('click', () => {
-      if(qty < jc.stock){
-        qty++;
-        qtyDisplay.textContent = qty;
-        updateButtons();
-        choixJoycon[jc.id] = qty;
-        updateResume();
-      }
-    });
-    btnMinus.addEventListener('click', () => {
-      if(qty > 0){
-        qty--;
-        qtyDisplay.textContent = qty;
-        updateButtons();
-        if(qty === 0) delete choixJoycon[jc.id];
-        else choixJoycon[jc.id] = qty;
-        updateResume();
-      }
-    });
-    updateButtons();
-
-    joyconContainer.appendChild(div);
-  });
-
-  // Accessoires (multiple select toggle)
-  accessoires.forEach(acc => {
-    const card = createOptionCard(acc, accessoireContainer, false, (id, selected) => {
-      if(selected) choixAccessoire.add(id);
-      else choixAccessoire.delete(id);
-      updateResume();
-    });
-    accessoireContainer.appendChild(card);
-  });
-
-  // --- Génération résumé ticket ---
+  // --- Mise à jour résumé ---
   function updateResume(){
-    if(!choixSwitch) {
-      document.getElementById('resumeCommande').textContent = "Veuillez choisir une Switch.";
-      return;
-    }
-    let lines = [];
-    lines.push("✅ Résumé de commande");
-    lines.push(`Code : CMD-${Math.random().toString(36).substr(2, 7).toUpperCase()}`);
-    lines.push("");
-
-    // Switch
-    lines.push(`${choixSwitch.name} x1`.padEnd(30) + `${choixSwitch.price} €`);
-    // Option SD
-    if(choixSD){
-      lines.push(`  (${choixSD.name})`.padEnd(30) + `${choixSD.price} €`);
+    const lines = [];
+    lines.push("Résumé de votre commande\n");
+    if(choixSwitch){
+      lines.push(`Switch: ${choixSwitch.alt} - ${choixSwitch.price} €`);
     } else {
-      lines.push("  (Sans carte SD)".padEnd(30) + `0 €`);
-    }
-    // Joycons
-    if(Object.keys(choixJoycon).length > 0){
-      lines.push("");
-      lines.push("Joycon:");
-      for(let jcId in choixJoycon){
-        const qty = choixJoycon[jcId];
-        const jc = joycons.find(j => j.id === jcId);
-        if(qty > 0){
-          // Calcul prix dégressif
-          let prixJC = qty === 1 ? jc.priceFirst : jc.priceFirst + (qty-1)*jc.priceNext;
-          lines.push(`  ${jc.name} x${qty}`.padEnd(30) + `${prixJC} €`);
-        }
-      }
+      lines.push("Switch: (non sélectionnée)");
     }
 
-    // Accessoires
-    if(choixAccessoire.size > 0){
-      lines.push("");
-      lines.push("Accessoires:");
-      choixAccessoire.forEach(id => {
-        const acc = accessoires.find(a => a.id === id);
-        if(acc) lines.push(`  ${acc.name}`.padEnd(30) + `${acc.price} €`);
+    if(choixSD){
+      lines.push(`Carte SD: ${choixSD.alt} - ${choixSD.price} €`);
+    } else {
+      lines.push("Carte SD: Aucune");
+    }
+
+    lines.push("\nJoycon:");
+    // Prix joycon: 35€ la 1ère, 30€ les suivantes
+    const joyconPrices = {
+      'joycon-gris': {name:"Standard Gris", priceFirst:35, priceNext:30},
+      'joycon-rb': {name:"Rouge/Bleu", priceFirst:35, priceNext:30},
+      'pro-controller': {name:"Pro Controller", priceFirst:70, priceNext:0}
+    };
+    let totalJoycon = 0;
+    joyconIds.forEach(id => {
+      const qty = choixJoycon[id];
+      if(qty > 0){
+        const jp = joyconPrices[id];
+        const prixJC = qty === 1 ? jp.priceFirst : jp.priceFirst + (qty-1)*jp.priceNext;
+        lines.push(`  ${jp.name} x${qty} : ${prixJC} €`);
+        totalJoycon += prixJC;
+      }
+    });
+    if(totalJoycon === 0){
+      lines.push("  Aucun");
+    }
+
+    lines.push("\nAccessoires:");
+    let totalAcc = 0;
+    const accData = {
+      'housse': {name: "Housse de protection", price: 20},
+      'chargeur': {name: "Chargeur USB-C", price: 15},
+      'station': {name: "Station de recharge", price: 40},
+      'casque': {name: "Casque Bluetooth", price: 50}
+    };
+    if(choixAccessoire.size === 0){
+      lines.push("  Aucun");
+    } else {
+      choixAccessoire.forEach(accId => {
+        const acc = accData[accId];
+        if(acc){
+          lines.push(`  ${acc.name} - ${acc.price} €`);
+          totalAcc += acc.price;
+        }
       });
     }
 
-    // Total
-    let total = choixSwitch.price + (choixSD ? choixSD.price : 0);
-    for(let jcId in choixJoycon){
-      const qty = choixJoycon[jcId];
-      const jc = joycons.find(j => j.id === jcId);
-      if(qty > 0){
-        total += qty === 1 ? jc.priceFirst : jc.priceFirst + (qty-1)*jc.priceNext;
-      }
-    }
-    choixAccessoire.forEach(id => {
-      const acc = accessoires.find(a => a.id === id);
-      if(acc) total += acc.price;
-    });
+    // Total général
+    let total = 0;
+    if(choixSwitch) total += choixSwitch.price;
+    if(choixSD) total += choixSD.price;
+    total += totalJoycon + totalAcc;
 
-    lines.push("");
-    lines.push("-".repeat(30));
+    lines.push("\n-------------------------");
     lines.push(`Total : ${total} €`);
 
     document.getElementById('resumeCommande').textContent = lines.join('\n');
   }
 
-  updateResume();
-
-  // --- Téléchargement résumé en image ---
-  document.getElementById('btnValider').addEventListener('click', () => {
-    const resume = document.getElementById('resumeCommande');
-    html2canvas(resume).then(canvas => {
-      canvas.toBlob(blob => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'commande_switch.png';
-        a.click();
-        URL.revokeObjectURL(a.href);
-      });
-    });
-  });
 </script>
 
 </body>
