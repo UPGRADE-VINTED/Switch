@@ -3,498 +3,211 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Upgrade choix Pack</title>
+  <title>Pack Switch modifiée</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    /* Reset checkbox forcée HWFLY pour cacher la case grise */
-    label.forced-checkbox input {
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 5px;
-      border: 2px solid #28a745;
-      background-color: #28a745;
-      cursor: default;
-      position: relative;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-    label.forced-checkbox input:checked::after {
-      content: '✔';
-      color: white;
-      font-weight: bold;
-      position: absolute;
-      left: 3px;
-      top: 0;
-      font-size: 16px;
-      line-height: 18px;
-    }
-
-    /* Style global */
     body {
       font-family: Arial, sans-serif;
       padding: 1rem;
-      background: #f0f0f0;
-      margin: 0;
+      background: #f7f7f7;
     }
-
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
-
     .configurator {
       display: flex;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 1200px;
-      margin: 0 auto;
+      flex-direction: column;
+      gap: 1rem;
     }
-
-    .options {
+    .options, .preview {
       background: white;
-      padding: 1rem 1.2rem;
+      padding: 1rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      min-width: 320px;
-      flex: 1 1 350px;
-      max-width: 400px;
-      box-sizing: border-box;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-
     .preview {
-      padding: 1rem 1.5rem;
-      background: white;
-      border-radius: 10px;
       text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      flex: 1 1 350px;
-      max-width: 400px;
-      box-sizing: border-box;
     }
-
-    img {
-      width: 100%;
-      max-width: 200px;
-      margin: 5px auto;
-      display: block;
-      border-radius: 8px;
-      object-fit: contain;
-    }
-
-    .total {
-      font-size: 1.2rem;
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-
-    #summary {
-      margin: 2rem auto;
-      padding: 1rem 2rem;
-      background: #fff;
-      border-radius: 10px;
-      white-space: pre-wrap;
-      font-family: monospace;
-      font-size: 1rem;
-      line-height: 1.3;
-      max-width: 400px;
-      border: 2px dashed #555;
-      box-sizing: border-box;
-    }
-
-    select, button {
-      margin-top: 10px;
-      padding: 8px;
-      width: 100%;
-      font-size: 1rem;
-      line-height: 1.2;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      transition: background-color 0.3s ease;
-    }
-    select:focus, button:focus {
-      outline: none;
-      border-color: #28a745;
-      background-color: #e6f4ea;
-    }
-    button {
-      cursor: pointer;
-      background-color: #28a745;
-      color: white;
-      font-weight: bold;
-      border: none;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-
-    label.forced-checkbox {
-      display: flex;
-      align-items: center;
-      margin-top: 15px;
-      user-select: none;
-      cursor: default;
-      font-size: 1rem;
-      color: #333;
-      line-height: 1.3;
-    }
-
-    .joycon-toggle {
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1.1rem;
-      margin-top: 20px;
-      user-select: none;
-      display: inline-block;
-      background: #ddd;
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: background-color 0.3s ease;
-    }
-    .joycon-toggle:hover {
-      background: #ccc;
-    }
-    #joyconOptions {
-      margin-top: 10px;
-      display: block; /* ouvert par défaut */
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
-      background: #fafafa;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
     .joycon-row {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 0.5rem;
     }
-    .joycon-color {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-right: 5px;
-    }
-    .joycon-left { background-color: #e74c3c; }   /* rouge */
-    .joycon-right { background-color: #3498db; }  /* bleu */
-    .joycon-vert { background-color: #2ecc71; }
-    .joycon-rose { background-color: #e91e63; }
-    .joycon-gris { background-color: #7f8c8d; }
-    .joycon-jaune { background-color: #f1c40f; }
-    .joycon-zelda-R { background-color: #ffbf3b; }
-    .joycon-zelda-L { background-color: #ffbf3b; }
-    .joycon-jaunen { background-color: #ffcc3e; }
-    .joycon-violet { background-color: #ae37ff; }
-
     .qty-buttons button {
-      width: 35px;
-      height: 35px;
-      font-size: 1.3rem;
-      font-weight: bold;
-      line-height: 1;
-      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      font-size: 1rem;
+      border-radius: 5px;
       border: 1px solid #ccc;
       background: #fff;
-      border-radius: 5px;
-      margin: 0 5px;
-      user-select: none;
-      transition: background-color 0.2s ease;
     }
-    .qty-buttons button:hover:not(:disabled) {
-      background-color: #28a745;
-      color: white;
-      border-color: #28a745;
+    .ticket {
+      background: #fff;
+      padding: 1rem;
+      font-family: monospace;
+      text-align: left;
+      border: 1px dashed #aaa;
+      max-width: 300px;
+      margin: auto;
     }
-    .qty-buttons button:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
+    .ticket hr {
+      border: none;
+      border-top: 1px dashed #ccc;
+      margin: 0.5rem 0;
     }
-
-    .qty-display {
-      min-width: 25px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.1rem;
+    .ticket-line {
+      display: flex;
+      justify-content: space-between;
     }
-
-    /* Responsive */
-    @media (max-width: 800px) {
+    .sub-info {
+      margin-left: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    @media(max-width: 600px) {
       .configurator {
-        flex-direction: column;
-        align-items: center;
+        padding: 0.5rem;
       }
       .options, .preview {
-        max-width: 90vw;
-        flex: none;
-        min-width: auto;
-      }
-      img {
-        max-width: 90vw;
-      }
-      #summary {
-        max-width: 90vw;
-        font-size: 0.95rem;
+        padding: 0.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <h1>🕹️ Préparer mon pack Switch modifiée</h1>
-
+  <h2>Préparer ma Switch modifiée</h2>
   <div class="configurator">
     <div class="options">
-      <h3>🎮 Choix de la console</h3>
-      <select id="switchSelect" onchange="updateConfig()">
-        <option value="V2 - cache SD manquant|180|switch_v2_sd">V2 - cache SD manquant (180€)</option>
-        <option value="V2 - état impeccable|190|switch_v2_ok">V2 - état impeccable (190€)</option>
-        <option value="V1 - écran légèrement rayé|170|switch_v1_rayure">V1 - écran rayé (170€)</option>
-        <option value="V1 - bon état|180|switch_v1_ok">V1 - bon état (180€)</option>
-        <option value="V1 - excellent état|185|switch_v1_excellent">V1 - excellent état (185€)</option>
-      </select>
-
-      <label class="forced-checkbox" title="Case cochée et forcée">
-        <input type="checkbox" checked disabled />
-        ✅  Puce HWFLY (0€) – toujours installée avec soin sur sa dernière version avec les dernières mises à jour Atmosphère.
+      <label>Switch
+        <select id="switchSelect" onchange="updateConfig()">
+          <option value="V2 manq. SD|140">V2 - manque cache SD (140€)</option>
+          <option value="V2 impeccable|160">V2 - état impeccable (160€)</option>
+        </select>
       </label>
-
-      <h3>💾 Carte microSD</h3>
-      <select id="sdSelect" onchange="updateConfig()">
-        <option value="128|0|sd128">128 Go (Incluse)</option>
-        <option value="256|15|sd256">256 Go (+15€)</option>
-        <option value="512|35|sd512">512 Go (+35€)</option>
-      </select>
-
-      <div class="joycon-toggle" onclick="toggleJoyconOptions()">🎨 Joy-Con (quantité)</div>
-
-      <div id="joyconOptions">
-        <div class="joycon-row">
-          <div>
-            <span class="joycon-color joycon-left"></span>
-            <span class="joycon-color joycon-right"></span>
-            Joy-Con Rouge/Bleu (3 en stock)
-          </div>
-          <div class="qty-buttons">
-            <button onclick="updateQty('joycon_rouge_bleu', -1)" aria-label="Enlever Joy-Con Rouge/Bleu">−</button>
-            <span id="joycon_rouge_bleu_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_rouge_bleu', 1)" aria-label="Ajouter Joy-Con Rouge/Bleu">+</button>
-          </div>
-        </div>
-
-        <div class="joycon-row">
-          <div>
-            <span class="joycon-color joycon-jaunen"></span>
-            <span class="joycon-color joycon-violet"></span>
-            Joy-Con jaune/violet (2 en stock)
-          </div>
-          <div class="qty-buttons">
-            <button onclick="updateQty('joycon_violet', -1)" aria-label="Enlever Joy-Con jaune/violet">−</button>
-            <span id="joycon_violet_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_violet', 1)" aria-label="Ajouter Joy-Con jaune/violet">+</button>
-          </div>
-        </div>
-
-        <div class="joycon-row">
-          <div>
-            <span class="joycon-color joycon-vert"></span>
-            <span class="joycon-color joycon-rose"></span>
-            Joy-Con Vert/Rose (2 en stock)
-          </div>
-          <div class="qty-buttons">
-            <button onclick="updateQty('joycon_vert_rose', -1)" aria-label="Enlever Joy-Con Vert/Rose">−</button>
-            <span id="joycon_vert_rose_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_vert_rose', 1)" aria-label="Ajouter Joy-Con Vert/Rose">+</button>
-          </div>
-        </div>
-
-        <div class="joycon-row" style="opacity: 0.5; pointer-events:none;">
-          <div>
-            <span class="joycon-color joycon-gris"></span>
-            <span class="joycon-color joycon-gris"></span>
-            Joy-Con Gris (0 en stock)
-          </div>
-          <div class="qty-buttons">
-            <button disabled>−</button>
-            <span id="joycon_gris_qty" class="qty-display">0</span>
-            <button disabled>+</button>
-          </div>
-        </div>
-
-        <div class="joycon-row">
-          <div>
-            <span class="joycon-color joycon-jaune"></span>
-            <span class="joycon-color joycon-jaune"></span>
-            Joy-Con Édition zelda (1 en stock)
-          </div>
-          <div class="qty-buttons">
-            <button onclick="updateQty('joycon_jaune', -1)" aria-label="Enlever Joy-Con Édition zelda">−</button>
-            <span id="joycon_jaune_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_jaune', 1)" aria-label="Ajouter Joy-Con Édition zelda">+</button>
-          </div>
+      <br>
+      <label style="display: flex; align-items: center; margin-top: 0.5rem;">
+        <input type="checkbox" checked disabled style="accent-color: green;" />
+        <span style="margin-left: 8px;">Puce HWFLY (incluse)</span>
+      </label>
+      <br>
+      <label>Carte SD
+        <select id="sdSelect" onchange="updateConfig()">
+          <option value="128|0">128 Go (incluse)</option>
+          <option value="256|15">256 Go (+15€)</option>
+        </select>
+      </label>
+      <br>
+      <h4>🎨 Joy-Con</h4>
+      <div class="joycon-row">
+        Rouge/Bleu
+        <div class="qty-buttons">
+          <button onclick="updateQty('rb', -1)">-</button>
+          <span id="rb_qty">0</span>
+          <button onclick="updateQty('rb', 1)">+</button>
         </div>
       </div>
-
-      <h3>🔌 Accessoires</h3>
-      <label><input type="checkbox" value="10" data-img="chargeur" onchange="updateConfig()"> Chargeur secteur Switch (10€)</label><br>
-      <label><input type="checkbox" value="5" data-img="cable_hdmi" onchange="updateConfig()"> Câble HDMI (5€)</label><br>
-      <label><input type="checkbox" value="18" data-img="chargeur_joycon" onchange="updateConfig()"> Chargeur Joy-Con (18€)</label><br>
-
-      <br><button onclick="validerCommande()">✅ Valider ma liste</button>
+      <div class="joycon-row">
+        Vert/Rose
+        <div class="qty-buttons">
+          <button onclick="updateQty('vr', -1)">-</button>
+          <span id="vr_qty">0</span>
+          <button onclick="updateQty('vr', 1)">+</button>
+        </div>
+      </div>
+      <br>
+      <label><input type="checkbox" value="5" data-label="Câble HDMI" onchange="updateConfig()"> Câble HDMI (5€)</label><br>
+      <label><input type="checkbox" value="10" data-label="Chargeur" onchange="updateConfig()"> Chargeur (10€)</label>
+      <br><br>
+      <button onclick="validerCommande()">✅ Valider ma liste</button>
     </div>
 
-    <div class="preview" id="preview">
-      <h3>Prévisualisation</h3>
-      <div id="images"></div>
-      <pre class="total" id="total">Total : 0€</pre>
+    <div class="preview">
+      <h4>Prévisualisation</h4>
+      <div id="ticket" class="ticket"></div>
     </div>
   </div>
 
-  <div id="summary"></div>
-
   <script>
-    const stockJoycon = {
-      joycon_rouge_bleu: 3,
-      joycon_vert_rose: 2,
-      joycon_gris: 0, // 0 stock = désactivé dans l'UI
-      joycon_jaune: 1,
-      joycon_violet: 1,
+    const stock = {
+      rb: 5,
+      vr: 2
     };
+    const qty = { rb: 0, vr: 0 };
 
-    const images = {
-      switch_v2_sd: 'https://i.imgur.com/XNzqOsB.jpeg',
-      switch_v2_ok: 'https://i.imgur.com/zKeTFqq.png',
-      switch_v1_rayure: 'https://i.imgur.com/p5yO1kM.png',
-      switch_v1_ok: 'https://i.imgur.com/p5yO1kM.png',
-      switch_v1_excellent: 'https://i.imgur.com/p5yO1kM.png',
-      sd128: 'https://i.imgur.com/ZRiCDLr.jpeg',
-      sd256: 'https://i.imgur.com/ZRiCDLr.jpeg',
-      sd512: 'https://i.imgur.com/a3M2P8z.png',
-      chargeur: 'https://i.imgur.com/QylodKV.jpeg',
-      cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
-      chargeur_joycon: 'https://i.imgur.com/5SzFkpJ.jpeg',
-      joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
-      joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
-      joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
-      joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
-      joycon_violet: 'https://i.imgur.com/edqgNwl.jpeg'
-    };
-
-    let currentCode = null;
-
-    function toggleJoyconOptions() {
-      const container = document.getElementById('joyconOptions');
-      container.style.display = (container.style.display === 'none' || container.style.display === '') ? 'block' : 'none';
-    }
-
-    function updateQty(key, delta) {
-      const span = document.getElementById(`${key}_qty`);
-      let qty = parseInt(span.innerText);
-      qty = Math.max(0, Math.min(qty + delta, stockJoycon[key]));
-      span.innerText = qty;
+    function updateQty(type, delta) {
+      qty[type] = Math.max(0, Math.min(stock[type], qty[type] + delta));
+      document.getElementById(`${type}_qty`).innerText = qty[type];
       updateConfig();
     }
 
     function updateConfig() {
-      const imageDiv = document.getElementById('images');
-      imageDiv.innerHTML = '';
+      const ticket = document.getElementById("ticket");
+      ticket.innerHTML = '';
       let total = 0;
+      let lines = [];
 
-      // Switch choisi
-      const switchOption = document.getElementById('switchSelect').value.split('|');
-      const switchName = switchOption[0];
-      const switchPrice = parseInt(switchOption[1]);
-      if (!isNaN(switchPrice)) total += switchPrice;
-      addImage(switchOption[2]);
+      // Switch
+      const [model, priceSwitch] = document.getElementById('switchSelect').value.split('|');
+      total += parseInt(priceSwitch);
+      lines.push(`<div class='ticket-line'><span>- Switch x1</span><span>${priceSwitch}€</span></div>`);
+      lines.push(`<div class='sub-info'>(modèle ${model} + puce)</div>`);
 
-      // Joycons : 1ère paire 35€, suivantes 30€
-      let index = 0;
-      let joyconSummary = '';
-      for(const key in stockJoycon) {
-        if(stockJoycon[key] === 0) continue; // ignore les stocks 0 (pas visible en UI)
-        const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
-        if(qty > 0){
-          joyconSummary += `- Joy-Con ${key.replace(/joycon_/,'').replace('_',' ')} x${qty} : ${qty > 0 ? ((index === 0 ? 35 : 30) * qty) : 0}€\n`;
-        }
-        for(let i=0; i<qty; i++) {
-          total += (index === 0) ? 35 : 30;
-          addImage(key);
-          index++;
+      // SD
+      const [sdLabel, sdPrice] = document.getElementById('sdSelect').value.split('|');
+      total += parseInt(sdPrice);
+      lines.push(`<div class='ticket-line'><span>- SD ${sdLabel} Go</span><span>${sdPrice}€</span></div>`);
+
+      // Joy-Cons
+      let i = 0;
+      for (const [type, q] of Object.entries(qty)) {
+        if (q > 0) {
+          for (let j = 0; j < q; j++) {
+            const prix = (i === 0) ? 35 : 30;
+            total += prix;
+            const nom = (type === 'rb') ? 'Rouge / Bleu' : 'Vert / Rose';
+            lines.push(`<div class='ticket-line'><span>- Joy-Con x1</span><span>${prix}€</span></div>`);
+            lines.push(`<div class='sub-info'>(${nom})</div>`);
+            i++;
+          }
         }
       }
 
-      // Carte SD
-      const sd = document.getElementById('sdSelect').value.split('|');
-      const sdName = sd[0];
-      const sdPrice = parseInt(sd[1]);
-      if (!isNaN(sdPrice)) total += sdPrice;
-      addImage(sd[2]);
-
-      // Accessoires cochés
-      let accessoiresSummary = '';
-      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
-        const val = parseInt(el.value);
-        if (!isNaN(val)) total += val;
-        accessoiresSummary += `- ${el.parentNode.textContent.trim()} : ${val}€\n`;
-        addImage(el.getAttribute('data-img'));
+      // Accessoires
+      document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+        if (cb.checked && !cb.disabled) {
+          const p = parseInt(cb.value);
+          total += p;
+          const lbl = cb.dataset.label;
+          lines.push(`<div class='ticket-line'><span>- ${lbl}</span><span>${p}€</span></div>`);
+        }
       });
 
-      document.getElementById('total').innerText = 'Total : ' + total + '€';
+      lines.push('<hr>');
+      lines.push(`<div class='ticket-line'><strong>TOTAL</strong><strong>${total}€</strong></div>`);
 
-      // Mise à jour résumé ticket
-      const summaryText = 
-`===================================
-         🕹️ RÉSUMÉ DE COMMANDE
-===================================
-
-Code : ${currentCode || '---'}
-
-Console : ${switchName} — ${switchPrice}€
-Carte SD : ${sdName} — ${sdPrice}€
-${joyconSummary}${accessoiresSummary}
------------------------------------
-Total à payer : ${total}€
-===================================
-Merci pour votre commande !
-`;
-
-      document.getElementById('summary').innerText = summaryText;
-
-      function addImage(key) {
-        const img = document.createElement('img');
-        img.src = images[key];
-        img.alt = key;
-        imageDiv.appendChild(img);
-      }
+      ticket.innerHTML = lines.join('\n');
     }
 
     function validerCommande() {
-      currentCode = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
-      updateConfig(); // Met à jour résumé avec le nouveau code
+      const code = 'CMD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      const ticketNode = document.getElementById("ticket");
+      const clone = ticketNode.cloneNode(true);
+      const label = document.createElement('div');
+      label.style.textAlign = 'center';
+      label.style.fontWeight = 'bold';
+      label.style.marginBottom = '10px';
+      label.innerText = `\u2705 Commande ${code}`;
+      const container = document.createElement('div');
+      container.appendChild(label);
+      container.appendChild(clone);
 
-      const summaryDiv = document.getElementById('summary');
-
-      // Génère l'image du résumé puis télécharge automatiquement
-      html2canvas(summaryDiv).then(canvas => {
-        canvas.toBlob(function(blob) {
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = `commande-${currentCode}.png`;
-          a.click();
-          URL.revokeObjectURL(a.href);
-        });
+      html2canvas(container).then(canvas => {
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL();
+        a.download = `ticket-${code}.png`;
+        a.click();
       });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      updateConfig();
-    });
+    updateConfig();
   </script>
 </body>
 </html>
