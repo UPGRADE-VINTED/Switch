@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Upgrade choix Pack</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -44,7 +45,7 @@
       padding: 1rem;
       background: #fff;
       border-radius: 10px;
-      white-space: pre-line; /* Garde la mise en forme du texte */
+      white-space: pre-line; /* garde formatage texte */
       font-family: monospace;
       font-size: 1rem;
       border: 1px solid #ccc;
@@ -180,7 +181,7 @@
       <div class="joycon-toggle" onclick="toggleJoyconOptions()">🎨 Joy-Con (quantité)</div>
 
       <div id="joyconOptions">
-        <div class="joycon-row">
+        <div class="joycon-row" id="joycon_rouge_bleu_row">
           <div>
             <span class="joycon-color joycon-left"></span>
             <span class="joycon-color joycon-right"></span>
@@ -193,7 +194,7 @@
           </div>
         </div>
 
-        <div class="joycon-row">
+        <div class="joycon-row" id="joycon_violet_row">
           <div>
             <span class="joycon-color joycon-jaunen"></span>
             <span class="joycon-color joycon-violet"></span>
@@ -206,7 +207,7 @@
           </div>
         </div>
 
-        <div class="joycon-row">
+        <div class="joycon-row" id="joycon_vert_rose_row">
           <div>
             <span class="joycon-color joycon-vert"></span>
             <span class="joycon-color joycon-rose"></span>
@@ -219,7 +220,7 @@
           </div>
         </div>
 
-        <div class="joycon-row" style="display:none">
+        <div class="joycon-row" id="joycon_gris_row" style="display:none">
           <div>
             <span class="joycon-color joycon-gris"></span>
             <span class="joycon-color joycon-gris"></span>
@@ -232,7 +233,7 @@
           </div>
         </div>
 
-        <div class="joycon-row">
+        <div class="joycon-row" id="joycon_jaune_row">
           <div>
             <span class="joycon-color joycon-jaune"></span>
             <span class="joycon-color joycon-jaune"></span>
@@ -283,22 +284,20 @@
       sd512: 'https://i.imgur.com/a3M2P8z.png',
       chargeur: 'https://i.imgur.com/QylodKV.jpeg',
       cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
-      chargeur_joycon: 'https://i.imgur.com/ykoJVmG.png',
+      chargeur_joycon: 'https://i.imgur.com/1v6fwGK.jpeg',
       joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
       joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
       joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
       joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
-      joycon_violet: 'https://i.imgur.com/HnrlZdX.png'
+      joycon_violet: 'https://i.imgur.com/JLsvY46.jpeg'
     };
 
-    // Masquer joycons avec stock = 0 au chargement
-    window.addEventListener('DOMContentLoaded', () => {
+    // Cacher joycons avec stock à 0
+    document.addEventListener('DOMContentLoaded', () => {
       for(const key in stockJoycon) {
         if(stockJoycon[key] === 0) {
           const row = document.getElementById(key + '_row');
           if(row) row.style.display = 'none';
-          // Ici on masque aussi les lignes par leur classe joycon-row et data-key
-          // Mais dans ce code on a pas mis d'id, on va ajouter ça dans le HTML.
         }
       }
       updateConfig();
@@ -313,6 +312,7 @@
       }
     }
 
+    // + / - gestion quantité Joy-Con avec respect du stock
     function updateQty(key, delta) {
       const span = document.getElementById(`${key}_qty`);
       let qty = parseInt(span.innerText);
@@ -321,6 +321,16 @@
       updateConfig();
     }
 
+    // Stocke commande courante (utile résumé)
+    window.currentOrder = {
+      joycons: {},
+      accessoires: [],
+      total: 0,
+      switch: '',
+      sd: ''
+    };
+
+    // Mise à jour prévisualisation + total
     function updateConfig() {
       const imageDiv = document.getElementById('images');
       imageDiv.innerHTML = '';
@@ -330,96 +340,127 @@
       const switchOption = document.getElementById('switchSelect').value.split('|');
       const switchName = switchOption[0];
       const switchPrice = parseInt(switchOption[1]);
-      const switchImgKey = switchOption[2];
+      const switchKey = switchOption[2];
       if (!isNaN(switchPrice)) total += switchPrice;
-      addImage(switchImgKey);
+      addImage(switchKey);
 
       // Joycons : 1ère paire 35€, suivantes 30€
       let index = 0;
-      const joyconsQty = {};
+      window.currentOrder.joycons = {};
       for(const key in stockJoycon) {
         const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
-        joyconsQty[key] = qty;
-        for(let i=0; i<qty; i++) {
-          total += (index === 0) ? 35 : 30;
-          addImage(key);
-          index++;
-        }
-      }
-
-      // Carte SD
-      const sd = document.getElementById('sdSelect').value.split('|');
-      const sdName = sd[0];
-      const sdPrice = parseInt(sd[1]);
-      const sdImgKey = sd[2];
-      if (!isNaN(sdPrice)) total += sdPrice;
-      addImage(sdImgKey);
-
-      // Accessoires cochés
-      const accessoires = [];
-      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
-        const val = parseInt(el.value);
-        if (!isNaN(val)) total += val;
-        addImage(el.getAttribute('data-img'));
-        accessoires.push({
-          name: el.parentNode.textContent.trim(),
-          price: val
-        });
-      });
-
-      document.getElementById('total').innerText = 'Total : ' + total + '€';
-
-      // Met à jour la commande pour résumé
-      window.currentOrder = {
-        switch: {name: switchName, price: switchPrice},
-        sd: {name: sdName, price: sdPrice},
-        joycons: joyconsQty,
-        accessoires: accessoires,
-        total: total
-      };
-
-      function addImage(key) {
-        if(!key || !(key in images)) return;
-        const img = document.createElement('img');
-        img.src = images[key];
-        imageDiv.appendChild(img);
-      }
-    }
-
-    function validerCommande() {
-      const code = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
-      const summary = document.getElementById('summary');
-
-      let textSummary = `✅ Résumé de commande\nCode : ${code}\n\n`;
-      textSummary += `Console : ${window.currentOrder.switch.name} — ${window.currentOrder.switch.price}€\n`;
-      textSummary += `Carte SD : ${window.currentOrder.sd.name} — ${window.currentOrder.sd.price}€\n`;
-
-      textSummary += "Joy-Cons :\n";
-      let index = 0;
-      for(const key in window.currentOrder.joycons) {
-        let qty = window.currentOrder.joycons[key];
         if(qty > 0) {
+          window.currentOrder.joycons[key] = qty;
           for(let i=0; i<qty; i++) {
-            let price = (index === 0) ? 35 : 30;
-            // Nom plus lisible
-            let joyconName = key.replace(/_/g,' ').replace('joycon ', 'Joy-Con ');
-            textSummary += ` - ${joyconName} x1 : ${price}€\n`;
+            total += (index === 0) ? 35 : 30;
+            addImage(key);
             index++;
           }
         }
       }
 
+      // Carte SD
+      const sdOption = document.getElementById('sdSelect').value.split('|');
+      const sdName = sdOption[0];
+      const sdPrice = parseInt(sdOption[1]);
+      const sdKey = sdOption[2];
+      if (!isNaN(sdPrice)) total += sdPrice;
+      addImage(sdKey);
+
+      // Accessoires cochés
+      const accChecked = [];
+      document.querySelectorAll('input[type=checkbox]:not(:disabled):checked').forEach(el => {
+        const val = parseInt(el.value);
+        const imgKey = el.getAttribute('data-img');
+        const labelText = el.parentNode.textContent.trim();
+        if (!isNaN(val)) total += val;
+        if(imgKey) addImage(imgKey);
+        accChecked.push({name: labelText, price: val});
+      });
+
+      // Stocker commande actuelle
+      window.currentOrder.total = total;
+      window.currentOrder.switch = {name: switchName, price: switchPrice};
+      window.currentOrder.sd = {name: sdName, price: sdPrice};
+      window.currentOrder.accessoires = accChecked;
+
+      document.getElementById('total').innerText = 'Total : ' + total + '€';
+
+      function addImage(key) {
+        if(images[key]) {
+          const img = document.createElement('img');
+          img.src = images[key];
+          imageDiv.appendChild(img);
+        }
+      }
+    }
+
+    // Valider commande + code + image résumé + résumé texte formaté
+    function validerCommande() {
+      const code = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
+      const summary = document.getElementById('summary');
+
+      // Texte résumé
+      let textSummary = `✅ Résumé de commande\nCode : ${code}\n\n`;
+      textSummary += `Console : ${window.currentOrder.switch.name} — ${window.currentOrder.switch.price}€\n`;
+      textSummary += `Carte SD : ${window.currentOrder.sd.name} — ${window.currentOrder.sd.price}€\n\n`;
+
+      // Joycons
+      let index = 0;
+      for(const key in window.currentOrder.joycons) {
+        let qty = window.currentOrder.joycons[key];
+        if(qty > 0) {
+          // Nom lisible (ex : joycon_rouge_bleu → Joy-Con rouge bleu)
+          let joyconName = key.replace(/joycon_/,'').replace(/_/g,' ');
+          textSummary += `- Joy-Con ${joyconName} x${qty} : `;
+          // Calcul prix
+          let priceTotal = 0;
+          for(let i=0; i<qty; i++) {
+            priceTotal += (index === 0) ? 35 : 30;
+            index++;
+          }
+          textSummary += priceTotal + '€\n';
+        }
+      }
+
+      // Accessoires
       if(window.currentOrder.accessoires.length > 0) {
-        textSummary += "Accessoires :\n";
         window.currentOrder.accessoires.forEach(acc => {
-          textSummary += ` - ${acc.name} : ${acc.price}€\n`;
+          textSummary += `- ${acc.name} (${acc.price}€) : ${acc.price}€\n`;
         });
       }
 
       textSummary += `\nTotal à payer : ${window.currentOrder.total}€`;
 
+      // Afficher texte résumé
       summary.innerText = textSummary;
-      summary.scrollIntoView({behavior: 'smooth'});
+
+      // Générer image et ajouter sous résumé
+      html2canvas(document.getElementById('preview')).then(canvas => {
+        const imageURL = canvas.toDataURL();
+        // Si image existait avant, on remplace
+        let existingImg = summary.querySelector('img');
+        if(existingImg) existingImg.remove();
+        let existingLink = summary.querySelector('a');
+        if(existingLink) existingLink.remove();
+
+        const img = document.createElement('img');
+        img.src = imageURL;
+        img.style.width = '300px';
+        img.style.border = '1px solid #ccc';
+        img.style.marginTop = '10px';
+        summary.appendChild(img);
+
+        const a = document.createElement('a');
+        a.href = imageURL;
+        a.download = `commande-${code}.png`;
+        a.textContent = '📥 Télécharger l\'image';
+        a.style.display = 'block';
+        a.style.marginTop = '5px';
+        summary.appendChild(a);
+
+        summary.scrollIntoView({behavior: 'smooth'});
+      });
     }
   </script>
 </body>
