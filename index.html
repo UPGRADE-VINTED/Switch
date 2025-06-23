@@ -27,7 +27,7 @@
     padding: 5px;
     cursor: pointer;
     text-align: center;
-    width: 120px;
+    width: 150px;
     background: white;
     transition: border-color 0.3s;
   }
@@ -36,7 +36,7 @@
     box-shadow: 0 0 10px #28a745a0;
   }
   .option img {
-    max-width: 100px;
+    max-width: 150px;
     height: auto;
     margin-bottom: 5px;
     border-radius: 6px;
@@ -78,7 +78,10 @@
       justify-content: center;
     }
     .option {
-      width: 45vw;
+      width: 90vw;
+    }
+    .option img {
+      max-width: 90vw;
     }
   }
 </style>
@@ -91,7 +94,7 @@
   <h2>1. Choisis ta Switch</h2>
   <div class="options" id="switch-options">
     <div class="option" data-name="Switch modèle V1" data-price="140">
-      <img src="https://i.imgur.com/XNzqOsB.jpeg" alt="Switch V1"/>
+      <img src="https://cdn.pixabay.com/photo/2014/04/03/10/51/video-game-309345_1280.png" alt="Switch V1"/>
       <span>Switch modèle V1</span>
       <small>(manque SD, + puce)</small>
       <br>140 €
@@ -108,7 +111,6 @@
       <small>(compact & portable)</small>
       <br>120 €
     </div>
-    <!-- Ajoute d’autres modèles si besoin -->
   </div>
 </div>
 
@@ -170,7 +172,6 @@
   const steps = ['step1', 'step2', 'step3', 'step4'];
   let currentStep = 0;
 
-  // Stocke la sélection
   let selections = {
     switch: null,
     sd: null,
@@ -182,10 +183,8 @@
   const summaryDiv = document.getElementById('summary');
 
   function updateButton() {
-    // bouton activé si on a fait un choix dans l'étape en cours
     let canContinue = false;
     if (currentStep === 3) {
-      // Au dernier step on peut valider dès qu'il y a au moins un accessoire ou aucun (accessoire optionnels)
       canContinue = true;
     } else {
       const stepId = steps[currentStep];
@@ -207,15 +206,12 @@
     const stepId = steps[currentStep];
 
     if (stepId === 'step4') {
-      // accessoires = multi sélection possible
       option.classList.toggle('selected');
     } else {
-      // une sélection par étape (switch, sd, joycon)
       clearSelectionInStep(stepId);
       option.classList.add('selected');
     }
 
-    // Sauvegarde sélection
     switch(stepId) {
       case 'step1':
         selections.switch = option.dataset;
@@ -227,7 +223,6 @@
         selections.joycon = option.dataset;
         break;
       case 'step4':
-        // récupère tous les accessoires sélectionnés
         const selectedAcc = Array.from(document.querySelectorAll('#step4 .option.selected'));
         selections.accessory = selectedAcc.map(el => el.dataset);
         break;
@@ -244,63 +239,35 @@
   }
 
   function formatPrice(price) {
-    return Number(price).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
+    return Number(price).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
   }
 
-  function generateSummaryText() {
-    let lines = [];
-    lines.push("✅ Résumé de commande\n");
-    // Switch
+  function showSummary() {
+    let total = 0;
+    let text = 'Résumé de ta configuration :\n\n';
+
     if (selections.switch) {
-      lines.push(`${selections.switch.name} x1`.padEnd(30) + formatPrice(selections.switch.price));
-      if(selections.switch.name.toLowerCase().includes('v1')) {
-        lines.push("  (manque SD) + puce");
-      }
+      total += parseFloat(selections.switch.price);
+      text += `Switch : ${selections.switch.name} - ${formatPrice(selections.switch.price)}\n`;
     }
-    // SD
     if (selections.sd) {
-      lines.push(`${selections.sd.name}`.padEnd(30) + formatPrice(selections.sd.price));
+      total += parseFloat(selections.sd.price);
+      text += `Carte SD : ${selections.sd.name} - ${formatPrice(selections.sd.price)}\n`;
     }
-    // Joycon
     if (selections.joycon) {
-      lines.push(`${selections.joycon.name} x1`.padEnd(30) + formatPrice(selections.joycon.price));
+      total += parseFloat(selections.joycon.price);
+      text += `Joy-Con : ${selections.joycon.name} - ${formatPrice(selections.joycon.price)}\n`;
     }
-    // Accessoires
-    selections.accessory.forEach(acc => {
-      lines.push(`${acc.name}`.padEnd(30) + formatPrice(acc.price));
-    });
-
-    const total = [selections.switch, selections.sd, selections.joycon]
-      .concat(selections.accessory)
-      .reduce((acc, cur) => acc + Number(cur.price), 0);
-
-    lines.push("\n" + "TOTAL".padStart(35) + "   " + formatPrice(total));
-    return lines.join("\n");
-  }
-
-  function generateImageFromSummary(text) {
-    // On crée un canvas et on dessine le texte dessus
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    // canvas taille fixe (largeur/hauteur)
-    canvas.width = 400;
-    canvas.height = 320;
-
-    // fond blanc
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // texte noir
-    ctx.fillStyle = 'black';
-    ctx.font = '16px Courier New';
-    const lineHeight = 22;
-    const lines = text.split('\n');
-    for (let i=0; i<lines.length; i++) {
-      ctx.fillText(lines[i], 10, 30 + i * lineHeight);
+    if (selections.accessory.length > 0) {
+      selections.accessory.forEach(acc => {
+        total += parseFloat(acc.price);
+        text += `Accessoire : ${acc.name} - ${formatPrice(acc.price)}\n`;
+      });
     }
+    text += `\nPrix total : ${formatPrice(total)}`;
 
-    return canvas.toDataURL('image/png');
+    summaryDiv.textContent = text;
+    summaryDiv.style.display = 'block';
   }
 
   nextBtn.addEventListener('click', () => {
@@ -308,26 +275,19 @@
       currentStep++;
       showStep(currentStep);
     } else {
-      // Valider ma liste => télécharger image résumé
-      const summaryText = generateSummaryText();
-      const dataUrl = generateImageFromSummary(summaryText);
-
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = 'resume_commande.png';
-      a.click();
+      showSummary();
+      nextBtn.disabled = true;
     }
   });
 
-  // initialisation
-  showStep(0);
-
-  // ajoute gestion clic sur options
-  ['switch-options', 'sd-options', 'joycon-options', 'accessory-options'].forEach(id => {
-    document.getElementById(id).querySelectorAll('.option').forEach(el => {
-      el.addEventListener('click', selectOption);
+  // Add click handlers for options
+  steps.forEach(stepId => {
+    document.querySelectorAll(`#${stepId} .option`).forEach(option => {
+      option.addEventListener('click', selectOption);
     });
   });
+
+  showStep(currentStep);
 </script>
 
 </body>
