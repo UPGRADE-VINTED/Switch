@@ -44,10 +44,11 @@
       padding: 1rem;
       background: #fff;
       border-radius: 10px;
-      text-align: left;
+      white-space: pre-line; /* Garde la mise en forme du texte */
       font-family: monospace;
-      white-space: pre-line;
-      line-height: 1.4;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      max-width: 600px;
     }
     select, button {
       margin-top: 5px;
@@ -72,6 +73,7 @@
       height: 18px;
       margin-right: 8px;
       position: relative;
+      vertical-align: middle;
     }
     label.forced-checkbox .checkmark::after {
       content: "✓";
@@ -165,7 +167,7 @@
 
       <label class="forced-checkbox" title="Puce HWFLY installée par défaut">
         <span class="checkmark"></span>
-        ✅ Puce HWFLY (0€) – toujours installée avec soin sur sa dernière version avec les dernières mises à jour atmosphère.
+        Puce HWFLY (0€) – toujours installée avec soin sur sa dernière version avec les dernières mises à jour atmosphère.
       </label>
 
       <h3>💾 Carte microSD</h3>
@@ -195,7 +197,7 @@
           <div>
             <span class="joycon-color joycon-jaunen"></span>
             <span class="joycon-color joycon-violet"></span>
-            Joy-Con jaune/violet (2 en stock)
+            Joy-Con jaune/violet (1 en stock)
           </div>
           <div class="qty-buttons">
             <button onclick="updateQty('joycon_violet', -1)">−</button>
@@ -217,7 +219,7 @@
           </div>
         </div>
 
-        <div class="joycon-row" style="display:none;">
+        <div class="joycon-row" style="display:none">
           <div>
             <span class="joycon-color joycon-gris"></span>
             <span class="joycon-color joycon-gris"></span>
@@ -267,8 +269,7 @@
       joycon_vert_rose: 2,
       joycon_gris: 0,
       joycon_jaune: 1,
-      joycon_violet: 1,
-      joycon_jaunen: 2
+      joycon_violet: 1
     };
 
     const images = {
@@ -278,18 +279,30 @@
       switch_v1_ok: 'https://i.imgur.com/p5yO1kM.png',
       switch_v1_excellent: 'https://i.imgur.com/p5yO1kM.png',
       sd128: 'https://i.imgur.com/ZRiCDLr.jpeg',
-      sd256: 'https://i.imgur.com/ZRiCDLr.jpegg',
+      sd256: 'https://i.imgur.com/ZRiCDLr.jpeg',
       sd512: 'https://i.imgur.com/a3M2P8z.png',
       chargeur: 'https://i.imgur.com/QylodKV.jpeg',
       cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
-      chargeur_joycon: 'https://i.imgur.com/fkqQri5.jpeg',
+      chargeur_joycon: 'https://i.imgur.com/ykoJVmG.png',
       joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
       joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
       joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
       joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
-      joycon_violet: 'https://i.imgur.com/e9QgCj9.png',
-      joycon_jaunen: 'https://i.imgur.com/e9QgCj9.png'
+      joycon_violet: 'https://i.imgur.com/HnrlZdX.png'
     };
+
+    // Masquer joycons avec stock = 0 au chargement
+    window.addEventListener('DOMContentLoaded', () => {
+      for(const key in stockJoycon) {
+        if(stockJoycon[key] === 0) {
+          const row = document.getElementById(key + '_row');
+          if(row) row.style.display = 'none';
+          // Ici on masque aussi les lignes par leur classe joycon-row et data-key
+          // Mais dans ce code on a pas mis d'id, on va ajouter ça dans le HTML.
+        }
+      }
+      updateConfig();
+    });
 
     function toggleJoyconOptions() {
       const container = document.getElementById('joyconOptions');
@@ -300,7 +313,6 @@
       }
     }
 
-    // + / - gestion quantité Joy-Con avec respect du stock
     function updateQty(key, delta) {
       const span = document.getElementById(`${key}_qty`);
       let qty = parseInt(span.innerText);
@@ -309,7 +321,6 @@
       updateConfig();
     }
 
-    // Mise à jour prévisualisation + total
     function updateConfig() {
       const imageDiv = document.getElementById('images');
       imageDiv.innerHTML = '';
@@ -319,13 +330,16 @@
       const switchOption = document.getElementById('switchSelect').value.split('|');
       const switchName = switchOption[0];
       const switchPrice = parseInt(switchOption[1]);
+      const switchImgKey = switchOption[2];
       if (!isNaN(switchPrice)) total += switchPrice;
-      addImage(switchOption[2]);
+      addImage(switchImgKey);
 
       // Joycons : 1ère paire 35€, suivantes 30€
       let index = 0;
+      const joyconsQty = {};
       for(const key in stockJoycon) {
         const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
+        joyconsQty[key] = qty;
         for(let i=0; i<qty; i++) {
           total += (index === 0) ? 35 : 30;
           addImage(key);
@@ -337,73 +351,66 @@
       const sd = document.getElementById('sdSelect').value.split('|');
       const sdName = sd[0];
       const sdPrice = parseInt(sd[1]);
+      const sdImgKey = sd[2];
       if (!isNaN(sdPrice)) total += sdPrice;
-      addImage(sd[2]);
+      addImage(sdImgKey);
 
       // Accessoires cochés
       const accessoires = [];
-      document.querySelectorAll('input[type=checkbox]').forEach(el => {
-        if(el.checked && el.getAttribute('data-img')) {
-          const val = parseInt(el.value);
-          if (!isNaN(val)) total += val;
-          addImage(el.getAttribute('data-img'));
-          accessoires.push({name: el.parentNode.innerText.trim(), price: val});
-        }
+      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
+        const val = parseInt(el.value);
+        if (!isNaN(val)) total += val;
+        addImage(el.getAttribute('data-img'));
+        accessoires.push({
+          name: el.parentNode.textContent.trim(),
+          price: val
+        });
       });
 
       document.getElementById('total').innerText = 'Total : ' + total + '€';
 
-      // Enregistrer résumé dans variable globale
+      // Met à jour la commande pour résumé
       window.currentOrder = {
         switch: {name: switchName, price: switchPrice},
         sd: {name: sdName, price: sdPrice},
-        joycons: {},
+        joycons: joyconsQty,
         accessoires: accessoires,
         total: total
       };
-      // ajouter quantité joycons
-      for(const key in stockJoycon) {
-        const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
-        if(qty>0) window.currentOrder.joycons[key] = qty;
-      }
 
       function addImage(key) {
+        if(!key || !(key in images)) return;
         const img = document.createElement('img');
         img.src = images[key];
         imageDiv.appendChild(img);
       }
     }
 
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', () => {
-      updateConfig();
-    });
-
-    // Valider commande : afficher code + résumé "ticket caisse"
     function validerCommande() {
       const code = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
       const summary = document.getElementById('summary');
 
-      // Création résumé texte
       let textSummary = `✅ Résumé de commande\nCode : ${code}\n\n`;
       textSummary += `Console : ${window.currentOrder.switch.name} — ${window.currentOrder.switch.price}€\n`;
       textSummary += `Carte SD : ${window.currentOrder.sd.name} — ${window.currentOrder.sd.price}€\n`;
 
-      if(Object.keys(window.currentOrder.joycons).length > 0) {
-        textSummary += `Joy-Cons :\n`;
-        let joyconIndex = 0;
-        for(const key in window.currentOrder.joycons) {
-          const qty = window.currentOrder.joycons[key];
+      textSummary += "Joy-Cons :\n";
+      let index = 0;
+      for(const key in window.currentOrder.joycons) {
+        let qty = window.currentOrder.joycons[key];
+        if(qty > 0) {
           for(let i=0; i<qty; i++) {
-            const price = (joyconIndex === 0) ? 35 : 30;
-            textSummary += ` - ${key.replace(/_/g,' ')} x1 : ${price}€\n`;
-            joyconIndex++;
+            let price = (index === 0) ? 35 : 30;
+            // Nom plus lisible
+            let joyconName = key.replace(/_/g,' ').replace('joycon ', 'Joy-Con ');
+            textSummary += ` - ${joyconName} x1 : ${price}€\n`;
+            index++;
           }
         }
       }
 
       if(window.currentOrder.accessoires.length > 0) {
-        textSummary += `Accessoires :\n`;
+        textSummary += "Accessoires :\n";
         window.currentOrder.accessoires.forEach(acc => {
           textSummary += ` - ${acc.name} : ${acc.price}€\n`;
         });
@@ -412,6 +419,7 @@
       textSummary += `\nTotal à payer : ${window.currentOrder.total}€`;
 
       summary.innerText = textSummary;
+      summary.scrollIntoView({behavior: 'smooth'});
     }
   </script>
 </body>
