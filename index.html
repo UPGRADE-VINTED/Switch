@@ -1,346 +1,74 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Commande Joy-Con et Accessoires</title>
-  <style>
-    body {
-      font-family: 'Courier New', monospace;
-      margin: 1rem;
-      background: #f5f5f5;
-      color: #222;
+<style>
+  /* Galerie images */
+  #images img {
+    width: 180px;
+    margin: 8px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+  }
+  #images img:hover {
+    transform: scale(1.05);
+    border-color: #007bff;
+  }
+
+  /* Lightbox fond sombre */
+  #lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Image lightbox */
+  #lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.7);
+  }
+
+  /* Bouton fermer lightbox */
+  #lightbox .close-btn {
+    position: absolute;
+    top: 20px; right: 30px;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+  }
+</style>
+
+<!-- Ajoute ça juste avant la fin de body -->
+<div id="lightbox" onclick="closeLightbox(event)">
+  <span class="close-btn" aria-label="Fermer la vue agrandie">&times;</span>
+  <img src="" alt="Image agrandie" />
+</div>
+
+<script>
+  // Ouvrir l'image en lightbox
+  document.getElementById('images').addEventListener('click', function(e) {
+    if (e.target.tagName === 'IMG') {
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = lightbox.querySelector('img');
+      lbImg.src = e.target.src;
+      lbImg.alt = e.target.alt;
+      lightbox.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Bloque scroll page quand lightbox ouverte
     }
-    h1 {
-      text-align: center;
+  });
+
+  // Fermer lightbox si clic sur fond ou bouton fermer
+  function closeLightbox(event) {
+    if (event.target.id === 'lightbox' || event.target.classList.contains('close-btn')) {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.style.display = 'none';
+      document.body.style.overflow = ''; // Restore scroll
     }
-    .config {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 0 8px #ccc;
-    }
-    label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.4rem;
-    }
-    input[type=number] {
-      width: 3rem;
-      font-size: 1rem;
-      padding: 0.2rem;
-      margin: 0 0.5rem;
-      text-align: center;
-    }
-    button {
-      font-weight: bold;
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 0.25rem 0.6rem;
-      margin: 0 0.2rem;
-      font-size: 1.1rem;
-      cursor: pointer;
-      border-radius: 4px;
-      user-select: none;
-      transition: background-color 0.3s ease;
-    }
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      color: #666;
-    }
-    button:hover:not(:disabled) {
-      background: #0056b3;
-    }
-    #summary {
-      white-space: pre-wrap;
-      background: #222;
-      color: #d1d1d1;
-      font-size: 14px;
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 4px;
-      font-family: 'Courier New', monospace;
-      max-height: 300px;
-      overflow-y: auto;
-      user-select: text;
-    }
-    #images {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 1rem;
-    }
-    #images img {
-      width: 100px;
-      height: auto;
-      cursor: pointer;
-      border-radius: 4px;
-      box-shadow: 0 0 6px #aaa;
-      transition: transform 0.2s ease;
-      object-fit: contain;
-    }
-    #images img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px #007bff;
-    }
-
-    /* Lightbox overlay */
-    #lightboxOverlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      cursor: zoom-out;
-    }
-    #lightboxOverlay img {
-      max-width: 90vw;
-      max-height: 90vh;
-      border-radius: 6px;
-      box-shadow: 0 0 20px #000;
-    }
-
-    /* Responsive mobile */
-    @media (max-width: 480px) {
-      .config {
-        padding: 0.5rem;
-        max-width: 100%;
-      }
-      label {
-        flex-wrap: wrap;
-        font-size: 14px;
-      }
-      input[type=number] {
-        width: 2.5rem;
-        margin: 0.2rem 0.4rem 0.2rem 0;
-      }
-      button {
-        font-size: 1rem;
-        padding: 0.2rem 0.5rem;
-        margin: 0 0.15rem 0.15rem 0;
-      }
-      #summary {
-        font-size: 12px;
-        max-height: 250px;
-      }
-      #images img {
-        width: 80px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <h1>Commande Joy-Con et Accessoires</h1>
-  <div class="config" role="form" aria-label="Configuration commande">
-    <div>
-      <label for="joycon_left">
-        Joy-Con gauche (1ère paire 40€ / suivantes 30€)
-        <span>
-          <button aria-label="Retirer un Joy-Con gauche" onclick="changeQty('joycon_left', -1)" id="joycon_left_minus">-</button>
-          <input type="number" id="joycon_left" min="0" max="10" value="0" readonly aria-live="polite" />
-          <button aria-label="Ajouter un Joy-Con gauche" onclick="changeQty('joycon_left', +1)" id="joycon_left_plus">+</button>
-        </span>
-      </label>
-    </div>
-    <div>
-      <label for="joycon_right">
-        Joy-Con droit (1ère paire 40€ / suivantes 30€)
-        <span>
-          <button aria-label="Retirer un Joy-Con droit" onclick="changeQty('joycon_right', -1)" id="joycon_right_minus">-</button>
-          <input type="number" id="joycon_right" min="0" max="10" value="0" readonly aria-live="polite" />
-          <button aria-label="Ajouter un Joy-Con droit" onclick="changeQty('joycon_right', +1)" id="joycon_right_plus">+</button>
-        </span>
-      </label>
-    </div>
-
-    <hr />
-
-    <div>
-      <label for="sdcard">
-        Carte SD - 15€
-      </label>
-      <input type="checkbox" id="sdcard" value="15" onchange="updateConfig()" />
-    </div>
-
-    <div>
-      <label>
-        <input type="checkbox" value="10" onchange="updateConfig()" />
-        Chargeur USB - 10€
-      </label>
-    </div>
-    <div>
-      <label>
-        <input type="checkbox" value="20" onchange="updateConfig()" />
-        Étui de protection - 20€
-      </label>
-    </div>
-
-    <button onclick="validerCommande()" aria-label="Valider la commande">Valider</button>
-
-    <pre id="summary" aria-live="polite" tabindex="0"></pre>
-    <div id="images" aria-label="Images des produits">
-      <!-- Images insérées par JS -->
-    </div>
-  </div>
-
-  <!-- Lightbox overlay -->
-  <div id="lightboxOverlay" role="dialog" aria-modal="true" tabindex="-1">
-    <img src="" alt="Aperçu agrandi du produit" />
-  </div>
-
-  <script>
-    const images = {
-      joycon_left: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Nintendo_Switch_Joy-Con_Left.png/200px-Nintendo_Switch_Joy-Con_Left.png',
-      joycon_right: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Nintendo_Switch_Joy-Con_Right.png/200px-Nintendo_Switch_Joy-Con_Right.png',
-      sdcard: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Secure_Digital_Card_-_SD_Card.png/200px-Secure_Digital_Card_-_SD_Card.png',
-      charger: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/USB_charger_icon.svg/200px-USB_charger_icon.svg.png',
-      case: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Protection_case_icon.svg/200px-Protection_case_icon.svg.png',
-    };
-
-    function changeQty(key, delta) {
-      const input = document.getElementById(key);
-      if (!input) return;
-      let val = parseInt(input.value);
-      val = isNaN(val) ? 0 : val;
-      val += delta;
-      if (val < 0) val = 0;
-      if (val > 10) val = 10;
-      input.value = val;
-      updateConfig();
-    }
-
-    function updateConfig() {
-      let total = 0;
-      let summaryText = "Résumé de votre commande :\n\n";
-
-      // Joy-Con gauche
-      const leftQty = parseInt(document.getElementById('joycon_left').value) || 0;
-      let leftPrice = 0;
-      if (leftQty > 0) {
-        leftPrice = 40 + (leftQty - 1) * 30;
-        total += leftPrice;
-        summaryText += `- Joy-Con gauche      x${leftQty}  ${leftPrice.toString().padStart(4)} €\n`;
-      }
-
-      // Joy-Con droit
-      const rightQty = parseInt(document.getElementById('joycon_right').value) || 0;
-      let rightPrice = 0;
-      if (rightQty > 0) {
-        rightPrice = 40 + (rightQty - 1) * 30;
-        total += rightPrice;
-        summaryText += `- Joy-Con droit       x${rightQty}  ${rightPrice.toString().padStart(4)} €\n`;
-      }
-
-      // Carte SD
-      const sdChecked = document.getElementById('sdcard').checked;
-      if (sdChecked) {
-        total += 15;
-        summaryText += `- Carte SD              15 €\n`;
-      }
-
-      // Accessoires divers
-      const accCheckboxes = document.querySelectorAll('.config input[type=checkbox]:not(#sdcard)');
-      let accTotal = 0;
-      let accNames = [];
-      accCheckboxes.forEach(cb => {
-        if (cb.checked) {
-          accTotal += parseInt(cb.value);
-          accNames.push(cb.parentNode.textContent.trim());
-        }
-      });
-      if (accNames.length > 0) {
-        summaryText += '\nAccessoires :\n';
-        accNames.forEach(name => {
-          summaryText += `  - ${name}\n`;
-        });
-        summaryText += `  Total accessoires : ${accTotal} €\n`;
-        total += accTotal;
-      }
-
-      summaryText += `\n==============================\nTotal général : ${total} €\n==============================`;
-
-      document.getElementById('summary').textContent = summaryText;
-      updateImages(leftQty, rightQty, sdChecked, accCheckboxes);
-    }
-
-    function updateImages(leftQty, rightQty, sdChecked, accCheckboxes) {
-      const container = document.getElementById('images');
-      container.innerHTML = '';
-
-      if (leftQty > 0) addImage('joycon_left');
-      if (rightQty > 0) addImage('joycon_right');
-      if (sdChecked) addImage('sdcard');
-
-      accCheckboxes.forEach(cb => {
-        if (cb.checked) {
-          // Trouver clé image par texte, simple approximation:
-          const txt = cb.parentNode.textContent.toLowerCase();
-          if (txt.includes('chargeur')) addImage('charger');
-          else if (txt.includes('étui')) addImage('case');
-        }
-      });
-    }
-
-    function addImage(key) {
-      if (!images[key]) return;
-      const img = document.createElement('img');
-      img.src = images[key];
-      img.alt = `Image du produit : ${key}`;
-      img.loading = 'lazy';
-      img.tabIndex = 0; // focusable au clavier
-      img.style.border = '1px solid #ccc';
-      img.addEventListener('click', () => openLightbox(images[key]));
-      img.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          openLightbox(images[key]);
-        }
-      });
-      document.getElementById('images').appendChild(img);
-    }
-
-    function openLightbox(src) {
-      const overlay = document.getElementById('lightboxOverlay');
-      const img = overlay.querySelector('img');
-      img.src = src;
-      overlay.style.display = 'flex';
-      overlay.focus();
-    }
-
-    function closeLightbox() {
-      const overlay = document.getElementById('lightboxOverlay');
-      overlay.style.display = 'none';
-      const img = overlay.querySelector('img');
-      img.src = '';
-    }
-
-    document.getElementById('lightboxOverlay').addEventListener('click', closeLightbox);
-    document.getElementById('lightboxOverlay').addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeLightbox();
-    });
-
-    function validerCommande() {
-      const summary = document.getElementById('summary').textContent;
-      const blob = new Blob([summary], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'commande_joycon.txt';
-      a.click();
-      URL.revokeObjectURL(url);
-      alert("Votre commande a été exportée en fichier texte.");
-    }
-
-    // Initialisation
-    updateConfig();
-  </script>
-</body>
-</html>
+  }
+</script>
