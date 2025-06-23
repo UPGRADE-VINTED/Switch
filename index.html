@@ -2,151 +2,428 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Configurateur Switch</title>
 <style>
-  .step { display: none; margin: 20px 0; }
-  .step.active { display: block; }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h2 {
+    margin-bottom: 10px;
+  }
+  .step {
+    display: none;
+    margin-bottom: 20px;
+  }
+  .step.active {
+    display: block;
+  }
+  .switches {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
   .switches img {
-    width: 120px;
-    margin: 0 10px;
+    width: 140px;
+    border: 3px solid transparent;
+    border-radius: 10px;
     cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 8px;
     transition: border-color 0.3s;
   }
   .switches img.selected {
     border-color: #007BFF;
   }
+  /* Cartes SD radio */
+  .sd-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .sd-option input[type="radio"] {
+    margin-right: 10px;
+  }
+
+  /* JoyCon liste */
+  .joycon-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+  .joycon-color {
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .joycon-rouge { background: linear-gradient(135deg, #FF4B4B, #B70000);}
+  .joycon-bleu { background: linear-gradient(135deg, #4B7BFF, #003AB7);}
+  .joycon-jaune { background: linear-gradient(135deg, #FFE24B, #B7A500);}
+  .joycon-vert { background: linear-gradient(135deg, #4BFF69, #00B72A);}
+  .joycon-gris { background: linear-gradient(135deg, #AAA, #777);}
+  
+  /* Boutons + et - */
+  .btn-qty {
+    background-color: #007BFF;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 2px 10px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-qty:disabled {
+    background-color: #ccc;
+    cursor: default;
+  }
+  .qty-display {
+    min-width: 24px;
+    text-align: center;
+  }
+  
+  /* Accessoires */
+  .accessoires-list label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .accessoires-list img {
+    width: 50px;
+    height: 40px;
+    margin-right: 12px;
+    object-fit: contain;
+  }
+  .accessoires-list input[type="checkbox"] {
+    margin-right: 8px;
+  }
+
+  /* Résumé ticket */
+  #summary-ticket {
+    white-space: pre-line;
+    background: #f7f7f7;
+    border: 1px solid #ddd;
+    padding: 15px 20px;
+    font-family: monospace;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  /* Boutons navigation */
+  #btn-next, #btn-validate {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 10px 16px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  #btn-validate {
+    background-color: #28a745;
+  }
+
+  /* Responsive mobile */
+  @media (max-width: 480px) {
+    .switches img {
+      width: 100px;
+    }
+    .joycon-item {
+      font-size: 14px;
+    }
+  }
 </style>
 </head>
 <body>
 
-<h2>1. Choisissez votre Switch</h2>
-<div id="step-switch" class="step active switches">
-  <img src="switch1.jpg" alt="Switch 1" data-name="Switch 1" />
-  <img src="switch2.jpg" alt="Switch 2" data-name="Switch 2" />
-  <img src="switch3.jpg" alt="Switch 3" data-name="Switch 3" />
-  <img src="switch4.jpg" alt="Switch 4" data-name="Switch 4" />
-  <img src="switch5.jpg" alt="Switch 5" data-name="Switch 5" />
-  <img src="switch6.jpg" alt="Switch 6" data-name="Switch 6" />
+<h1>Configurateur Switch</h1>
+
+<!-- Étape 1 - Choix Switch -->
+<div id="step-switch" class="step active">
+  <h2>1. Choisissez votre Switch</h2>
+  <div class="switches">
+    <img src="https://via.placeholder.com/140x80?text=Switch+V1" alt="Switch V1" data-name="Switch V1" data-price="140" />
+    <img src="https://via.placeholder.com/140x80?text=Switch+V2" alt="Switch V2" data-name="Switch V2 - état impeccable" data-price="190" />
+    <img src="https://via.placeholder.com/140x80?text=Switch+V3" alt="Switch V3" data-name="Switch V3" data-price="150" />
+    <img src="https://via.placeholder.com/140x80?text=Switch+V4" alt="Switch V4" data-name="Switch V4" data-price="170" />
+    <img src="https://via.placeholder.com/140x80?text=Switch+V5" alt="Switch V5" data-name="Switch V5" data-price="160" />
+    <img src="https://via.placeholder.com/140x80?text=Switch+V6" alt="Switch V6" data-name="Switch V6" data-price="155" />
+  </div>
 </div>
 
+<!-- Étape 2 - Carte SD -->
 <div id="step-sd" class="step">
   <h2>2. Choisissez votre carte SD</h2>
-  <label><input type="radio" name="sd" value="128" /> 128 Go (environ 10 jeux) - 50 €</label><br />
-  <label><input type="radio" name="sd" value="256" /> 256 Go (environ 18 jeux) - 90 €</label>
+  <label class="sd-option"><input type="radio" name="sd" value="128" data-price="0" checked /> 128 Go (environ 10 jeux) - 0 € (incluse)</label>
+  <label class="sd-option"><input type="radio" name="sd" value="256" data-price="30" /> 256 Go (environ 18 jeux) - 30 €</label>
 </div>
 
+<!-- Étape 3 - Joy-Con -->
 <div id="step-joycon" class="step">
   <h2>3. Choisissez vos Joy-Con</h2>
-  <label><input type="number" id="joycon-pair" min="0" max="4" value="0" /> Paires de Joy-Con (40€ la 1ère paire, 30€ les suivantes)</label>
+  
+  <div class="joycon-item" data-name="Joy-Con rouge/bleu" data-price="35">
+    <div style="display:flex; align-items:center;">
+      <div class="joycon-color joycon-rouge"></div>
+      <div class="joycon-color joycon-bleu"></div>
+      Joy-Con rouge/bleu
+    </div>
+    <div>
+      <button class="btn-qty" data-action="minus" data-target="joycon-rb" disabled>-</button>
+      <span id="joycon-rb" class="qty-display">0</span>
+      <button class="btn-qty" data-action="plus" data-target="joycon-rb">+</button>
+      x35 €
+    </div>
+  </div>
+  
+  <div class="joycon-item" data-name="Joy-Con jaune/vert" data-price="30">
+    <div style="display:flex; align-items:center;">
+      <div class="joycon-color joycon-jaune"></div>
+      <div class="joycon-color joycon-vert"></div>
+      Joy-Con jaune/vert
+    </div>
+    <div>
+      <button class="btn-qty" data-action="minus" data-target="joycon-jv" disabled>-</button>
+      <span id="joycon-jv" class="qty-display">0</span>
+      <button class="btn-qty" data-action="plus" data-target="joycon-jv">+</button>
+      x30 €
+    </div>
+  </div>
+  
+  <div class="joycon-item" data-name="Joy-Con gris" data-price="25">
+    <div style="display:flex; align-items:center;">
+      <div class="joycon-color joycon-gris"></div>
+      Joy-Con gris
+    </div>
+    <div>
+      <button class="btn-qty" data-action="minus" data-target="joycon-gris" disabled>-</button>
+      <span id="joycon-gris" class="qty-display">0</span>
+      <button class="btn-qty" data-action="plus" data-target="joycon-gris">+</button>
+      x25 €
+    </div>
+  </div>
 </div>
 
+<!-- Étape 4 - Accessoires -->
 <div id="step-accessoires" class="step">
   <h2>4. Choisissez vos accessoires</h2>
-  <label><input type="checkbox" value="15" /> Étui de protection (15 €)</label><br />
-  <label><input type="checkbox" value="20" /> Chargeur (20 €)</label><br />
-  <label><input type="checkbox" value="10" /> Câble HDMI (10 €)</label>
+  <div class="accessoires-list">
+    <label>
+      <input type="checkbox" data-price="10" data-name="Câble HDMI (5€)" />
+      <img src="https://via.placeholder.com/50x40?text=HDMI" alt="HDMI" /> Câble HDMI (5€)
+    </label>
+    <label>
+      <input type="checkbox" data-price="15" data-name="Étui de protection" />
+      <img src="https://via.placeholder.com/50x40?text=Etui" alt="Etui" /> Étui de protection (15 €)
+    </label>
+    <label>
+      <input type="checkbox" data-price="20" data-name="Chargeur" />
+      <img src="https://via.placeholder.com/50x40?text=Chargeur" alt="Chargeur" /> Chargeur (20 €)
+    </label>
+  </div>
 </div>
 
-<button id="btn-next" style="margin-top:20px;">Suivant</button>
+<!-- Bouton navigation -->
+<button id="btn-next">Suivant</button>
+<button id="btn-validate" style="display:none;">Valider ma liste</button>
 
-<h2>Résumé</h2>
-<pre id="summary"></pre>
+<!-- Résumé -->
+<h2>Résumé de commande</h2>
+<pre id="summary-ticket"></pre>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
-  const stepSwitch = document.getElementById('step-switch');
-  const stepSD = document.getElementById('step-sd');
-  const stepJoycon = document.getElementById('step-joycon');
-  const stepAccessoires = document.getElementById('step-accessoires');
+  const steps = [
+    document.getElementById('step-switch'),
+    document.getElementById('step-sd'),
+    document.getElementById('step-joycon'),
+    document.getElementById('step-accessoires')
+  ];
   const btnNext = document.getElementById('btn-next');
-  const summary = document.getElementById('summary');
+  const btnValidate = document.getElementById('btn-validate');
+  const summaryTicket = document.getElementById('summary-ticket');
 
-  let currentStep = 1;
-  let choix = {
+  let currentStep = 0;
+
+  // Données sélectionnées
+  const choix = {
     switch: null,
-    sd: null,
-    joycon: 0,
+    switchPrice: 0,
+    sd: '128',
+    sdPrice: 0,
+    joycon: {
+      'joycon-rb': 0,
+      'joycon-jv': 0,
+      'joycon-gris': 0
+    },
+    joyconPrices: {
+      'joycon-rb': 35,
+      'joycon-jv': 30,
+      'joycon-gris': 25
+    },
     accessoires: []
   };
 
-  // Gestion choix switch
-  stepSwitch.querySelectorAll('img').forEach(img => {
+  // Gestion sélection Switch
+  steps[0].querySelectorAll('img').forEach(img => {
     img.addEventListener('click', () => {
-      // Deselect all
-      stepSwitch.querySelectorAll('img').forEach(i => i.classList.remove('selected'));
-      // Select clicked
+      steps[0].querySelectorAll('img').forEach(i => i.classList.remove('selected'));
       img.classList.add('selected');
       choix.switch = img.getAttribute('data-name');
+      choix.switchPrice = parseInt(img.getAttribute('data-price'));
     });
   });
 
+  // Gestion boutons +/- JoyCon
+  document.querySelectorAll('.btn-qty').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      const action = btn.getAttribute('data-action');
+      let currentQty = choix.joycon[target];
+
+      if(action === 'plus') {
+        choix.joycon[target] = currentQty + 1;
+      } else if(action === 'minus' && currentQty > 0) {
+        choix.joycon[target] = currentQty - 1;
+      }
+      updateJoyconQty(target);
+    });
+  });
+
+  function updateJoyconQty(target) {
+    const display = document.getElementById(target);
+    display.textContent = choix.joycon[target];
+    const minusBtn = document.querySelector(`.btn-qty[data-target="${target}"][data-action="minus"]`);
+    minusBtn.disabled = choix.joycon[target] === 0;
+  }
+
+  // Gestion bouton Next
   btnNext.addEventListener('click', () => {
-    if (currentStep === 1) {
-      if (!choix.switch) {
-        alert("Veuillez choisir une Switch.");
+    if(currentStep === 0) {
+      if(!choix.switch) {
+        alert('Veuillez choisir une Switch.');
         return;
       }
-      // Affiche étape 2
-      stepSwitch.classList.remove('active');
-      stepSD.classList.add('active');
+      // Passer à SD
+      steps[0].classList.remove('active');
+      steps[1].classList.add('active');
       currentStep++;
-    } else if (currentStep === 2) {
-      const selectedSD = document.querySelector('input[name="sd"]:checked');
-      if (!selectedSD) {
-        alert("Veuillez choisir une carte SD.");
+    } else if(currentStep === 1) {
+      const sdRadio = document.querySelector('input[name="sd"]:checked');
+      if(!sdRadio) {
+        alert('Veuillez choisir une carte SD.');
         return;
       }
-      choix.sd = selectedSD.value;
-      stepSD.classList.remove('active');
-      stepJoycon.classList.add('active');
+      choix.sd = sdRadio.value;
+      choix.sdPrice = parseInt(sdRadio.getAttribute('data-price'));
+      // Passer à JoyCon
+      steps[1].classList.remove('active');
+      steps[2].classList.add('active');
       currentStep++;
-    } else if (currentStep === 3) {
-      const qty = parseInt(document.getElementById('joycon-pair').value) || 0;
-      choix.joycon = qty;
-      stepJoycon.classList.remove('active');
-      stepAccessoires.classList.add('active');
+    } else if(currentStep === 2) {
+      // Au moins un JoyCon ?
+      const totalJoycon = Object.values(choix.joycon).reduce((a,b) => a+b, 0);
+      if(totalJoycon === 0) {
+        if(!confirm("Vous n'avez sélectionné aucun Joy-Con. Continuer sans Joy-Con ?")) {
+          return;
+        }
+      }
+      steps[2].classList.remove('active');
+      steps[3].classList.add('active');
       currentStep++;
-    } else if (currentStep === 4) {
-      // Récupère accessoires cochés
-      const checked = stepAccessoires.querySelectorAll('input[type=checkbox]:checked');
-      choix.accessoires = [];
-      checked.forEach(el => {
-        choix.accessoires.push({name: el.parentNode.textContent.trim(), price: parseInt(el.value)});
-      });
       btnNext.style.display = 'none';
+      btnValidate.style.display = 'inline-block';
       afficherResume();
     }
   });
 
+  // Gestion bouton Valider
+  btnValidate.addEventListener('click', () => {
+    afficherResume();
+    html2canvas(summaryTicket).then(canvas => {
+      // Ouvre le résultat dans un nouvel onglet
+      const imgData = canvas.toDataURL('image/png');
+      const w = window.open('');
+      w.document.write('<title>Résumé commande</title>');
+      w.document.write(`<img src="${imgData}" style="max-width:100%"/>`);
+    });
+  });
+
+  // Gérer accessoires
+  document.querySelectorAll('.accessoires-list input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if(cb.checked) {
+        if(!choix.accessoires.includes(cb.getAttribute('data-name'))) {
+          choix.accessoires.push(cb.getAttribute('data-name'));
+        }
+      } else {
+        choix.accessoires = choix.accessoires.filter(a => a !== cb.getAttribute('data-name'));
+      }
+      afficherResume();
+    });
+  });
+
   function afficherResume() {
-    let total = 0;
-    let text = `Switch choisie : ${choix.switch}\n`;
-    
-    let prixSD = choix.sd === '128' ? 50 : 90;
-    text += `Carte SD : ${choix.sd} Go - ${prixSD} €\n`;
-    total += prixSD;
+    let texte = 'Résumé de votre commande :\n\n';
 
-    if (choix.joycon > 0) {
-      let prixJoycon = 40 + (choix.joycon - 1) * 30;
-      text += `Joy-Con : ${choix.joycon} paire(s) - ${prixJoycon} €\n`;
-      total += prixJoycon;
+    // Switch
+    texte += `Switch sélectionnée : ${choix.switch} - ${choix.switchPrice} €\n`;
+
+    // Carte SD
+    texte += `Carte SD : ${choix.sd} Go - ${choix.sdPrice} €\n\n`;
+
+    // Joy-Con
+    texte += 'Joy-Con :\n';
+    let totalJoycon = 0;
+    Object.entries(choix.joycon).forEach(([key, qty]) => {
+      if(qty > 0) {
+        let nom = '';
+        if(key === 'joycon-rb') nom = 'Rouge/Bleu';
+        else if(key === 'joycon-jv') nom = 'Jaune/Vert';
+        else if(key === 'joycon-gris') nom = 'Gris';
+        const prixUnitaire = choix.joyconPrices[key];
+        texte += ` - ${nom} x${qty} = ${qty * prixUnitaire} €\n`;
+        totalJoycon += qty * prixUnitaire;
+      }
+    });
+    if(totalJoycon === 0) texte += 'Aucun Joy-Con sélectionné\n';
+
+    texte += '\nAccessoires :\n';
+    if(choix.accessoires.length === 0) {
+      texte += 'Aucun accessoire sélectionné\n';
     } else {
-      text += `Joy-Con : Aucun\n`;
-    }
-
-    if (choix.accessoires.length > 0) {
-      text += `Accessoires :\n`;
       choix.accessoires.forEach(acc => {
-        text += `  - ${acc.name}\n`;
-        total += acc.price;
+        texte += ` - ${acc}\n`;
       });
-    } else {
-      text += `Accessoires : Aucun\n`;
     }
 
-    text += `\nTotal : ${total} €`;
-    summary.textContent = text;
+    // Calcul total
+    let total = choix.switchPrice + choix.sdPrice + totalJoycon;
+    // Ajouter prix accessoires
+    choix.accessoires.forEach(acc => {
+      // On récupère le prix dans le checkbox
+      const input = [...document.querySelectorAll('.accessoires-list input[type="checkbox"]')]
+                    .find(i => i.getAttribute('data-name') === acc);
+      if(input) total += parseInt(input.getAttribute('data-price'));
+    });
+
+    texte += `\nTOTAL : ${total} €`;
+
+    summaryTicket.textContent = texte;
   }
 </script>
 
