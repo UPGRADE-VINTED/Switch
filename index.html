@@ -1,299 +1,392 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Commande Switch - Résumé Ticket</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 10px;
-    background: #fafafa;
-  }
-  h1 {
-    text-align: center;
-  }
-  select, label {
-    font-size: 1rem;
-  }
-  #config {
-    margin-bottom: 1em;
-  }
-  #config > div {
-    margin-bottom: 1em;
-  }
-
-  /* Boutons + / - visibles et stylés */
-  .qty-buttons button {
-    width: 34px;
-    height: 34px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border: 1px solid #666;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    color: #000;
-    cursor: pointer;
-    margin: 0 5px;
-  }
-  .qty-buttons button:hover {
-    background-color: #e0e0e0;
-  }
-  .qty-display {
-    width: 28px;
-    text-align: center;
-    font-size: 1rem;
-    font-weight: bold;
-    display: inline-block;
-  }
-
-  /* Supprimer case grise indésirable (on ne crée pas dans HTML) */
-
-  /* Résumé ticket */
-  #summary {
-    border: 2px dashed #444;
-    background: #fff;
-    padding: 10px;
-    max-width: 400px;
-    margin: 10px auto;
-    white-space: pre-wrap;
-    font-family: monospace;
-    font-size: 14px;
-    color: #222;
-  }
-  #images {
-    text-align: center;
-    margin: 15px 0;
-  }
-  #images img {
-    max-height: 48px;
-    margin: 5px;
-  }
-
-  /* Bouton valider */
-  #btnValider {
-    display: block;
-    margin: 15px auto;
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    background: #2ecc71;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  #btnValider:hover {
-    background: #27ae60;
-  }
-
-  /* Responsive mobile */
-  @media (max-width: 480px) {
-    #summary {
-      max-width: 95vw;
-      font-size: 13px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upgrade choix Pack</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f0f0f0;
     }
-    .qty-buttons button {
-      width: 28px;
-      height: 28px;
+    .configurator {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .options {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      min-width: 320px;
+    }
+    .preview {
+      padding: 1rem;
+      background: white;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      flex: 1;
+    }
+    img {
+      width: 200px;
+      margin: 5px;
+    }
+    .total {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+    #summary {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      background: #fff;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      font-family: monospace;
       font-size: 1rem;
-      margin: 0 3px;
+      line-height: 1.3;
+      max-width: 400px;
+      border: 2px dashed #555;
+    }
+    select, button {
+      margin-top: 5px;
+      padding: 5px;
+      width: 100%;
+      font-size: 0.9rem;
+      line-height: 1.2;
+      height: 30px;
+    }
+    label.forced-checkbox {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      user-select: none;
+      cursor: default;
+    }
+    label.forced-checkbox input {
+      margin-right: 8px;
+      pointer-events: none;
+    }
+    .joycon-toggle {
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      user-select: none;
+      display: inline-block;
+      background: #ddd;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+    .joycon-toggle:hover {
+      background: #ccc;
+    }
+    #joyconOptions {
+      margin-top: 10px;
+      display: block; /* menu Joy-Con ouvert par défaut */
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fafafa;
+    }
+    .joycon-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .joycon-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .joycon-left { background-color: #e74c3c; }   /* rouge */
+    .joycon-right { background-color: #3498db; }  /* bleu */
+    .joycon-vert { background-color: #2ecc71; }
+    .joycon-rose { background-color: #e91e63; }
+    .joycon-gris { background-color: #7f8c8d; }
+    .joycon-jaune { background-color: #f1c40f; }
+    .joycon-zelda-R { background-color: #ffbf3b; }
+    .joycon-zelda-L { background-color: #ffbf3b; }
+    .joycon-jaunen { background-color: #ffcc3e; }
+    .joycon-violet { background-color: #ae37ff; }
+    .qty-buttons button {
+      width: 30px;
+      height: 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      line-height: 1;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 5px;
+      margin: 0 5px;
+      user-select: none;
     }
     .qty-display {
-      width: 24px;
-      font-size: 0.9rem;
+      min-width: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
     }
-  }
-</style>
+  </style>
 </head>
 <body>
+  <h1>🕹️ Préparer mon pack Switch modifiée</h1>
 
-<h1>Personnalisez votre commande Switch</h1>
+  <div class="configurator">
+    <div class="options">
+      <h3>🎮 Choix de la console</h3>
+      <select id="switchSelect" onchange="updateConfig()">
+        <option value="V2 - cache SD manquant|180|switch_v2_sd">V2 - cache SD manquant (180€)</option>
+        <option value="V2 - état impeccable|190|switch_v2_ok">V2 - état impeccable (190€)</option>
+        <option value="V1 - écran légèrement rayé|170|switch_v1_rayure">V1 - écran rayé (170€)</option>
+        <option value="V1 - bon état|180|switch_v1_ok">V1 - bon état (180€)</option>
+        <option value="V1 - excellent état|185|switch_v1_excellent">V1 - excellent état (185€)</option>
+      </select>
 
-<div id="config">
+      <label class="forced-checkbox" title="Case cochée et forcée">
+        <input type="checkbox" checked disabled />
+       ✅  Puce HWFLY (0€) – toujours installée avec soin sur sa dernière version avec les dernières mises à jour Atmosphère.
+      </label>
 
-  <!-- Console -->
-  <div>
-    <label for="switchSelect">Console :</label>
-    <select id="switchSelect" onchange="updateConfig()">
-      <option value="V2 - état impeccable|190|console">V2 - état impeccable — 190€</option>
-      <option value="V1 - bon état|140|console">V1 - bon état — 140€</option>
-    </select>
-  </div>
+      <h3>💾 Carte microSD</h3>
+      <select id="sdSelect" onchange="updateConfig()">
+        <option value="128|0|sd128">128 Go (Incluse)</option>
+        <option value="256|15|sd256">256 Go (+15€)</option>
+        <option value="512|35|sd512">512 Go (+35€)</option>
+      </select>
 
-  <!-- Carte SD -->
-  <div>
-    <label for="sdSelect">Carte SD :</label>
-    <select id="sdSelect" onchange="updateConfig()">
-      <option value="128 Go|0|sd">128 Go — 0€</option>
-      <option value="256 Go|15|sd">256 Go — 15€</option>
-      <option value="512 Go|35|sd">512 Go — 35€</option>
-    </select>
-  </div>
+      <div class="joycon-toggle" onclick="toggleJoyconOptions()">🎨 Joy-Con (quantité)</div>
 
-  <!-- Joy-Con -->
-  <div>
-    <label>Joy-Con :</label>
-    <div id="joyconList">
-      <div>
-        Rouge / Bleu
-        <span class="qty-buttons">
-          <button onclick="changeQty('joycon_rouge_bleu', -1)">−</button>
-          <span id="joycon_rouge_bleu_qty" class="qty-display">0</span>
-          <button onclick="changeQty('joycon_rouge_bleu', 1)">+</button>
-        </span>
-        <span>35€</span>
+      <div id="joyconOptions">
+        <div class="joycon-row">
+          <div>
+            <span class="joycon-color joycon-left"></span>
+            <span class="joycon-color joycon-right"></span>
+            Joy-Con Rouge/Bleu (3 en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('joycon_rouge_bleu', -1)">−</button>
+            <span id="joycon_rouge_bleu_qty" class="qty-display">0</span>
+            <button onclick="updateQty('joycon_rouge_bleu', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="joycon-row">
+          <div>
+            <span class="joycon-color joycon-jaunen"></span>
+            <span class="joycon-color joycon-violet"></span>
+            Joy-Con jaune/violet (2 en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('joycon_violet', -1)">−</button>
+            <span id="joycon_violet_qty" class="qty-display">0</span>
+            <button onclick="updateQty('joycon_violet', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="joycon-row">
+          <div>
+            <span class="joycon-color joycon-vert"></span>
+            <span class="joycon-color joycon-rose"></span>
+            Joy-Con Vert/Rose (2 en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('joycon_vert_rose', -1)">−</button>
+            <span id="joycon_vert_rose_qty" class="qty-display">0</span>
+            <button onclick="updateQty('joycon_vert_rose', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="joycon-row" style="display:none;">
+          <div>
+            <span class="joycon-color joycon-gris"></span>
+            <span class="joycon-color joycon-gris"></span>
+            Joy-Con Gris (0 en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('joycon_gris', -1)">−</button>
+            <span id="joycon_gris_qty" class="qty-display">0</span>
+            <button onclick="updateQty('joycon_gris', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="joycon-row">
+          <div>
+            <span class="joycon-color joycon-jaune"></span>
+            <span class="joycon-color joycon-jaune"></span>
+            Joy-Con Édition zelda (1 en stock)
+          </div>
+          <div class="qty-buttons">
+            <button onclick="updateQty('joycon_jaune', -1)">−</button>
+            <span id="joycon_jaune_qty" class="qty-display">0</span>
+            <button onclick="updateQty('joycon_jaune', 1)">+</button>
+          </div>
+        </div>
       </div>
-      <div>
-        Gris
-        <span class="qty-buttons">
-          <button onclick="changeQty('joycon_gris', -1)">−</button>
-          <span id="joycon_gris_qty" class="qty-display">0</span>
-          <button onclick="changeQty('joycon_gris', 1)">+</button>
-        </span>
-        <span>30€</span>
-      </div>
+
+      <h3>🔌 Accessoires</h3>
+      <label><input type="checkbox" value="10" data-img="chargeur" onchange="updateConfig()"> Chargeur secteur Switch (10€)</label><br>
+      <label><input type="checkbox" value="5" data-img="cable_hdmi" onchange="updateConfig()"> Câble HDMI (5€)</label><br>
+      <label><input type="checkbox" value="18" data-img="chargeur_joycon" onchange="updateConfig()"> Chargeur Joy-Con (18€)</label><br>
+
+      <br><button onclick="validerCommande()">✅ Valider ma liste</button>
+    </div>
+
+    <div class="preview" id="preview">
+      <h3>Prévisualisation</h3>
+      <div id="images"></div>
+      <div class="total" id="total">Total : 0€</div>
     </div>
   </div>
 
-  <!-- Puce HWFLY -->
-  <div>
-    <label>
-      <input type="checkbox" id="puceHWFLY" checked disabled />
-      Puce HWFLY (par défaut, obligatoire)
-    </label>
+  <div id="summary">
+    <!-- Résumé ticket ici -->
   </div>
 
-</div>
+  <script>
+    const stockJoycon = {
+      joycon_rouge_bleu: 3,
+      joycon_vert_rose: 2,
+      joycon_gris: 0,
+      joycon_jaune: 1,
+      joycon_violet: 2,
+    };
 
-<!-- Images associées -->
-<div id="images"></div>
+    const images = {
+      switch_v2_sd: 'https://i.imgur.com/XNzqOsB.jpeg',
+      switch_v2_ok: 'https://i.imgur.com/zKeTFqq.png',
+      switch_v1_rayure: 'https://i.imgur.com/p5yO1kM.png',
+      switch_v1_ok: 'https://i.imgur.com/p5yO1kM.png',
+      switch_v1_excellent: 'https://i.imgur.com/p5yO1kM.png',
+      sd128: 'https://i.imgur.com/ZRiCDLr.jpeg',
+      sd256: 'https://i.imgur.com/ZRiCDLr.jpeg',
+      sd512: 'https://i.imgur.com/a3M2P8z.png',
+      chargeur: 'https://i.imgur.com/QylodKV.jpeg',
+      cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
+      chargeur_joycon: 'https://i.imgur.com/2a17uZp.jpeg',
+      joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
+      joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
+      joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
+      joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
+      joycon_violet: 'https://i.imgur.com/edqgNwl.jpeg'
+    };
 
-<!-- Résumé commande -->
-<div id="summary">Prévisualisation...</div>
+    let currentCode = null;
 
-<!-- Total classique -->
-<div style="text-align:center; font-weight:bold; font-size:1.2rem;" id="total">Total : 0€</div>
+    function toggleJoyconOptions() {
+      const container = document.getElementById('joyconOptions');
+      container.style.display = (container.style.display === 'none' || container.style.display === '') ? 'block' : 'none';
+    }
 
-<button id="btnValider" onclick="validerCommande()">Valider ma liste</button>
+    function updateQty(key, delta) {
+      const span = document.getElementById(`${key}_qty`);
+      let qty = parseInt(span.innerText);
+      qty = Math.max(0, Math.min(qty + delta, stockJoycon[key]));
+      span.innerText = qty;
+      updateConfig();
+    }
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<script>
-  // Images associées (exemples - remplace par tes propres liens)
-  const images = {
-    'console': 'https://cdn-icons-png.flaticon.com/512/642/642140.png',
-    'sd': 'https://cdn-icons-png.flaticon.com/512/151/151916.png',
-    'joycon_rouge_bleu': 'https://cdn-icons-png.flaticon.com/512/1006/1006555.png',
-    'joycon_gris': 'https://cdn-icons-png.flaticon.com/512/1006/1006543.png',
-    'puceHWFLY': 'https://cdn-icons-png.flaticon.com/512/709/709496.png'
-  };
+    function updateConfig() {
+      const imageDiv = document.getElementById('images');
+      imageDiv.innerHTML = '';
+      let total = 0;
 
-  let currentCode = '';
+      // Switch choisi
+      const switchOption = document.getElementById('switchSelect').value.split('|');
+      const switchName = switchOption[0];
+      const switchPrice = parseInt(switchOption[1]);
+      if (!isNaN(switchPrice)) total += switchPrice;
+      addImage(switchOption[2]);
 
-  // Stock joycon avec leur prix unitaire
-  const stockJoycon = {
-    joycon_rouge_bleu: 35,
-    joycon_gris: 30
-  };
-
-  function changeQty(id, delta) {
-    const span = document.getElementById(id + '_qty');
-    let qty = parseInt(span.innerText);
-    qty += delta;
-    if (qty < 0) qty = 0;
-    span.innerText = qty;
-    updateConfig();
-  }
-
-  function updateConfig() {
-    const imageDiv = document.getElementById('images');
-    imageDiv.innerHTML = '';
-    let total = 0;
-    let lines = [];
-
-    // Console
-    const switchOption = document.getElementById('switchSelect').value.split('|');
-    const switchName = switchOption[0];
-    const switchPrice = parseInt(switchOption[1]);
-    total += switchPrice;
-    addImage('console');
-    lines.push(`- Console x1`.padEnd(35) + `${switchPrice} €`);
-    lines.push(`   (${switchName}) + puce HWFLY`);
-
-    // Carte SD
-    const sdOption = document.getElementById('sdSelect').value.split('|');
-    const sdName = sdOption[0];
-    const sdPrice = parseInt(sdOption[1]);
-    total += sdPrice;
-    addImage('sd');
-    lines.push(`\n- Carte SD ${sdName} x1`.padEnd(35) + `${sdPrice} €`);
-
-    // Joy-Con
-    let joyconIndex = 0;
-    for (const key in stockJoycon) {
-      const qty = parseInt(document.getElementById(key + '_qty').innerText);
-      if (qty > 0) {
-        const unitPrice = stockJoycon[key];
-        const totalPrice = unitPrice * qty;
-        let joyconName = key.replace('joycon_', '').replace('_', ' ');
-        // Majuscule première lettre
-        joyconName = joyconName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        lines.push(`\n- Joy-Con x${qty}`.padEnd(35) + `${totalPrice} €`);
-        lines.push(`   (${joyconName})`);
-        for(let i=0; i<qty; i++){
-          total += unitPrice;
-          addImage(key);
-          joyconIndex++;
+      // Joycons : 1ère paire 35€, suivantes 30€
+      let index = 0;
+      let joyconSummary = '';
+      for(const key in stockJoycon) {
+        const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
+        if(qty > 0){
+          joyconSummary += `- Joy-Con ${key.replace(/joycon_/,'').replace('_',' ')} x${qty} : ${qty > 0 ? ((index === 0 ? 35 : 30) * qty) : 0}€\n`;
         }
+        for(let i=0; i<qty; i++) {
+          total += (index === 0) ? 35 : 30;
+          addImage(key);
+          index++;
+        }
+      }
+
+      // Carte SD
+      const sd = document.getElementById('sdSelect').value.split('|');
+      const sdName = sd[0];
+      const sdPrice = parseInt(sd[1]);
+      if (!isNaN(sdPrice)) total += sdPrice;
+      addImage(sd[2]);
+
+      // Accessoires cochés
+      let accessoiresSummary = '';
+      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
+        const val = parseInt(el.value);
+        if (!isNaN(val)) total += val;
+        accessoiresSummary += `- ${el.parentNode.textContent.trim()} : ${val}€\n`;
+        addImage(el.getAttribute('data-img'));
+      });
+
+      document.getElementById('total').innerText = 'Total : ' + total + '€';
+
+      // Mise à jour résumé ticket
+      const summaryText = 
+`===================================
+         🕹️ RÉSUMÉ DE COMMANDE
+===================================
+
+Code : ${currentCode || '---'}
+
+Console : ${switchName} — ${switchPrice}€
+Carte SD : ${sdName} — ${sdPrice}€
+${joyconSummary}${accessoiresSummary}
+-----------------------------------
+Total à payer : ${total}€
+===================================
+Merci pour votre commande !
+`;
+
+      document.getElementById('summary').innerText = summaryText;
+
+      function addImage(key) {
+        const img = document.createElement('img');
+        img.src = images[key];
+        imageDiv.appendChild(img);
       }
     }
 
-    // Puce HWFLY (obligatoire, cochée, pas modifiable)
-    addImage('puceHWFLY');
+    function validerCommande() {
+      currentCode = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
+      updateConfig(); // Met à jour résumé avec le nouveau code
 
-    // Total final
-    lines.push(`\n` + '-'.repeat(43));
-    lines.push(`TOTAL`.padEnd(35) + `${total} €`);
+      const summaryDiv = document.getElementById('summary');
 
-    // Afficher résumé
-    const summary = document.getElementById('summary');
-    summary.innerHTML = `<pre>${lines.join('\n')}</pre>`;
-
-    // Total classique en bas
-    document.getElementById('total').innerText = 'Total : ' + total + '€';
-
-    function addImage(key) {
-      const img = document.createElement('img');
-      img.src = images[key];
-      img.alt = key;
-      img.style.maxHeight = '48px';
-      img.style.margin = '5px';
-      imageDiv.appendChild(img);
-    }
-  }
-
-  function validerCommande() {
-    currentCode = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
-    updateConfig();
-
-    const summaryDiv = document.getElementById('summary');
-
-    html2canvas(summaryDiv, {
-      backgroundColor: '#fff',
-      scale: 2
-    }).then(canvas => {
-      canvas.toBlob(function(blob) {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `commande-${currentCode}.png`;
-        a.click();
-        URL.revokeObjectURL(a.href);
+      // Génère l'image du résumé puis télécharge automatiquement
+      html2canvas(summaryDiv).then(canvas => {
+        canvas.toBlob(function(blob) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = `commande-${currentCode}.png`;
+          a.click();
+          URL.revokeObjectURL(a.href);
+        });
       });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateConfig();
     });
-  }
-
-  // Initial update
-  updateConfig();
-</script>
-
+  </script>
 </body>
 </html>
