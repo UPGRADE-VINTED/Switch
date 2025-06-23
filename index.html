@@ -30,6 +30,7 @@
     width: 150px;
     background: white;
     transition: border-color 0.3s;
+    position: relative;
   }
   .option.selected {
     border-color: #28a745;
@@ -72,6 +73,30 @@
     box-shadow: 0 0 8px #ddd;
     max-width: 400px;
     margin-top: 20px;
+  }
+  .qty-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .qty-controls button {
+    width: 25px;
+    height: 25px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0;
+    background: #ddd;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .qty-controls span {
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
   }
   @media(max-width: 480px) {
     .options {
@@ -153,187 +178,257 @@
 <div class="step" id="step3" style="display:none;">
   <h2>3. Choisis tes Joy-Con</h2>
   <div class="options" id="joycon-options">
-    <div class="option" data-name="Joy-Con rouge/bleu" data-price="40">
+    <!-- Chaque Joy-Con avec stock initial, prix à 35€ la 1ère unité, 30€ les suivantes -->
+    <div class="option" data-name="Joy-Con rouge/bleu" data-baseprice="35" data-addprice="30" data-stock="5" data-qty="0">
       <img src="https://i.imgur.com/h4i6NT2.jpeg" alt="Joy-Con rouge/bleu"/>
-      <span>Joy-Con rouge/bleu</span>
-      <br>40 €
+      <span>Joy-Con rouge/bleu</span><br>
+      <small>Stock: <span class="stock-count">5</span></small><br>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <small>Prix: <span class="price">0</span> €</small>
     </div>
-    <div class="option" data-name="Joy-Con vert/rose" data-price="40">
+    <div class="option" data-name="Joy-Con vert/rose" data-baseprice="35" data-addprice="30" data-stock="3" data-qty="0">
       <img src="https://i.imgur.com/HnrlZdX.png" alt="Joy-Con vert/rose"/>
-      <span>Joy-Con vert/rose</span>
-      <br>40 €
+      <span>Joy-Con vert/rose</span><br>
+      <small>Stock: <span class="stock-count">3</span></small><br>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <small>Prix: <span class="price">0</span> €</small>
     </div>
-    <div class="option" data-name="Joy-Con gris" data-price="35">
+    <div class="option" data-name="Joy-Con gris" data-baseprice="35" data-addprice="30" data-stock="4" data-qty="0">
       <img src="https://i.imgur.com/HnrlZdX.png" alt="Joy-Con gris"/>
-      <span>Joy-Con gris</span>
-      <br>35 €
+      <span>Joy-Con gris</span><br>
+      <small>Stock: <span class="stock-count">4</span></small><br>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <small>Prix: <span class="price">0</span> €</small>
     </div>
-    <div class="option" data-name="Joy-Con jaune" data-price="38">
+    <div class="option" data-name="Joy-Con jaune" data-baseprice="35" data-addprice="30" data-stock="2" data-qty="0">
       <img src="https://i.imgur.com/1lwBpOt.jpeg" alt="Joy-Con jaune"/>
-      <span>Joy-Con jaune</span>
-      <br>38 €
+      <span>Joy-Con jaune</span><br>
+      <small>Stock: <span class="stock-count">2</span></small><br>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <small>Prix: <span class="price">0</span> €</small>
     </div>
-    <div class="option" data-name="Joy-Con violet" data-price="38">
+    <div class="option" data-name="Joy-Con violet" data-baseprice="35" data-addprice="30" data-stock="1" data-qty="0">
       <img src="https://i.imgur.com/edqgNwl.jpeg" alt="Joy-Con violet"/>
-      <span>Joy-Con violet</span>
-      <br>38 €
+      <span>Joy-Con violet</span><br>
+      <small>Stock: <span class="stock-count">1</span></small><br>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <small>Prix: <span class="price">0</span> €</small>
     </div>
   </div>
 </div>
 
 <div class="step" id="step4" style="display:none;">
-  <h2>4. Choisis tes accessoires</h2>
-  <div class="options" id="accessory-options">
-    <div class="option" data-name="Chargeur Hwfly" data-price="50">
-      <img src="https://i.imgur.com/QylodKV.jpeg" alt="Chargeur Hwfly"/>
-      <span>Chargeur Hwfly</span>
-      <br>50 €
-    </div>
-    <div class="option" data-name="Câble HDMI" data-price="5">
-      <img src="https://i.imgur.com/CYJdCjc.jpeg" alt="Câble HDMI"/>
-      <span>Câble HDMI</span>
-      <br>5 €
-    </div>
-    <div class="option" data-name="Chargeur Joy-Con" data-price="20">
-      <img src="https://i.imgur.com/2a17uZp.jpeg" alt="Chargeur Joy-Con"/>
-      <span>Chargeur Joy-Con</span>
-      <br>20 €
-    </div>
-  </div>
+  <h2>4. Récapitulatif</h2>
+  <div id="summary">Aucune sélection pour l'instant.</div>
 </div>
 
-<button id="next-btn" disabled>Suivant</button>
-
-<div id="summary" style="display:none; white-space: pre-wrap; font-family: monospace;"></div>
+<button id="nextBtn">Suivant</button>
 
 <script>
-  const steps = ['step1', 'step2', 'step3', 'step4'];
-  let currentStep = 0;
+  const nextBtn = document.getElementById('nextBtn');
+  let currentStep = 1;
 
-  let selections = {
-    switch: null,
-    sd: null,
-    joycon: null,
-    accessory: []
+  const steps = {
+    1: document.getElementById('step1'),
+    2: document.getElementById('step2'),
+    3: document.getElementById('step3'),
+    4: document.getElementById('step4'),
   };
 
-  const nextBtn = document.getElementById('next-btn');
-  const summaryDiv = document.getElementById('summary');
+  // Variables pour stocker les choix
+  let chosenSwitch = null;
+  let chosenSD = null;
+  let joyConSelections = []; // {name, qty, price} avec qty > 0
 
-  function updateButton() {
-    let canContinue = false;
-    if (currentStep === 3) {
-      canContinue = true; // Accessories can be optional, so allow to proceed even if none selected
-    } else {
-      const stepId = steps[currentStep];
-      const options = document.querySelectorAll(`#${stepId} .option.selected`);
-      canContinue = options.length > 0;
-    }
-    nextBtn.disabled = !canContinue;
+  // Fonctions utilitaires
+  function deselectAll(container) {
+    container.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
   }
 
-  function clearSelections(stepId) {
-    document.querySelectorAll(`#${stepId} .option.selected`).forEach(el => {
-      el.classList.remove('selected');
+  function selectOption(container, option) {
+    deselectAll(container);
+    option.classList.add('selected');
+  }
+
+  // Étape 1 - Switch
+  const switchOptions = document.getElementById('switch-options');
+  switchOptions.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      selectOption(switchOptions, opt);
+      chosenSwitch = {
+        name: opt.dataset.name,
+        price: parseFloat(opt.dataset.price)
+      };
     });
-  }
+  });
 
-  function selectOption(e) {
-    const stepId = steps[currentStep];
-    const option = e.currentTarget;
-    if (stepId === 'step4') {
-      // Accessories multiple select
-      if (option.classList.contains('selected')) {
-        option.classList.remove('selected');
-        selections.accessory = selections.accessory.filter(a => a.name !== option.dataset.name);
-      } else {
-        option.classList.add('selected');
-        selections.accessory.push({
-          name: option.dataset.name,
-          price: option.dataset.price
+  // Étape 2 - SD
+  const sdOptions = document.getElementById('sd-options');
+  sdOptions.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      selectOption(sdOptions, opt);
+      chosenSD = {
+        name: opt.dataset.name,
+        price: parseFloat(opt.dataset.price)
+      };
+    });
+  });
+
+  // Étape 3 - JoyCon
+  const joyConOptions = document.getElementById('joycon-options');
+  // Ici, on gère le + / - avec contrôle du stock, et prix spécial
+  joyConOptions.querySelectorAll('.option').forEach(opt => {
+    const plusBtn = opt.querySelector('.qty-plus');
+    const minusBtn = opt.querySelector('.qty-minus');
+    const qtySpan = opt.querySelector('.qty');
+    const stockSpan = opt.querySelector('.stock-count');
+    const priceSpan = opt.querySelector('.price');
+
+    let stock = parseInt(opt.dataset.stock);
+    let qty = 0;
+
+    function updatePriceAndQtyDisplay() {
+      qtySpan.textContent = qty;
+      minusBtn.disabled = qty <= 0;
+      plusBtn.disabled = qty >= stock;
+
+      // On calcule le prix total de cette option selon règles
+      // Première unité = baseprice, unités suivantes = addprice
+      const basePrice = parseFloat(opt.dataset.baseprice);
+      const addPrice = parseFloat(opt.dataset.addprice);
+      let totalPrice = 0;
+      if(qty > 0){
+        totalPrice = basePrice + (qty -1) * addPrice;
+      }
+      priceSpan.textContent = totalPrice.toFixed(2);
+    }
+
+    plusBtn.addEventListener('click', () => {
+      if(qty < stock){
+        qty++;
+        opt.dataset.qty = qty;
+        updatePriceAndQtyDisplay();
+        updateJoyConSelections();
+      }
+    });
+    minusBtn.addEventListener('click', () => {
+      if(qty > 0){
+        qty--;
+        opt.dataset.qty = qty;
+        updatePriceAndQtyDisplay();
+        updateJoyConSelections();
+      }
+    });
+
+    updatePriceAndQtyDisplay();
+  });
+
+  // Met à jour le tableau joyConSelections en fonction des qty sélectionnées
+  function updateJoyConSelections() {
+    joyConSelections = [];
+    joyConOptions.querySelectorAll('.option').forEach(opt => {
+      const qty = parseInt(opt.dataset.qty);
+      if(qty > 0){
+        // Calcule prix total ici aussi
+        const basePrice = parseFloat(opt.dataset.baseprice);
+        const addPrice = parseFloat(opt.dataset.addprice);
+        let totalPrice = basePrice + (qty - 1) * addPrice;
+        joyConSelections.push({
+          name: opt.dataset.name,
+          qty: qty,
+          price: totalPrice
         });
       }
-    } else {
-      clearSelections(stepId);
-      option.classList.add('selected');
-      const data = {
-        name: option.dataset.name,
-        price: option.dataset.price
-      };
-      if (stepId === 'step1') selections.switch = data;
-      if (stepId === 'step2') selections.sd = data;
-      if (stepId === 'step3') selections.joycon = data;
-    }
-    updateButton();
-  }
-
-  function showStep(stepIndex) {
-    steps.forEach((id, i) => {
-      document.getElementById(id).style.display = i === stepIndex ? 'block' : 'none';
     });
-    summaryDiv.style.display = 'none';
-    if(stepIndex === steps.length - 1){
-      nextBtn.textContent = 'Valider ma liste';
-    } else {
-      nextBtn.textContent = 'Suivant';
-    }
-    updateButton();
   }
 
-  function formatPrice(price) {
-    return parseFloat(price).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
-  }
-
-  function showSummary() {
+  // Fonction pour afficher le résumé
+  function updateSummary() {
+    let text = '';
     let total = 0;
-    let lines = [];
 
-    if (selections.switch) {
-      total += parseFloat(selections.switch.price);
-      lines.push(`- ${selections.switch.name.padEnd(25)} ${formatPrice(selections.switch.price)}`);
+    if(chosenSwitch){
+      text += `Switch sélectionnée : ${chosenSwitch.name} - ${chosenSwitch.price.toFixed(2)} €\n`;
+      total += chosenSwitch.price;
+    } else {
+      text += "Switch sélectionnée : Aucune\n";
     }
-    if (selections.joycon) {
-      total += parseFloat(selections.joycon.price);
-      lines.push(`- ${selections.joycon.name.padEnd(25)} ${formatPrice(selections.joycon.price)}`);
-      lines.push(`    (${selections.joycon.name.includes('rouge/bleu') ? 'rouge/bleu' : ''})`);
+    if(chosenSD){
+      text += `Carte SD : ${chosenSD.name} - ${chosenSD.price.toFixed(2)} €\n`;
+      total += chosenSD.price;
+    } else {
+      text += "Carte SD : Aucune\n";
     }
-    if (selections.sd) {
-      total += parseFloat(selections.sd.price);
-      lines.push(`- ${selections.sd.name.padEnd(25)} ${formatPrice(selections.sd.price)}`);
-    }
-    if (selections.accessory.length > 0) {
-      selections.accessory.forEach(acc => {
-        total += parseFloat(acc.price);
-        lines.push(`- ${acc.name.padEnd(25)} ${formatPrice(acc.price)}`);
+
+    if(joyConSelections.length > 0){
+      text += `Joy-Con sélectionnés :\n`;
+      joyConSelections.forEach(jc => {
+        text += `  - ${jc.name} x${jc.qty} : ${jc.price.toFixed(2)} €\n`;
+        total += jc.price;
       });
+    } else {
+      text += "Joy-Con sélectionnés : Aucun\n";
     }
 
-    lines.push('');
-    lines.push(`TOTAL${' '.repeat(20)}${formatPrice(total)}`);
-
-    const ticket = lines.join('\n');
-    summaryDiv.textContent = ticket;
-    summaryDiv.style.display = 'block';
-    nextBtn.disabled = true;
+    text += "\nTotal à payer : " + total.toFixed(2) + " €";
+    document.getElementById('summary').textContent = text;
   }
 
+  // Navigation entre étapes
   nextBtn.addEventListener('click', () => {
-    if(currentStep < steps.length - 1){
-      currentStep++;
-      showStep(currentStep);
+    if(currentStep === 1){
+      if(!chosenSwitch){
+        alert("Veuillez choisir une Switch.");
+        return;
+      }
+      steps[1].style.display = "none";
+      steps[2].style.display = "block";
+      currentStep = 2;
+    } else if(currentStep === 2){
+      if(!chosenSD){
+        alert("Veuillez choisir une carte SD.");
+        return;
+      }
+      steps[2].style.display = "none";
+      steps[3].style.display = "block";
+      currentStep = 3;
+    } else if(currentStep === 3){
+      // Pas obligé d'avoir de Joy-Con, mais on met à jour le résumé
+      updateSummary();
+      steps[3].style.display = "none";
+      steps[4].style.display = "block";
+      nextBtn.textContent = "Recommencer";
+      currentStep = 4;
     } else {
-      showSummary();
+      // Recommencer
+      location.reload();
     }
   });
 
-  // Attacher les événements sur les options
-  steps.forEach(stepId => {
-    document.querySelectorAll(`#${stepId} .option`).forEach(option => {
-      option.addEventListener('click', selectOption);
-    });
+  // Mise à jour du résumé quand on modifie les Joy-Con
+  joyConOptions.addEventListener('click', () => {
+    updateSummary();
   });
-
-  showStep(currentStep);
 </script>
 
 </body>
