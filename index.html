@@ -1,213 +1,233 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pack Switch modifiée</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurer ma Switch</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 1rem;
-      background: #f7f7f7;
+      background: #f4f4f4;
+      padding: 20px;
+      margin: 0;
     }
     .configurator {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 20px;
     }
     .options, .preview {
-      background: white;
-      padding: 1rem;
+      background: #fff;
       border-radius: 10px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 320px;
     }
-    .preview {
-      text-align: center;
+    h3, h4 {
+      margin-top: 0;
+    }
+    select, input[type=checkbox], button {
+      margin: 5px 0;
+      padding: 5px;
+      width: 100%;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
     }
     .joycon-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
+      margin: 5px 0;
+    }
+    .joycon-color {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      border-radius: 4px;
+      margin-right: 5px;
     }
     .qty-buttons button {
       width: 30px;
       height: 30px;
-      font-size: 1rem;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      background: #fff;
     }
     .ticket {
-      background: #fff;
-      padding: 1rem;
       font-family: monospace;
-      text-align: left;
-      border: 1px dashed #aaa;
-      max-width: 300px;
-      margin: auto;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
-    .ticket hr {
-      border: none;
-      border-top: 1px dashed #ccc;
-      margin: 0.5rem 0;
-    }
-    .ticket-line {
-      display: flex;
-      justify-content: space-between;
-    }
-    .sub-info {
-      margin-left: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
-    @media(max-width: 600px) {
+    @media (max-width: 768px) {
       .configurator {
-        padding: 0.5rem;
-      }
-      .options, .preview {
-        padding: 0.5rem;
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <h2>Préparer ma Switch modifiée</h2>
+  <h1>🕹️ Préparer mon pack Switch modifiée</h1>
   <div class="configurator">
     <div class="options">
-      <label>Switch
-        <select id="switchSelect" onchange="updateConfig()">
-          <option value="V2 manq. SD|140">V2 - manque cache SD (140€)</option>
-          <option value="V2 impeccable|160">V2 - état impeccable (160€)</option>
-        </select>
+      <h3>🎮 Choix de la console</h3>
+      <select id="switchSelect" onchange="updateConfig()">
+        <option value="V2 - cache SD manquant|180|switch_v2_sd">V2 - cache SD manquant (180€)</option>
+        <option value="V2 - état impeccable|190|switch_v2_ok">V2 - état impeccable (190€)</option>
+        <option value="V1 - écran légèrement rayé|170|switch_v1_rayure">V1 - écran rayé (170€)</option>
+        <option value="V1 - bon état|180|switch_v1_ok">V1 - bon état (180€)</option>
+        <option value="V1 - excellent état|185|switch_v1_excellent">V1 - excellent état (185€)</option>
+      </select>
+
+      <label style="background: #e0ffe0; padding: 5px; border-radius: 5px; margin-top: 10px;">
+        ✅ Puce HWFLY (0€) – installée par défaut
       </label>
-      <br>
-      <label style="display: flex; align-items: center; margin-top: 0.5rem;">
-        <input type="checkbox" checked disabled style="accent-color: green;" />
-        <span style="margin-left: 8px;">Puce HWFLY (incluse)</span>
-      </label>
-      <br>
-      <label>Carte SD
-        <select id="sdSelect" onchange="updateConfig()">
-          <option value="128|0">128 Go (incluse)</option>
-          <option value="256|15">256 Go (+15€)</option>
-        </select>
-      </label>
-      <br>
-      <h4>🎨 Joy-Con</h4>
-      <div class="joycon-row">
-        Rouge/Bleu
-        <div class="qty-buttons">
-          <button onclick="updateQty('rb', -1)">-</button>
-          <span id="rb_qty">0</span>
-          <button onclick="updateQty('rb', 1)">+</button>
-        </div>
-      </div>
-      <div class="joycon-row">
-        Vert/Rose
-        <div class="qty-buttons">
-          <button onclick="updateQty('vr', -1)">-</button>
-          <span id="vr_qty">0</span>
-          <button onclick="updateQty('vr', 1)">+</button>
-        </div>
-      </div>
-      <br>
-      <label><input type="checkbox" value="5" data-label="Câble HDMI" onchange="updateConfig()"> Câble HDMI (5€)</label><br>
-      <label><input type="checkbox" value="10" data-label="Chargeur" onchange="updateConfig()"> Chargeur (10€)</label>
-      <br><br>
-      <button onclick="validerCommande()">✅ Valider ma liste</button>
+
+      <h3>💾 Carte microSD</h3>
+      <select id="sdSelect" onchange="updateConfig()">
+        <option value="128|0|sd128">128 Go (Incluse)</option>
+        <option value="256|15|sd256">256 Go (+15€)</option>
+        <option value="512|35|sd512">512 Go (+35€)</option>
+      </select>
+
+      <h3>🎨 Joy-Con</h3>
+      <div id="joyconOptions"></div>
+
+      <h3>🔌 Accessoires</h3>
+      <label><input type="checkbox" value="10" data-img="chargeur" onchange="updateConfig()"> Chargeur secteur Switch (10€)</label>
+      <label><input type="checkbox" value="5" data-img="cable_hdmi" onchange="updateConfig()"> Câble HDMI (5€)</label>
+      <label><input type="checkbox" value="18" data-img="chargeur_joycon" onchange="updateConfig()"> Chargeur Joy-Con (18€)</label>
+
+      <br><button onclick="validerCommande()">✅ Valider ma liste</button>
     </div>
 
-    <div class="preview">
-      <h4>Prévisualisation</h4>
-      <div id="ticket" class="ticket"></div>
+    <div class="preview" id="preview">
+      <h3>Prévisualisation</h3>
+      <div id="images"></div>
+      <div class="total" id="total">Total : 0€</div>
     </div>
   </div>
 
-  <script>
-    const stock = {
-      rb: 5,
-      vr: 2
-    };
-    const qty = { rb: 0, vr: 0 };
+  <div id="summary" class="ticket"></div>
 
-    function updateQty(type, delta) {
-      qty[type] = Math.max(0, Math.min(stock[type], qty[type] + delta));
-      document.getElementById(`${type}_qty`).innerText = qty[type];
+  <script>
+    const stockJoycon = {
+      joycon_rouge_bleu: {label: 'Rouge/Bleu', colorL: 'red', colorR: 'blue', stock: 3},
+      joycon_vert_rose: {label: 'Vert/Rose', colorL: 'green', colorR: 'pink', stock: 2},
+      joycon_gris: {label: 'Gris', colorL: 'gray', colorR: 'gray', stock: 0},
+      joycon_jaune: {label: 'Zelda Jaune', colorL: 'gold', colorR: 'gold', stock: 1},
+    };
+
+    const images = {
+      switch_v2_sd: 'https://i.imgur.com/XNzqOsB.jpeg',
+      switch_v2_ok: 'https://i.imgur.com/zKeTFqq.png',
+      switch_v1_rayure: 'https://i.imgur.com/p5yO1kM.png',
+      switch_v1_ok: 'https://i.imgur.com/p5yO1kM.png',
+      switch_v1_excellent: 'https://i.imgur.com/p5yO1kM.png',
+      sd128: 'https://i.imgur.com/ZRiCDLr.jpeg',
+      sd256: 'https://i.imgur.com/ZRiCDLr.jpeg',
+      sd512: 'https://i.imgur.com/a3M2P8z.png',
+      chargeur: 'https://i.imgur.com/QylodKV.jpeg',
+      cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
+      chargeur_joycon: 'https://i.imgur.com/ykoJVmG.png',
+      joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
+      joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
+      joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
+      joycon_jaune: 'https://i.imgur.com/1lwBpOt.jpeg',
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('joyconOptions');
+      for (const key in stockJoycon) {
+        const joy = stockJoycon[key];
+        if (joy.stock > 0) {
+          container.innerHTML += `
+            <div class="joycon-row">
+              <div><span class="joycon-color" style="background:${joy.colorL}"></span><span class="joycon-color" style="background:${joy.colorR}"></span>
+              ${joy.label} (${joy.stock} dispo)</div>
+              <div class="qty-buttons">
+                <button onclick="updateQty('${key}', -1)">−</button>
+                <span id="${key}_qty">0</span>
+                <button onclick="updateQty('${key}', 1)">+</button>
+              </div>
+            </div>`;
+        }
+      }
+      updateConfig();
+    });
+
+    function updateQty(key, delta) {
+      const span = document.getElementById(`${key}_qty`);
+      let qty = parseInt(span.innerText);
+      qty = Math.max(0, Math.min(qty + delta, stockJoycon[key].stock));
+      span.innerText = qty;
       updateConfig();
     }
 
     function updateConfig() {
-      const ticket = document.getElementById("ticket");
-      ticket.innerHTML = '';
+      const imageDiv = document.getElementById('images');
+      imageDiv.innerHTML = '';
       let total = 0;
-      let lines = [];
+      let ticket = '';
 
-      // Switch
-      const [model, priceSwitch] = document.getElementById('switchSelect').value.split('|');
-      total += parseInt(priceSwitch);
-      lines.push(`<div class='ticket-line'><span>- Switch x1</span><span>${priceSwitch}€</span></div>`);
-      lines.push(`<div class='sub-info'>(modèle ${model} + puce)</div>`);
+      const switchData = document.getElementById('switchSelect').value.split('|');
+      const sdData = document.getElementById('sdSelect').value.split('|');
+      const code = 'CMD-' + Math.random().toString(36).substring(2,8).toUpperCase();
 
-      // SD
-      const [sdLabel, sdPrice] = document.getElementById('sdSelect').value.split('|');
-      total += parseInt(sdPrice);
-      lines.push(`<div class='ticket-line'><span>- SD ${sdLabel} Go</span><span>${sdPrice}€</span></div>`);
+      total += parseInt(switchData[1]);
+      total += parseInt(sdData[1]);
 
-      // Joy-Cons
-      let i = 0;
-      for (const [type, q] of Object.entries(qty)) {
-        if (q > 0) {
-          for (let j = 0; j < q; j++) {
-            const prix = (i === 0) ? 35 : 30;
-            total += prix;
-            const nom = (type === 'rb') ? 'Rouge / Bleu' : 'Vert / Rose';
-            lines.push(`<div class='ticket-line'><span>- Joy-Con x1</span><span>${prix}€</span></div>`);
-            lines.push(`<div class='sub-info'>(${nom})</div>`);
-            i++;
+      ticket += `Code : ${code}\n\n`;
+      ticket += `- Switch x1 : ${switchData[1]}€\n  (${switchData[0]} + puce)\n`;
+      addImage(switchData[2]);
+
+      ticket += `- Carte SD : ${sdData[0]} Go : ${sdData[1]}€\n`;
+      addImage(sdData[2]);
+
+      let joyIndex = 0;
+      for (const key in stockJoycon) {
+        const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
+        if (qty > 0) {
+          for (let i = 0; i < qty; i++) {
+            const price = (joyIndex === 0) ? 35 : 30;
+            total += price;
+            addImage(key);
+            joyIndex++;
           }
+          ticket += `- Joy-Con ${stockJoycon[key].label} x${qty} : ${qty * ((joyIndex === qty) ? 35 : 30)}€\n`;
         }
       }
 
-      // Accessoires
-      document.querySelectorAll('input[type=checkbox]').forEach(cb => {
-        if (cb.checked && !cb.disabled) {
-          const p = parseInt(cb.value);
-          total += p;
-          const lbl = cb.dataset.label;
-          lines.push(`<div class='ticket-line'><span>- ${lbl}</span><span>${p}€</span></div>`);
-        }
+      document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
+        const val = parseInt(el.value);
+        if (!isNaN(val)) total += val;
+        addImage(el.getAttribute('data-img'));
+        ticket += `- ${el.parentElement.innerText.trim()} : ${val}€\n`;
       });
 
-      lines.push('<hr>');
-      lines.push(`<div class='ticket-line'><strong>TOTAL</strong><strong>${total}€</strong></div>`);
+      ticket += `\nTOTAL à payer : ${total}€`;
 
-      ticket.innerHTML = lines.join('\n');
+      document.getElementById('total').innerText = 'Total : ' + total + '€';
+      document.getElementById('summary').innerText = ticket;
+    }
+
+    function addImage(key) {
+      const img = document.createElement('img');
+      img.src = images[key];
+      document.getElementById('images').appendChild(img);
     }
 
     function validerCommande() {
-      const code = 'CMD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-      const ticketNode = document.getElementById("ticket");
-      const clone = ticketNode.cloneNode(true);
-      const label = document.createElement('div');
-      label.style.textAlign = 'center';
-      label.style.fontWeight = 'bold';
-      label.style.marginBottom = '10px';
-      label.innerText = `\u2705 Commande ${code}`;
-      const container = document.createElement('div');
-      container.appendChild(label);
-      container.appendChild(clone);
-
-      html2canvas(container).then(canvas => {
-        const a = document.createElement('a');
-        a.href = canvas.toDataURL();
-        a.download = `ticket-${code}.png`;
-        a.click();
+      html2canvas(document.getElementById('summary')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'commande-ticket.png';
+        link.href = canvas.toDataURL();
+        link.click();
       });
     }
-
-    updateConfig();
   </script>
 </body>
 </html>
