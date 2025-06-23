@@ -6,42 +6,94 @@
   <title>Upgrade choix Pack</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
+    /* Reset checkbox forcée HWFLY pour cacher la case grise */
+    label.forced-checkbox input {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 5px;
+      border: 2px solid #28a745;
+      background-color: #28a745;
+      cursor: default;
+      position: relative;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    label.forced-checkbox input:checked::after {
+      content: '✔';
+      color: white;
+      font-weight: bold;
+      position: absolute;
+      left: 3px;
+      top: 0;
+      font-size: 16px;
+      line-height: 18px;
+    }
+
+    /* Style global */
     body {
       font-family: Arial, sans-serif;
-      padding: 2rem;
+      padding: 1rem;
       background: #f0f0f0;
+      margin: 0;
     }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
     .configurator {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
+
     .options {
       background: white;
-      padding: 1rem;
+      padding: 1rem 1.2rem;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       min-width: 320px;
+      flex: 1 1 350px;
+      max-width: 400px;
+      box-sizing: border-box;
     }
+
     .preview {
-      padding: 1rem;
+      padding: 1rem 1.5rem;
       background: white;
       border-radius: 10px;
       text-align: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      flex: 1;
+      flex: 1 1 350px;
+      max-width: 400px;
+      box-sizing: border-box;
     }
+
     img {
-      width: 200px;
-      margin: 5px;
+      width: 100%;
+      max-width: 200px;
+      margin: 5px auto;
+      display: block;
+      border-radius: 8px;
+      object-fit: contain;
     }
+
     .total {
       font-size: 1.2rem;
       font-weight: bold;
       margin-top: 1rem;
     }
+
     #summary {
-      margin-top: 2rem;
+      margin: 2rem auto;
       padding: 1rem 2rem;
       background: #fff;
       border-radius: 10px;
@@ -51,26 +103,47 @@
       line-height: 1.3;
       max-width: 400px;
       border: 2px dashed #555;
+      box-sizing: border-box;
     }
+
     select, button {
-      margin-top: 5px;
-      padding: 5px;
+      margin-top: 10px;
+      padding: 8px;
       width: 100%;
-      font-size: 0.9rem;
+      font-size: 1rem;
       line-height: 1.2;
-      height: 30px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease;
     }
+    select:focus, button:focus {
+      outline: none;
+      border-color: #28a745;
+      background-color: #e6f4ea;
+    }
+    button {
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+
     label.forced-checkbox {
       display: flex;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 15px;
       user-select: none;
       cursor: default;
+      font-size: 1rem;
+      color: #333;
+      line-height: 1.3;
     }
-    label.forced-checkbox input {
-      margin-right: 8px;
-      pointer-events: none;
-    }
+
     .joycon-toggle {
       cursor: pointer;
       font-weight: bold;
@@ -88,12 +161,15 @@
     }
     #joyconOptions {
       margin-top: 10px;
-      display: block; /* menu Joy-Con ouvert par défaut */
+      display: block; /* ouvert par défaut */
       border: 1px solid #ccc;
       border-radius: 10px;
       padding: 10px;
       background: #fafafa;
+      max-height: 400px;
+      overflow-y: auto;
     }
+
     .joycon-row {
       display: flex;
       align-items: center;
@@ -117,10 +193,11 @@
     .joycon-zelda-L { background-color: #ffbf3b; }
     .joycon-jaunen { background-color: #ffcc3e; }
     .joycon-violet { background-color: #ae37ff; }
+
     .qty-buttons button {
-      width: 30px;
-      height: 30px;
-      font-size: 1.2rem;
+      width: 35px;
+      height: 35px;
+      font-size: 1.3rem;
       font-weight: bold;
       line-height: 1;
       cursor: pointer;
@@ -129,12 +206,43 @@
       border-radius: 5px;
       margin: 0 5px;
       user-select: none;
+      transition: background-color 0.2s ease;
     }
+    .qty-buttons button:hover:not(:disabled) {
+      background-color: #28a745;
+      color: white;
+      border-color: #28a745;
+    }
+    .qty-buttons button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
     .qty-display {
-      min-width: 20px;
+      min-width: 25px;
       text-align: center;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 1.1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 800px) {
+      .configurator {
+        flex-direction: column;
+        align-items: center;
+      }
+      .options, .preview {
+        max-width: 90vw;
+        flex: none;
+        min-width: auto;
+      }
+      img {
+        max-width: 90vw;
+      }
+      #summary {
+        max-width: 90vw;
+        font-size: 0.95rem;
+      }
     }
   </style>
 </head>
@@ -154,7 +262,7 @@
 
       <label class="forced-checkbox" title="Case cochée et forcée">
         <input type="checkbox" checked disabled />
-       ✅  Puce HWFLY (0€) – toujours installée avec soin sur sa dernière version avec les dernières mises à jour Atmosphère.
+        ✅  Puce HWFLY (0€) – toujours installée avec soin sur sa dernière version avec les dernières mises à jour Atmosphère.
       </label>
 
       <h3>💾 Carte microSD</h3>
@@ -174,9 +282,9 @@
             Joy-Con Rouge/Bleu (3 en stock)
           </div>
           <div class="qty-buttons">
-            <button onclick="updateQty('joycon_rouge_bleu', -1)">−</button>
+            <button onclick="updateQty('joycon_rouge_bleu', -1)" aria-label="Enlever Joy-Con Rouge/Bleu">−</button>
             <span id="joycon_rouge_bleu_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_rouge_bleu', 1)">+</button>
+            <button onclick="updateQty('joycon_rouge_bleu', 1)" aria-label="Ajouter Joy-Con Rouge/Bleu">+</button>
           </div>
         </div>
 
@@ -187,9 +295,9 @@
             Joy-Con jaune/violet (2 en stock)
           </div>
           <div class="qty-buttons">
-            <button onclick="updateQty('joycon_violet', -1)">−</button>
+            <button onclick="updateQty('joycon_violet', -1)" aria-label="Enlever Joy-Con jaune/violet">−</button>
             <span id="joycon_violet_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_violet', 1)">+</button>
+            <button onclick="updateQty('joycon_violet', 1)" aria-label="Ajouter Joy-Con jaune/violet">+</button>
           </div>
         </div>
 
@@ -200,22 +308,22 @@
             Joy-Con Vert/Rose (2 en stock)
           </div>
           <div class="qty-buttons">
-            <button onclick="updateQty('joycon_vert_rose', -1)">−</button>
+            <button onclick="updateQty('joycon_vert_rose', -1)" aria-label="Enlever Joy-Con Vert/Rose">−</button>
             <span id="joycon_vert_rose_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_vert_rose', 1)">+</button>
+            <button onclick="updateQty('joycon_vert_rose', 1)" aria-label="Ajouter Joy-Con Vert/Rose">+</button>
           </div>
         </div>
 
-        <div class="joycon-row" style="display:none;">
+        <div class="joycon-row" style="opacity: 0.5; pointer-events:none;">
           <div>
             <span class="joycon-color joycon-gris"></span>
             <span class="joycon-color joycon-gris"></span>
             Joy-Con Gris (0 en stock)
           </div>
           <div class="qty-buttons">
-            <button onclick="updateQty('joycon_gris', -1)">−</button>
+            <button disabled>−</button>
             <span id="joycon_gris_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_gris', 1)">+</button>
+            <button disabled>+</button>
           </div>
         </div>
 
@@ -226,9 +334,9 @@
             Joy-Con Édition zelda (1 en stock)
           </div>
           <div class="qty-buttons">
-            <button onclick="updateQty('joycon_jaune', -1)">−</button>
+            <button onclick="updateQty('joycon_jaune', -1)" aria-label="Enlever Joy-Con Édition zelda">−</button>
             <span id="joycon_jaune_qty" class="qty-display">0</span>
-            <button onclick="updateQty('joycon_jaune', 1)">+</button>
+            <button onclick="updateQty('joycon_jaune', 1)" aria-label="Ajouter Joy-Con Édition zelda">+</button>
           </div>
         </div>
       </div>
@@ -244,21 +352,19 @@
     <div class="preview" id="preview">
       <h3>Prévisualisation</h3>
       <div id="images"></div>
-      <div class="total" id="total">Total : 0€</div>
+      <pre class="total" id="total">Total : 0€</pre>
     </div>
   </div>
 
-  <div id="summary">
-    <!-- Résumé ticket ici -->
-  </div>
+  <div id="summary"></div>
 
   <script>
     const stockJoycon = {
       joycon_rouge_bleu: 3,
       joycon_vert_rose: 2,
-      joycon_gris: 0,
+      joycon_gris: 0, // 0 stock = désactivé dans l'UI
       joycon_jaune: 1,
-      joycon_violet: 2,
+      joycon_violet: 1,
     };
 
     const images = {
@@ -272,7 +378,7 @@
       sd512: 'https://i.imgur.com/a3M2P8z.png',
       chargeur: 'https://i.imgur.com/QylodKV.jpeg',
       cable_hdmi: 'https://i.imgur.com/CYJdCjc.jpeg',
-      chargeur_joycon: 'https://i.imgur.com/2a17uZp.jpeg',
+      chargeur_joycon: 'https://i.imgur.com/5SzFkpJ.jpeg',
       joycon_rouge_bleu: 'https://i.imgur.com/h4i6NT2.jpeg',
       joycon_vert_rose: 'https://i.imgur.com/HnrlZdX.png',
       joycon_gris: 'https://i.imgur.com/HnrlZdX.png',
@@ -311,6 +417,7 @@
       let index = 0;
       let joyconSummary = '';
       for(const key in stockJoycon) {
+        if(stockJoycon[key] === 0) continue; // ignore les stocks 0 (pas visible en UI)
         const qty = parseInt(document.getElementById(`${key}_qty`).innerText);
         if(qty > 0){
           joyconSummary += `- Joy-Con ${key.replace(/joycon_/,'').replace('_',' ')} x${qty} : ${qty > 0 ? ((index === 0 ? 35 : 30) * qty) : 0}€\n`;
@@ -362,6 +469,7 @@ Merci pour votre commande !
       function addImage(key) {
         const img = document.createElement('img');
         img.src = images[key];
+        img.alt = key;
         imageDiv.appendChild(img);
       }
     }
