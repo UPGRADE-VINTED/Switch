@@ -1,74 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Résumé de commande</title>
 <style>
-  /* Galerie images */
-  #images img {
-    width: 180px;
-    margin: 8px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    transition: transform 0.2s ease;
+  body {
+    font-family: 'Consolas', monospace, monospace;
+    background: #f9f9f9;
+    padding: 10px;
+    color: #222;
+    margin: 0;
   }
-  #images img:hover {
-    transform: scale(1.05);
-    border-color: #007bff;
+  #container {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    padding: 15px 20px;
+    box-shadow: 0 0 10px #aaa;
+    border-radius: 6px;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  #order-summary {
+    white-space: pre-wrap;
+    font-size: 1rem;
+    line-height: 1.3;
+    background: #eee;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  .images-container img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin: 5px;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: box-shadow 0.3s;
+  }
+  .images-container img:hover {
+    box-shadow: 0 0 8px #0078d7;
   }
 
-  /* Lightbox fond sombre */
-  #lightbox {
+  /* Case HWFLY verte visible, grise cachée */
+  .hwfly-cases {
+    margin: 15px 0;
+  }
+  .hwfly-case {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  .hwfly-case.valid {
+    background-color: #4caf50; /* vert */
+  }
+  .hwfly-case.invalid {
+    display: none; /* on cache la case grise */
+  }
+
+  button {
+    width: 100%;
+    padding: 12px 0;
+    background-color: #0078d7;
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  button:hover {
+    background-color: #005ea1;
+  }
+
+  /* MODALE */
+  #modal {
     display: none;
     position: fixed;
-    z-index: 9999;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top:0; left:0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0,0,0,0.85);
     justify-content: center;
     align-items: center;
+    z-index: 10000;
   }
-
-  /* Image lightbox */
-  #lightbox img {
+  #modal img {
     max-width: 90vw;
     max-height: 90vh;
     border-radius: 8px;
-    box-shadow: 0 0 25px rgba(0,0,0,0.7);
+    box-shadow: 0 0 20px #000;
   }
-
-  /* Bouton fermer lightbox */
-  #lightbox .close-btn {
+  #modalClose {
     position: absolute;
-    top: 20px; right: 30px;
-    font-size: 30px;
+    top: 20px;
+    right: 30px;
+    font-size: 2.5rem;
     color: white;
     cursor: pointer;
     user-select: none;
-    font-weight: bold;
+  }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    #container {
+      padding: 10px 15px;
+      max-width: 95vw;
+    }
+    .images-container img {
+      width: 60px;
+      height: 60px;
+      margin: 3px;
+    }
+    #order-summary {
+      font-size: 0.9rem;
+    }
   }
 </style>
+</head>
+<body>
 
-<!-- Ajoute ça juste avant la fin de body -->
-<div id="lightbox" onclick="closeLightbox(event)">
-  <span class="close-btn" aria-label="Fermer la vue agrandie">&times;</span>
-  <img src="" alt="Image agrandie" />
+<div id="container">
+
+  <h2>✅ Résumé de commande</h2>
+
+  <div class="hwfly-cases">
+    <span class="hwfly-case valid" title="Choix par défaut"></span>
+    <span class="hwfly-case invalid"></span>
+    <strong>hwfly</strong>
+  </div>
+
+  <div class="images-container" id="images">
+    <!-- Images miniatures insérées ici -->
+  </div>
+
+  <pre id="order-summary">
+Chargement du résumé...
+  </pre>
+
+  <button id="validateBtn">Valider ma liste</button>
+
 </div>
 
-<script>
-  // Ouvrir l'image en lightbox
-  document.getElementById('images').addEventListener('click', function(e) {
-    if (e.target.tagName === 'IMG') {
-      const lightbox = document.getElementById('lightbox');
-      const lbImg = lightbox.querySelector('img');
-      lbImg.src = e.target.src;
-      lbImg.alt = e.target.alt;
-      lightbox.style.display = 'flex';
-      document.body.style.overflow = 'hidden'; // Bloque scroll page quand lightbox ouverte
-    }
-  });
+<!-- MODALE -->
+<div id="modal">
+  <span id="modalClose">&times;</span>
+  <img id="modalImg" src="" alt="Image agrandie" />
+</div>
 
-  // Fermer lightbox si clic sur fond ou bouton fermer
-  function closeLightbox(event) {
-    if (event.target.id === 'lightbox' || event.target.classList.contains('close-btn')) {
-      const lightbox = document.getElementById('lightbox');
-      lightbox.style.display = 'none';
-      document.body.style.overflow = ''; // Restore scroll
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+  // Exemple de données
+  const images = {
+    switch: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Nintendo_Switch_Console.jpg',
+    joycon: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Nintendo_Joy-Con.png',
+    sd: 'https://upload.wikimedia.org/wikipedia/commons/6/66/SDXC_Logo.svg'
+  };
+
+  const order = {
+    code: '',
+    items: [
+      { label: "Switch", qty: 1, price: 140, note: "(model v2 manque sd) + puce" },
+      { label: "Joy-Con rouge/bleu", qty: 1, price: 40, note: "" },
+      { label: "SD 128 Go", qty: 1, price: 0, note: "" }
+    ]
+  };
+
+  // Générer un code commande aléatoire simple
+  function generateCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = 'CMD-';
+    for(let i=0; i<6; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
+    return code;
   }
+
+  // Afficher les images miniatures
+  function addImage(key) {
+    if (!key || !images[key]) return;
+    const img = document.createElement('img');
+    img.src = images[key];
+    img.alt = key;
+    img.loading = 'lazy';
+    img.style.cursor = 'pointer';
+    img.addEventListener('click', () => {
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = img.src;
+      modal.style.display = 'flex';
+    });
+    document.getElementById('images').appendChild(img);
+  }
+
+  // Créer le texte format ticket
+  function buildSummary() {
+    order.code = generateCode();
+    let txt = `Code : ${order.code}\n\n`;
+
+    order.items.forEach(item => {
+      const labelSpacing = 30; // Ajuster selon taille
+      const qtyStr = `x${item.qty}`;
+      const priceStr = item.price + ' €';
+
+      // Alignement avec espaces
+      let line = item.label;
+      while (line.length < labelSpacing - qtyStr.length - priceStr.length) {
+        line += ' ';
+      }
+      line += `${qtyStr}   ${priceStr}\n`;
+
+      txt += line;
+
+      if (item.note && item.note.trim().length > 0) {
+        txt += `    ${item.note}\n`;
+      }
+    });
+
+    const total = order.items.reduce((acc, i) => acc + i.price * i.qty, 0);
+    txt += `\n${' '.repeat(26)}TOTAL   ${total} €\n`;
+
+    return txt;
+  }
+
+  function updateSummary() {
+    const summaryEl = document.getElementById('order-summary');
+    summaryEl.textContent = buildSummary();
+  }
+
+  // Télécharger le résumé sous forme d'image
+  function downloadSummaryAsImage() {
+    const summaryEl = document.getElementById('order-summary');
+    html2canvas(summaryEl, {backgroundColor: null, scale: 2}).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `${order.code || 'commande'}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  }
+
+  // Initialisation
+  window.onload = () => {
+    // Ajout images
+    Object.keys(images).forEach(key => addImage(key));
+
+    updateSummary();
+
+    // Bouton valider
+    document.getElementById('validateBtn').onclick = () => {
+      downloadSummaryAsImage();
+    };
+
+    // Fermeture modale
+    document.getElementById('modalClose').addEventListener('click', () => {
+      document.getElementById('modal').style.display = 'none';
+    });
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if(e.target.id === 'modal') {
+        document.getElementById('modal').style.display = 'none';
+      }
+    });
+  };
 </script>
+
+</body>
+</html>
