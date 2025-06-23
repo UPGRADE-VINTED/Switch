@@ -1,112 +1,153 @@
-<!-- Étape 1 Switch avec images plus grandes -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Pack Switch - Sélecteur</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+  h2 { margin-top: 30px; }
+  .option { border: 1px solid #ccc; padding: 10px; margin: 10px; cursor: pointer; display: inline-block; vertical-align: top; }
+  .option.selected { border-color: #007bff; background-color: #e6f0ff; }
+  .option img { display: block; margin: 0 auto 10px; }
+  /* Agrandissement des images Switch */
+  #switch-options .option img { width: 200px; height: auto; }
+  #sd-options .option img, #joycon-options .option img, #accessories-options .option img { width: 100px; height: auto; }
+  .qty-controls { display: flex; justify-content: center; align-items: center; margin-top: 5px; }
+  .qty-controls button { width: 25px; height: 25px; margin: 0 5px; }
+  .price { font-weight: bold; margin-top: 5px; text-align: center; }
+  #summary { white-space: pre-wrap; background: #f9f9f9; padding: 15px; margin-top: 15px; border: 1px solid #ddd; }
+  button { padding: 10px 20px; margin-top: 20px; font-size: 16px; }
+  #final-buttons { margin-top: 20px; }
+  canvas { display: block; margin: 20px auto; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+
 <div class="step" id="step1">
   <h2>1. Choisissez votre Switch</h2>
   <div id="switch-options">
-    <div class="option" data-name="Switch OLED" data-price="350" style="cursor:pointer;">
-      <img src="switch_oled.png" alt="Switch OLED" style="width:200px; height:auto; display:block; margin-bottom:8px;">
-      Switch OLED - 350 €
+    <div class="option" data-name="Switch Standard" data-price="299">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Nintendo_Switch_Console_in_Hand_-_right_view_2017.jpg" alt="Switch Standard" />
+      <div>Switch Standard<br><small>299 €</small></div>
     </div>
-    <div class="option" data-name="Switch Lite" data-price="200" style="cursor:pointer;">
-      <img src="switch_lite.png" alt="Switch Lite" style="width:200px; height:auto; display:block; margin-bottom:8px;">
-      Switch Lite - 200 €
+    <div class="option" data-name="Switch OLED" data-price="349">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Nintendo_Switch_OLED_Model.jpg" alt="Switch OLED" />
+      <div>Switch OLED<br><small>349 €</small></div>
     </div>
   </div>
 </div>
 
-<!-- Étape 2 Carte SD -->
 <div class="step" id="step2" style="display:none;">
-  <h2>2. Choisissez votre Carte SD</h2>
+  <h2>2. Choisissez une carte SD</h2>
   <div id="sd-options">
-    <div class="option" data-name="Carte SD 64Go" data-price="30" style="cursor:pointer;">
-      <img src="sd_64go.png" alt="SD 64Go" style="width:100px; height:auto; display:block; margin-bottom:8px;">
-      Carte SD 64Go - 30 €
+    <div class="option" data-name="Carte SD 64GB" data-price="20">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/MicroSDXC_Memory_Card_with_Adapter.jpg/220px-MicroSDXC_Memory_Card_with_Adapter.jpg" alt="Carte SD 64GB" />
+      <div>64GB - 20 €</div>
     </div>
-    <div class="option" data-name="Carte SD 128Go" data-price="50" style="cursor:pointer;">
-      <img src="sd_128go.png" alt="SD 128Go" style="width:100px; height:auto; display:block; margin-bottom:8px;">
-      Carte SD 128Go - 50 €
+    <div class="option" data-name="Carte SD 128GB" data-price="35">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/MicroSDXC_Memory_Card_with_Adapter.jpg/220px-MicroSDXC_Memory_Card_with_Adapter.jpg" alt="Carte SD 128GB" />
+      <div>128GB - 35 €</div>
     </div>
   </div>
 </div>
 
-<!-- Étape 3 Joy-Con -->
+<!-- Nouvelle étape Accessoires -->
 <div class="step" id="step3" style="display:none;">
-  <h2>3. Choisissez vos Joy-Con</h2>
-  <div id="joycon-options">
-    <div class="option" data-name="Joy-Con Bleu" data-baseprice="35" data-addprice="30" data-stock="5" data-qty="0" style="margin-bottom:10px;">
-      Joy-Con Bleu<br>
-      <button class="qty-minus" disabled>-</button>
-      <span class="qty">0</span>
-      <button class="qty-plus">+</button>
-      <span>Stock: <span class="stock-count">5</span></span>
-      <span>Prix total: <span class="price">0.00</span> €</span>
+  <h2>3. Choisissez vos accessoires</h2>
+  <div id="accessories-options">
+    <div class="option" data-name="Chargeur rapide" data-price="25">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Usb_type-c_cable_and_adapter.jpg/220px-Usb_type-c_cable_and_adapter.jpg" alt="Chargeur rapide" />
+      <div>Chargeur rapide - 25 €</div>
     </div>
-    <div class="option" data-name="Joy-Con Rouge" data-baseprice="35" data-addprice="30" data-stock="3" data-qty="0" style="margin-bottom:10px;">
-      Joy-Con Rouge<br>
-      <button class="qty-minus" disabled>-</button>
-      <span class="qty">0</span>
-      <button class="qty-plus">+</button>
-      <span>Stock: <span class="stock-count">3</span></span>
-      <span>Prix total: <span class="price">0.00</span> €</span>
+    <div class="option" data-name="Étui de protection" data-price="15">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Nintendo_Switch_Carry_Case.jpg/220px-Nintendo_Switch_Carry_Case.jpg" alt="Étui de protection" />
+      <div>Étui de protection - 15 €</div>
+    </div>
+    <div class="option" data-name="Support de recharge Joy-Con" data-price="40">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Nintendo_Switch_Joy-Con_Charging_Grip.jpg/220px-Nintendo_Switch_Joy-Con_Charging_Grip.jpg" alt="Support de recharge Joy-Con" />
+      <div>Support de recharge Joy-Con - 40 €</div>
     </div>
   </div>
 </div>
 
-<!-- Étape 3bis Accessoires -->
-<div class="step" id="step3bis" style="display:none;">
-  <h2>3bis. Choisissez vos Accessoires</h2>
-  <div id="accessory-options">
-    <div class="option" data-name="Étui de protection" data-price="20" style="cursor:pointer; margin-bottom:8px;">
-      <input type="checkbox" id="acc1" />
-      <label for="acc1">Étui de protection - 20 €</label>
-    </div>
-    <div class="option" data-name="Station de recharge" data-price="40" style="cursor:pointer; margin-bottom:8px;">
-      <input type="checkbox" id="acc2" />
-      <label for="acc2">Station de recharge - 40 €</label>
-    </div>
-    <div class="option" data-name="Carte cadeau 10€" data-price="10" style="cursor:pointer; margin-bottom:8px;">
-      <input type="checkbox" id="acc3" />
-      <label for="acc3">Carte cadeau 10€ - 10 €</label>
-    </div>
-  </div>
-</div>
-
-<!-- Étape 4 Récapitulatif -->
 <div class="step" id="step4" style="display:none;">
-  <h2>4. Récapitulatif</h2>
-  <pre id="summary" style="white-space: pre-wrap; background:#f0f0f0; padding:10px; border-radius:5px; max-height:300px; overflow:auto;">Aucune sélection pour l'instant.</pre>
-  <div style="margin-top:20px;">
-    <button id="restartBtn" style="margin-right:15px;">Recommencer</button>
-    <button id="validateBtn">Valider pack & générer image</button>
+  <h2>4. Choisissez vos Joy-Con</h2>
+  <div id="joycon-options">
+    <div class="option" data-name="Joy-Con Rouge" data-baseprice="35" data-addprice="30" data-stock="10" data-qty="0">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Nintendo_Switch_Joy-Con_Red.jpg/220px-Nintendo_Switch_Joy-Con_Red.jpg" alt="Joy-Con Rouge" />
+      <div>Joy-Con Rouge</div>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <div class="price">0.00</div>
+      <div style="text-align:center; font-size:0.9em; color:#666;">Stock: 10</div>
+    </div>
+    <div class="option" data-name="Joy-Con Bleu" data-baseprice="35" data-addprice="30" data-stock="10" data-qty="0">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Nintendo_Switch_Joy-Con_Blue.jpg/220px-Nintendo_Switch_Joy-Con_Blue.jpg" alt="Joy-Con Bleu" />
+      <div>Joy-Con Bleu</div>
+      <div class="qty-controls">
+        <button class="qty-minus" disabled>-</button>
+        <span class="qty">0</span>
+        <button class="qty-plus">+</button>
+      </div>
+      <div class="price">0.00</div>
+      <div style="text-align:center; font-size:0.9em; color:#666;">Stock: 10</div>
+    </div>
   </div>
-  <canvas id="summaryCanvas" width="400" height="300" style="border:1px solid #ccc; margin-top:20px; display:none;"></canvas>
-  <a id="downloadLink" style="display:none; margin-top:10px; display:block;">Télécharger l'image</a>
 </div>
+
+<div class="step" id="step5" style="display:none;">
+  <h2>5. Récapitulatif</h2>
+  <div id="summary">Aucune sélection pour l'instant.</div>
+  <div id="final-buttons">
+    <button id="restartBtn">Recommencer</button>
+    <button id="validateBtn">Valider pack</button>
+  </div>
+  <canvas id="summaryCanvas" width="600" height="400" style="display:none;"></canvas>
+</div>
+
+<button id="nextBtn">Suivant</button>
 
 <script>
   const nextBtn = document.getElementById('nextBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const validateBtn = document.getElementById('validateBtn');
+  const summaryCanvas = document.getElementById('summaryCanvas');
+  const ctx = summaryCanvas.getContext('2d');
+
   let currentStep = 1;
 
   const steps = {
     1: document.getElementById('step1'),
     2: document.getElementById('step2'),
     3: document.getElementById('step3'),
-    3.5: document.getElementById('step3bis'), // étape Accessoires
     4: document.getElementById('step4'),
+    5: document.getElementById('step5'),
   };
 
   // Variables pour stocker les choix
   let chosenSwitch = null;
   let chosenSD = null;
-  let joyConSelections = []; // {name, qty, price}
-  let accessorySelections = []; // {name, price}
+  let chosenAccessories = [];
+  let joyConSelections = [];
 
-  // Étape 1 Switch
+  // Fonctions utilitaires
+  function deselectAll(container) {
+    container.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+  }
+
+  function selectOptionSingle(container, option) {
+    deselectAll(container);
+    option.classList.add('selected');
+  }
+
+  // Étape 1 - Switch (sélection simple)
   const switchOptions = document.getElementById('switch-options');
   switchOptions.querySelectorAll('.option').forEach(opt => {
     opt.addEventListener('click', () => {
-      // Sélection exclusive
-      switchOptions.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
+      selectOptionSingle(switchOptions, opt);
       chosenSwitch = {
         name: opt.dataset.name,
         price: parseFloat(opt.dataset.price)
@@ -114,12 +155,11 @@
     });
   });
 
-  // Étape 2 SD
+  // Étape 2 - SD (sélection simple)
   const sdOptions = document.getElementById('sd-options');
   sdOptions.querySelectorAll('.option').forEach(opt => {
     opt.addEventListener('click', () => {
-      sdOptions.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
+      selectOptionSingle(sdOptions, opt);
       chosenSD = {
         name: opt.dataset.name,
         price: parseFloat(opt.dataset.price)
@@ -127,51 +167,83 @@
     });
   });
 
-  // Étape 3 Joy-Con
+  // Étape 3 - Accessories (sélection multiple)
+  const accessoriesOptions = document.getElementById('accessories-options');
+  accessoriesOptions.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      // Sélection multiple : toggle
+      if(opt.classList.contains('selected')){
+        opt.classList.remove('selected');
+      } else {
+        opt.classList.add('selected');
+      }
+      updateAccessoriesSelection();
+    });
+  });
+
+  function updateAccessoriesSelection() {
+    chosenAccessories = [];
+    accessoriesOptions.querySelectorAll('.option.selected').forEach(opt => {
+      chosenAccessories.push({
+        name: opt.dataset.name,
+        price: parseFloat(opt.dataset.price)
+      });
+    });
+  }
+
+  // Étape 4 - JoyCon (quantité)
   const joyConOptions = document.getElementById('joycon-options');
   joyConOptions.querySelectorAll('.option').forEach(opt => {
     const plusBtn = opt.querySelector('.qty-plus');
     const minusBtn = opt.querySelector('.qty-minus');
     const qtySpan = opt.querySelector('.qty');
-    const stock = parseInt(opt.dataset.stock);
-    const basePrice = parseFloat(opt.dataset.baseprice);
-    const addPrice = parseFloat(opt.dataset.addprice);
+    const priceSpan = opt.querySelector('.price');
+
+    let stock = parseInt(opt.dataset.stock);
     let qty = 0;
 
     function updatePriceAndQtyDisplay() {
       qtySpan.textContent = qty;
       minusBtn.disabled = qty <= 0;
       plusBtn.disabled = qty >= stock;
-      let totalPrice = qty > 0 ? basePrice + (qty - 1) * addPrice : 0;
-      opt.querySelector('.price').textContent = totalPrice.toFixed(2);
-      opt.dataset.qty = qty;
-      updateJoyConSelections();
+
+      const basePrice = parseFloat(opt.dataset.baseprice);
+      const addPrice = parseFloat(opt.dataset.addprice);
+      let totalPrice = 0;
+      if(qty > 0){
+        totalPrice = basePrice + (qty -1) * addPrice;
+      }
+      priceSpan.textContent = totalPrice.toFixed(2);
     }
 
     plusBtn.addEventListener('click', () => {
       if(qty < stock){
         qty++;
+        opt.dataset.qty = qty;
         updatePriceAndQtyDisplay();
+        updateJoyConSelections();
       }
     });
     minusBtn.addEventListener('click', () => {
       if(qty > 0){
         qty--;
+        opt.dataset.qty = qty;
         updatePriceAndQtyDisplay();
+        updateJoyConSelections();
       }
     });
 
     updatePriceAndQtyDisplay();
   });
 
-  function updateJoyConSelections(){
+  function updateJoyConSelections() {
     joyConSelections = [];
     joyConOptions.querySelectorAll('.option').forEach(opt => {
       const qty = parseInt(opt.dataset.qty);
       if(qty > 0){
         const basePrice = parseFloat(opt.dataset.baseprice);
         const addPrice = parseFloat(opt.dataset.addprice);
-        const totalPrice = basePrice + (qty -1)*addPrice;
+        let totalPrice = basePrice + (qty - 1) * addPrice;
         joyConSelections.push({
           name: opt.dataset.name,
           qty: qty,
@@ -181,28 +253,7 @@
     });
   }
 
-  // Étape 3bis Accessoires
-  const accessoryOptions = document.getElementById('accessory-options');
-  accessoryOptions.querySelectorAll('input[type=checkbox]').forEach(chk => {
-    chk.addEventListener('change', () => {
-      updateAccessorySelections();
-    });
-  });
-
-  function updateAccessorySelections(){
-    accessorySelections = [];
-    accessoryOptions.querySelectorAll('input[type=checkbox]').forEach(chk => {
-      if(chk.checked){
-        const parent = chk.parentNode;
-        accessorySelections.push({
-          name: parent.dataset.name || parent.textContent.trim(),
-          price: parseFloat(parent.dataset.price) || parseFloat(chk.nextElementSibling.textContent.match(/\d+/)[0])
-        });
-      }
-    });
-  }
-
-  // Résumé
+  // Fonction pour afficher le résumé
   function updateSummary() {
     let text = '';
     let total = 0;
@@ -213,12 +264,21 @@
     } else {
       text += "Switch sélectionnée : Aucune\n";
     }
-
     if(chosenSD){
       text += `Carte SD : ${chosenSD.name} - ${chosenSD.price.toFixed(2)} €\n`;
       total += chosenSD.price;
     } else {
       text += "Carte SD : Aucune\n";
+    }
+
+    if(chosenAccessories.length > 0){
+      text += `Accessoires sélectionnés :\n`;
+      chosenAccessories.forEach(acc => {
+        text += `  - ${acc.name} : ${acc.price.toFixed(2)} €\n`;
+        total += acc.price;
+      });
+    } else {
+      text += "Accessoires sélectionnés : Aucun\n";
     }
 
     if(joyConSelections.length > 0){
@@ -231,21 +291,11 @@
       text += "Joy-Con sélectionnés : Aucun\n";
     }
 
-    if(accessorySelections.length > 0){
-      text += `Accessoires sélectionnés :\n`;
-      accessorySelections.forEach(acc => {
-        text += `  - ${acc.name} : ${acc.price.toFixed(2)} €\n`;
-        total += acc.price;
-      });
-    } else {
-      text += "Accessoires sélectionnés : Aucun\n";
-    }
-
-    text += `\nTotal à payer : ${total.toFixed(2)} €`;
+    text += "\nTotal à payer : " + total.toFixed(2) + " €";
     document.getElementById('summary').textContent = text;
   }
 
-  // Navigation
+  // Navigation entre étapes
   nextBtn.addEventListener('click', () => {
     if(currentStep === 1){
       if(!chosenSwitch){
@@ -264,64 +314,53 @@
       steps[3].style.display = "block";
       currentStep = 3;
     } else if(currentStep === 3){
-      // Joy-Con facultatif
+      // Pas obligé d'avoir d'accessoires
       steps[3].style.display = "none";
-      steps[3.5].style.display = "block";
-      currentStep = 3.5;
-    } else if(currentStep === 3.5){
-      updateAccessorySelections();
-      steps[3.5].style.display = "none";
-      updateSummary();
       steps[4].style.display = "block";
-      nextBtn.style.display = "none";
       currentStep = 4;
+    } else if(currentStep === 4){
+      updateSummary();
+      steps[4].style.display = "none";
+      steps[5].style.display = "block";
+      nextBtn.style.display = "none";
+      currentStep = 5;
     }
   });
 
-  // Bouton Recommencer
-  document.getElementById('restartBtn').addEventListener('click', () => {
+  // Bouton recommencer
+  restartBtn.addEventListener('click', () => {
     location.reload();
   });
 
-  // Bouton Valider + génération image
-  document.getElementById('validateBtn').addEventListener('click', () => {
+  // Bouton valider pack + création d'image
+  validateBtn.addEventListener('click', () => {
     updateSummary();
-    generateSummaryImage();
+    drawSummaryImage();
   });
 
-  function generateSummaryImage(){
-    const canvas = document.getElementById('summaryCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.style.display = 'block';
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+  function drawSummaryImage() {
+    const lines = document.getElementById('summary').textContent.split('\n');
+    const lineHeight = 22;
+    const padding = 20;
+    const width = summaryCanvas.width;
+    const height = lines.length * lineHeight + padding * 2;
 
-    // Fond clair
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    summaryCanvas.height = height;
+    summaryCanvas.style.display = 'block';
 
-    // Texte résumé
-    const text = document.getElementById('summary').textContent;
-    ctx.fillStyle = '#000';
+    // Fond blanc
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+
+    // Texte noir
+    ctx.fillStyle = 'black';
     ctx.font = '16px Arial';
-    const lineHeight = 20;
-    const lines = text.split('\n');
-
-    let y = 30;
-    ctx.fillText('Résumé de votre pack :', 10, y);
-    y += lineHeight + 5;
-
-    lines.forEach(line => {
-      ctx.fillText(line, 10, y);
-      y += lineHeight;
-    });
-
-    // Préparer lien de téléchargement
-    const dataURL = canvas.toDataURL('image/png');
-    const downloadLink = document.getElementById('downloadLink');
-    downloadLink.href = dataURL;
-    downloadLink.download = 'pack-switch.png';
-    downloadLink.textContent = 'Télécharger l\'image du pack';
-    downloadLink.style.display = 'block';
+    for(let i = 0; i < lines.length; i++){
+      ctx.fillText(lines[i], padding, padding + (i + 1) * lineHeight);
+    }
   }
 
 </script>
+
+</body>
+</html>
