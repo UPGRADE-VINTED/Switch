@@ -300,7 +300,7 @@
       "Prix cumulé : " + total.toFixed(2) + " €";
   }
 
-  // Génère le résumé texte et le ticket
+  // Génère le résumé texte
   function afficherRésumé() {
     let summaryText = '--- RÉCAPITULATIF DE COMMANDE ---\n\n';
     const selectedConsole = document.querySelector('#step-1 .option.selected');
@@ -344,62 +344,81 @@
     document.getElementById('summaryBox').value = summaryText;
   }
 
-  // Construit l'aperçu du ticket
+  // Construction de l'aperçu du ticket avec affichage clair pour chaque article
   function buildTicketPreview() {
     const ticketContainer = document.getElementById('ticketContainer');
-    let ticketHTML = "";
-    const randomCode = generateRandomCode();
+    let randomCode = generateRandomCode();
     window.randomTicketCode = randomCode;
-    ticketHTML += `<h3 style="text-align:center;">Ticket de commande - Code : ${randomCode}</h3><br>`;
     
+    // Entête du ticket
+    let ticketHTML = `<h3 style="text-align: center;">Ticket de commande - Code : ${randomCode}</h3>`;
+    ticketHTML += `<hr style="margin: 20px 0;">`;
+
+    let total = 0;
+
+    // Fonction qui crée une ligne d'article avec affichage en flex
+    function createTicketRow(itemName, quantity, price, imgSrc) {
+      let rowHTML = `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">`;
+      rowHTML += `<div>`;
+      rowHTML += `<p style="margin: 0; font-weight: bold;">${quantity}x ${itemName}</p>`;
+      rowHTML += `<p style="margin: 0;">${price.toFixed(2)} €</p>`;
+      rowHTML += `</div>`;
+      rowHTML += `<div>`;
+      rowHTML += `<img src="${imgSrc}" alt="${itemName}" style="max-width: 80px;"/>`;
+      rowHTML += `</div>`;
+      rowHTML += `</div>`;
+      return rowHTML;
+    }
+
+    // Console Switch
     const selectedConsole = document.querySelector('#step-1 .option.selected');
     if (selectedConsole) {
+      let price = parseFloat(selectedConsole.dataset.price) || 0;
+      total += price;
       let imgSrc = getOptionImage(selectedConsole);
-      ticketHTML += `<div style="margin-bottom:10px; text-align:center;">`;
-      ticketHTML += `<strong>${selectedConsole.dataset.name}</strong><br>`;
-      ticketHTML += `<img src="${imgSrc}" alt="${selectedConsole.dataset.name}" style="max-width:100px;"><br>`;
-      ticketHTML += `Prix : ${parseFloat(selectedConsole.dataset.price).toFixed(2)} €`;
-      ticketHTML += `</div>`;
+      ticketHTML += createTicketRow(selectedConsole.dataset.name, 1, price, imgSrc);
     }
     
+    // Carte SD
     const selectedSD = document.querySelector('#step-2 .option.selected');
     if (selectedSD) {
+      let price = parseFloat(selectedSD.dataset.price) || 0;
+      total += price;
       let imgSrc = getOptionImage(selectedSD);
-      ticketHTML += `<div style="margin-bottom:10px; text-align:center;">`;
-      ticketHTML += `<strong>${selectedSD.dataset.name}</strong><br>`;
-      ticketHTML += `<img src="${imgSrc}" alt="${selectedSD.dataset.name}" style="max-width:100px;"><br>`;
-      ticketHTML += `Prix : ${parseFloat(selectedSD.dataset.price).toFixed(2)} €`;
-      ticketHTML += `</div>`;
+      ticketHTML += createTicketRow(selectedSD.dataset.name, 1, price, imgSrc);
     }
     
+    // Joy-Con
     document.querySelectorAll('#step-3 .option').forEach(opt => {
       const qty = parseInt(opt.querySelector('input.joycon-qty').value, 10) || 0;
       if (qty > 0) {
-        let imgSrc = getOptionImage(opt);
         const priceFirst = parseFloat(opt.dataset.priceFirst) || 0;
         const priceNext = parseFloat(opt.dataset.priceNext) || 0;
-        const totalPrice = calcJoyconPrice(qty, priceFirst, priceNext);
-        ticketHTML += `<div style="margin-bottom:10px; text-align:center;">`;
-        ticketHTML += `<strong>${opt.dataset.name} (x${qty})</strong><br>`;
-        ticketHTML += `<img src="${imgSrc}" alt="${opt.dataset.name}" style="max-width:100px;"><br>`;
-        ticketHTML += `Prix : ${totalPrice.toFixed(2)} €`;
-        ticketHTML += `</div>`;
+        let price = calcJoyconPrice(qty, priceFirst, priceNext);
+        total += price;
+        let imgSrc = getOptionImage(opt);
+        ticketHTML += createTicketRow(opt.dataset.name, qty, price, imgSrc);
       }
     });
     
+    // Accessoires
     document.querySelectorAll('#step-4 .option').forEach(opt => {
       const qty = parseInt(opt.querySelector('input.accessory-qty').value, 10) || 0;
       if (qty > 0) {
+        let unitPrice = parseFloat(opt.dataset.price) || 0;
+        let price = unitPrice * qty;
+        total += price;
         let imgSrc = getOptionImage(opt);
-        const price = parseFloat(opt.dataset.price) || 0;
-        const totalPrice = price * qty;
-        ticketHTML += `<div style="margin-bottom:10px; text-align:center;">`;
-        ticketHTML += `<strong>${opt.dataset.name} (x${qty})</strong><br>`;
-        ticketHTML += `<img src="${imgSrc}" alt="${opt.dataset.name}" style="max-width:100px;"><br>`;
-        ticketHTML += `Prix : ${totalPrice.toFixed(2)} €`;
-        ticketHTML += `</div>`;
+        ticketHTML += createTicketRow(opt.dataset.name, qty, price, imgSrc);
       }
     });
+    
+    // Affichage du total
+    ticketHTML += `<hr style="margin: 20px 0;">`;
+    ticketHTML += `<div style="display: flex; justify-content: space-between; align-items: center;">`;
+    ticketHTML += `<p style="margin: 0; font-size: 18px; font-weight: bold;">TOTAL :</p>`;
+    ticketHTML += `<p style="margin: 0; font-size: 18px; font-weight: bold;">${total.toFixed(2)} €</p>`;
+    ticketHTML += `</div>`;
     
     ticketContainer.innerHTML = ticketHTML;
   }
@@ -423,17 +442,7 @@
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  // Téléchargement du résumé TXT
-  function downloadSummary() {
-    const text = document.getElementById('summaryBox').value;
-    const blob = new Blob([text], { type: 'text/plain' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'resume_pack_switch.txt';
-    a.click();
-  }
-
-  // Télécharge le ticket en image JPEG avec options CORS
+  // Téléchargement du ticket en image JPEG avec options CORS
   function downloadTicket() {
     const container = document.getElementById('ticketContainer');
     html2canvas(container, { useCORS: true, allowTaint: false }).then(function(canvas) {
