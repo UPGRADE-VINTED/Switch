@@ -141,12 +141,12 @@
       margin-top: 10px;
       font-weight: bold;
     }
-    /* Ticket de commande */
+    /* Ticket de commande : format plus étroit et allongé, sans surlignage */
     #ticketContainer {
-      border: 1px solid #ccc;
-      padding: 20px;
-      margin-bottom: 20px;
-      background-color: #fafafa;
+      width: 300px;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #fff;
     }
   </style>
 </head>
@@ -257,8 +257,6 @@
     </div>
     <!-- Récapitulatif en texte -->
     <textarea id="summaryBox" readonly></textarea>
-    <div class="button-container">
-    </div>
   </div>
   
   <div class="button-container">
@@ -344,7 +342,7 @@
     document.getElementById('summaryBox').value = summaryText;
   }
 
-  // Construction de l'aperçu du ticket avec affichage clair pour chaque article
+  // Construction de l'aperçu du ticket avec format étroit et allongé
   function buildTicketPreview() {
     const ticketContainer = document.getElementById('ticketContainer');
     let randomCode = generateRandomCode();
