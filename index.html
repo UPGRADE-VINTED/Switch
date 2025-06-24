@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue chez Upgrade</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1, h2 {
+      color: #333;
+      text-align: center;
+    }
+
+    p {
+      font-size: 1.1em;
+      color: #555;
+      text-align: center;
+    }
+
+    .btn-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      margin: 10px;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 80vh;
+      border: none;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      button {
+        width: 90%;
+        font-size: 1em;
+      }
+
+      iframe {
+        height: 70vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="welcome">
+    <h1>Bienvenue chez <strong>Upgrade</strong></h1>
+    <p>Avant d'aller plus loin, savez-vous comment fonctionne une Switch modifiée ?</p>
+    <div class="btn-group">
+      <button onclick="location.href='pack.html'">Oui, je sais, passons à la création du pack</button>
+      <button onclick="showExplanation()">Non, j’ai besoin d’explications</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="explanation">
+    <h2>Explications sur la Switch modifiée</h2>
+    <iframe src="Upgrade.pdf"></iframe>
+    <div class="btn-group">
+      <button onclick="location.href='pack.html'">J’ai compris, passons à la création du pack</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="creation">
+    <h2>Création du Pack</h2>
+    <p>(section inutile ici, redirection vers pack.html assurée)</p>
+  </div>
+
+  <script>
+    function showExplanation() {
+      document.getElementById("welcome").classList.add("hidden");
+      document.getElementById("explanation").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
