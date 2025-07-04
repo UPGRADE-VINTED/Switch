@@ -121,7 +121,7 @@
             max-height: 98vh;
             display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
         }
-        .pdf-title { text-align: center; font-size: 1.4em; font-weight: bold; margin: 16px 0 10px 0;}
+        .-title { text-align: center; font-size: 1.4em; font-weight: bold; margin: 16px 0 10px 0;}
         .close { position: absolute; top: 9px; right: 14px; font-size: 28px; cursor: pointer; color: #6c7a8c;}
         .btn { background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 10px 5px; transition: background-color 0.3s;}
         .btn:hover { background-color: var(--secondary);}
@@ -214,8 +214,8 @@
 <div class="container">
     <div id="step1" class="step active">
         <h2>Découvrir la Nintendo Switch</h2>
-        <p>Avant de commencer, vous pouvez consulter ce guide PDF débutant ou non.<br>Cela va renforcer votre compréhension de la console.</p>
-        <button onclick="showPDF()" class="btn">Je veux consulter le guide</button>
+        <p>Avant de commencer, vous pouvez consulter ce guide  débutant ou non.<br>Cela va renforcer votre compréhension de la console.</p>
+        <button onclick="show()" class="btn">Je veux consulter le guide</button>
         <button onclick="nextStep(2)" class="btn">Non, je connais déjà</button>
     </div>
     <div id="step2" class="step">
@@ -259,12 +259,12 @@
     </div>
 </div>
 
-<!-- Modal PDF Guide -->
-<div id="pdf-modal" class="modal">
+<!-- Modal  Guide -->
+<div id="-modal" class="modal">
     <div class="modal-content" style="align-items: center;justify-content: flex-start;min-width:320px;">
-        <span onclick="closePDF()" class="close">&times;</span>
-        <div class="pdf-title">Guide d'utilisation Nintendo Switch</div>
-        <iframe src="assets/pdf/upgrade.pdf" frameborder="0"
+        <span onclick="close()" class="close">&times;</span>
+        <div class="-title">Guide d'utilisation Nintendo Switch</div>
+        <iframe src="assets/Pdf/upgrade.pdf" frameborder="0"
                 style="width:97%;height:440px;max-width:620px;max-height:81vh; margin:6px auto;text-align:center;border-radius:5px;"></iframe>
     </div>
 </div>
