@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configurateur Nintendo Switch</title>
+    <title>Upgrade</title>
     <style>
         :root {
             --primary: #3498db;
@@ -192,10 +192,10 @@
     [Accessoires] (stock géré ici)
     - id: Dock, nom: Dock TV, prix: 29.99€, stock: 1, images: assets/accessoires/Dock.png
     - id: Supman, nom: Support Manette, prix: 9.99€, stock: 2, images: assets/accessoires/support.png
-    - id: drag, nom: dragonne, prix: 4.99€, stock: 4, images: assets/accessoires/drag.png
-    - id: tv, nom: adaptateur tv, prix: 7.99€, stock: 4, images: assets/accessoires/tv.png
-    - id: charg, nom: chargeur Joy-Con, prix: 7.99€, stock: 4, images: assets/accessoires/charg.png
-    - id: chargeur, nom: chargeur switch, prix: 7.99€, stock: 4, images: assets/accessoires/chargeur.png
+    - id: drag, nom: Dragonne, prix: 4.99€, stock: 4, images: assets/accessoires/drag.png
+    - id: tv, nom: Adaptateur TV, prix: 7.99€, stock: 4, images: assets/accessoires/tv.png
+    - id: charg, nom: Chargeur Joy-Con, prix: 7.99€, stock: 4, images: assets/accessoires/charg.png
+    - id: chargeur, nom: Chargeur switch, prix: 7.99€, stock: 4, images: assets/accessoires/chargeur.png
     - id: none3, nom: Sans accessoires, prix: 0€, stock: 99, images: assets/accessoires/no-accessoire.jpg
 
     Pour ajouter du stock ou d'autres références : tu modifies les arrays JS ci-dessous !
@@ -207,36 +207,37 @@
     <!-- Ta bannière ! -->
     <img src="assets/banner/upgrade.jpg" alt="Logo" class="header-bg-logo" />
     <div class="header-content">
-        <div class="site-title">🎮 Configurateur Nintendo Switch</div>
-        <div class="site-subtitle">Composez la console idéale en quelques clics !</div>
+        <div class="site-title">🎮Composez la console idéale en quelques clics ! </div>
+        <div class="site-subtitle"></div>
     </div>
 </header>
 <div class="container">
     <div id="step1" class="step active">
-        <h2>Découvrir la Nintendo Switch</h2>
-        <p>Avant de commencer, vous pouvez consulter ce guide PDF débutant ou non.<br>Cela va renforcer votre compréhension de la console.</p>
+        <h2>Comprendre le fonctionnement d'une switch modifié</h2>
+        <p>Avant de commencer, vous pouvez consulter ce guide PDF.<br>Cela va renforcer votre compréhension du fonctionnement de la console.</p>
         <button onclick="showPDF()" class="btn">Je veux consulter le guide</button>
-        <button onclick="nextStep(2)" class="btn">Non, je connais déjà</button>
+        <button onclick="nextStep(2)" class="btn">Passer à la suite</button>
     </div>
     <div id="step2" class="step">
-        <h2>Choisissez votre console Nintendo Switch</h2>
+        <h2>Choisissez votre console (Tablette) Nintendo Switch</h2>
         <div class="product-grid" id="switch-grid"></div>
         <button onclick="nextStep(3)" class="btn" id="next-btn-step2" disabled>Continuer</button>
     </div>
     <div id="step3" class="step">
-        <h2>Choisissez votre carte SD</h2>
+        <h2>Choisissez votre carte MicroSD (obligatoire)</h2>
         <div class="product-grid" id="sd-grid"></div>
         <button onclick="nextStep(4)" class="btn" id="next-btn-step3" disabled>Continuer</button>
         <button onclick="prevStep(2)" class="btn">Retour</button>
     </div>
     <div id="step4" class="step">
-        <h2>Choisissez vos packs Joy-Con <small>(optionnel, couleurs et quantités au choix) :</small></h2>
+        <h2>Êtes-vous plutôt joueur solo ou partie entre amis ?<small><br>
+		 Quoi qu'il en soit vous aurez besoin de Joy-Con (optionnel, couleurs et quantités au choix) :</small></h2>
         <div class="product-grid" id="joyconpack-grid"></div>
         <button onclick="nextStep(5)" class="btn" id="next-btn-step4">Continuer</button>
         <button onclick="prevStep(3)" class="btn">Retour</button>
     </div>
     <div id="step5" class="step">
-        <h2>Choisissez vos accessoires (plusieurs au choix, optionnel) :</h2>
+        <h2>Choisissez vos accessoires (optionnel, plusieurs choix) :</h2>
         <div class="product-grid" id="accessory-grid"></div>
         <button onclick="nextStep(6)" class="btn">Continuer</button>
         <button onclick="prevStep(4)" class="btn">Retour</button>
@@ -252,10 +253,10 @@
             <div class="config-code">
                 Code de configuration : <span id="config-code">XXXX-XXXX-XXXX</span>
             </div>
-            <button class="copy-btn" onclick="copyConfigToClipboardAndRedirect()" id="copy-config-btn">Cliquer pour copier le message me l'envoyer sur Vinted</button>
-            <div class="copy-hint" id="copy-hint">✅ Message copié ! il ne vous reste plus cas le coller en arrivant dans la conversation Redirection en cours…</div>
+            <button class="copy-btn" onclick="copyConfigToClipboardAndRedirect()" id="copy-config-btn">Cliquez pour copier le message et me l'envoyer sur Vinted</button>
+            <div class="copy-hint" id="copy-hint">✅ Message copié ! Il ne vous reste plus qu'a cliquer sur envoyer un message et coller en arrivant dans la conversation Redirection en cours…</div>
         </div>
-        <button onclick="prevStep(5)" class="btn">Retour</button>
+        <button onclick="prevStep(15)" class="btn">Retour</button>
     </div>
 </div>
 
@@ -263,13 +264,13 @@
 <div id="pdf-modal" class="modal">
     <div class="modal-content" style="align-items: center;justify-content: flex-start;min-width:320px;">
         <span onclick="closePDF()" class="close">&times;</span>
-        <div class="pdf-title">Guide d'utilisation Nintendo Switch</div>
+        <div class="pdf-title">Guide d'utilisation Nintendo Switch modifiée (vous pouvez me télécharger)</div>
         <iframe src="assets/pdf/upgrade.pdf" frameborder="0"
                 style="width:97%;height:440px;max-width:620px;max-height:81vh; margin:6px auto;text-align:center;border-radius:5px;"></iframe>
     </div>
 </div>
 <footer>
-    &copy; 2024 - Configurateur Nintendo Switch | Réalisé par votre vendeur passionné 🎮
+    &copy; 2024 - Configurateur Nintendo Switch | Réalisé par votre vendeur passionné Upgrade 🎮
 </footer>
 
 <script>
@@ -282,23 +283,21 @@ const productsData = {
         { id: 'XKJA45DL49', name: 'Switch XKJ', price: 159.99, description: "Edition RED Etat Bon", images:["assets/switch/switch2.png", "assets/switch/switch2.2.png", "assets/switch/switch2.3.png"] }
     ],
     sds: [
-        { id: 'sd128', name: 'Carte SD 128 Go', price: 0.0, description:"Il est obligatoire de choisir une SD !", images: ["assets/sd/sd128.jpg"] },
-        { id: 'sd256', name: 'Carte SD 256 Go', price: 29.99, description:"", images: ["assets/sd/sd256.jpg"] },
-        { id: 'sd512', name: 'Carte SD 512 Go', price: 59.99, description:"", images: ["assets/sd/sd512.jpg"] }
+        { id: 'sd128', name: 'Carte MicroSD 128 Go', price: 0.0, description:"Gratuit", images: ["assets/sd/sd128.jpg"] },
+        { id: 'sd256', name: 'Carte MicroSD 256 Go', price: 29.99, description:"", images: ["assets/sd/sd256.jpg"] },
+        { id: 'sd512', name: 'Carte MicroSD 512 Go', price: 59.99, description:"", images: ["assets/sd/sd512.jpg"] }
     ],
     joyconpacks: [
-        { id: 'Joy1', name: 'Joy-Con Bleu/Rouge', price: 30, stock: 3, description:"Le pack couleur emblématique de Nintendo.", images:["assets/joycon/joy1.jpg", "assets/joycon/joy1.2.jpg"] },
-        { id: 'nojoy', name: 'Sans Joy-Con ', price: 0, stock: 99, description:"Sans Joy-Con", images:["assets/joycon/indispo.jpg"] },
-        { id: 'Joy3', name: 'Joy-Con Violet Jaune', price: 34, stock: 2, description:"Model Violet Jaune", images:["assets/joycon/joy3.jpg", "assets/joycon/joy3.2.jpg"] }
+        { id: 'Joy1', name: 'Joy-Con Bleu/Rouge', price: 30, stock: 3, description:"Les couleur emblématique de Nintendo.", images:["assets/joycon/joy1.jpg", "assets/joycon/joy1.2.jpg"] },
+        { id: 'Joy3', name: 'Joy-Con Violet Jaune', price: 34, stock: 2, description:"Modèle Violet Jaune", images:["assets/joycon/joy3.jpg", "assets/joycon/joy3.2.jpg"] }
     ],
     joycons: [
         { id: 'Dock', name: 'Dock TV', price: 29.99, stock: 1, description:"Pour jouer sur la TV!", images:["assets/accessoires/Dock.png"] },
-        { id: 'Supman', name: 'Support Manette', price: 9.99, stock: 2, description:"Confort de jeu !", images:["assets/accessoires/support.png"] },
-        { id: 'drag', name: 'dragonne', price: 4.99, stock: 4, description:"Dragonne pour joy-con.", images:["assets/accessoires/drag.png"] },
-        { id: 'tv', name: 'adaptateur tv', price: 7.99, stock: 4, description:"Remplace le dock tv!", images:["assets/accessoires/tv.png"] },
-        { id: 'charg', name: 'chargeur Joy-Con', price: 7.99, stock: 4, description:"Pour charger vos manettes.", images:["assets/accessoires/charg.png"] },
-        { id: 'chargeur', name: 'chargeur switch', price: 7.99, stock: 4, description:"Pour charger la Switch!", images:["assets/accessoires/chargeur.png"] },
-        { id: 'none3', name: 'Sans accessoires', price: 0, stock: 99, description:"Aucun accessoire supplémentaire.", images:["assets/accessoires/no-accessoire.jpg"] }
+        { id: 'Supman', name: 'Support Manette', price: 9.99, stock: 0, description:"Confort de jeu !", images:["assets/accessoires/support.png"] },
+        { id: 'drag', name: 'Dragonne', price: 4.99, stock: 4, description:"Dragonne pour Joy-Con.", images:["assets/accessoires/drag.png"] },
+        { id: 'tv', name: 'Adaptateur TV', price: 7.99, stock: 4, description:"Remplace le dock TV!", images:["assets/accessoires/tv.png"] },
+        { id: 'charg', name: 'Chargeur Joy-Con', price: 7.99, stock: 4, description:"Pour charger vos Joy-Con.", images:["assets/accessoires/charg.png"] },
+        { id: 'prise', name: 'Chargeur Switch', price: 7.99, stock: 4, description:"Pour charger la Switch!", images:["assets/accessoires/chargeur.png"]  }
     ]
 };
 /** ----------------------------------------------------------------------------------- */
@@ -422,13 +421,13 @@ function updateSummary() {
     if (selectedProducts.switch) {
         const p = productsData.switches.find(p => p.id===selectedProducts.switch);
         if(p) {totalPrice += p.price;document.getElementById('summary-switch').innerHTML=`<h3>Console</h3><p><b>${p.name}</b> - ${p.price.toFixed(2)} €<br>${p.description}</p>`;}
-    } else document.getElementById('summary-switch').innerHTML = `<h3>Console</h3><p>Non sélectionné</p>`;
+    } else document.getElementById('summary-switch').innerHTML = `<h3>Console</h3><p>Aucun</p>`;
     if (selectedProducts.sd) {
         const p = productsData.sds.find(p => p.id===selectedProducts.sd);
         if(p) {totalPrice += p.price;document.getElementById('summary-sd').innerHTML=`<h3>Carte SD</h3><p><b>${p.name}</b> - ${p.price.toFixed(2)} €<br>${p.description}</p>`;}
-    } else document.getElementById('summary-sd').innerHTML = `<h3>Carte SD</h3><p>Non sélectionné</p>`;
+    } else document.getElementById('summary-sd').innerHTML = `<h3>Carte SD</h3><p>Aucun</p>`;
     if (selectedProducts.joyconpacks.length > 0) {
-        let listHtml = "<h3>Packs Joy-Con</h3>";
+        let listHtml = "<h3> Joy-Con</h3>";
         selectedProducts.joyconpacks.forEach(item => {
             let p = productsData.joyconpacks.find(px => px.id === item.id);
             if(p) {
@@ -438,7 +437,7 @@ function updateSummary() {
             }
         });
         document.getElementById('summary-joyconpack').innerHTML = listHtml;
-    } else document.getElementById('summary-joyconpack').innerHTML = `<h3>Packs Joy-Con</h3><p>Non sélectionné</p>`;
+    } else document.getElementById('summary-joyconpack').innerHTML = `<h3> Joy-Con</h3><p>Aucun</p>`;
     if (selectedProducts.accessories.length > 0) {
         let listHtml = "<h3>Accessoires</h3>";
         selectedProducts.accessories.forEach(item => {
@@ -450,7 +449,7 @@ function updateSummary() {
             }
         });
         document.getElementById('summary-joycon').innerHTML = listHtml;
-    } else document.getElementById('summary-joycon').innerHTML = `<h3>Accessoires</h3><p>Non sélectionné</p>`;
+    } else document.getElementById('summary-joycon').innerHTML = `<h3>Accessoires</h3><p>Aucun</p>`;
     document.getElementById('total-price').textContent = `${totalPrice.toFixed(2)} €`;
     const configCode = generateConfigCode();
     document.getElementById('config-code').textContent = configCode;
